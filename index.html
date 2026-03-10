@@ -40,7 +40,7 @@
   /* SCROLL-DRIVEN PANEL WIPE — 5 vertical columns, bottom to top */
   .panel-wipe-trigger {
     position: relative;
-    height: 150vh;
+    height: 110vh;
     z-index: 3;
   }
   .panel-wipe-trigger .inner {
@@ -80,7 +80,7 @@
   /* DARK RETURN PANEL WIPE — 5 vertical columns, bottom to top */
   .dark-panel-trigger {
     position: relative;
-    height: 150vh;
+    height: 110vh;
     z-index: 3;
     background: var(--white);
   }
@@ -231,6 +231,51 @@
   html.light-theme .cursor { background: #080808; }
   html.light-theme .cursor-ring { border-color: rgba(8,8,8,0.4); }
   html.light-theme .hero-bg-text { -webkit-text-stroke: 1px rgba(8,8,8,0.06); }
+  html.light-theme nav { mix-blend-mode: normal; }
+  html.light-theme .nav-logo { color: #080808; }
+  html.light-theme .nav-links a { color: #080808; }
+  html.light-theme .nav-hamburger span { background: #080808; }
+  html.light-theme .theme-toggle { color: #080808; border-color: rgba(8,8,8,0.25); mix-blend-mode: normal; }
+  html.light-theme .theme-toggle:hover { border-color: rgba(8,8,8,0.6); }
+  html.light-theme .scroll-progress { background: #080808; mix-blend-mode: normal; }
+  html.light-theme .marquee-wrap { border-color: #ccc; }
+  html.light-theme .marquee-item { color: #888; }
+  html.light-theme .marquee-item span { color: #080808; }
+  html.light-theme .hero-scroll { color: #888; }
+  html.light-theme .hero-scroll::before { background: #888; }
+  html.light-theme .hero-scroll:hover { color: #080808; }
+  html.light-theme .hero-eyebrow { color: #888; }
+  html.light-theme .hero-bio { color: #666; }
+  html.light-theme .hero-title em { color: #888; }
+  html.light-theme footer { border-color: #ccc; }
+  html.light-theme .footer-copy { color: #888; }
+  html.light-theme .back-top { color: #888; }
+  html.light-theme .back-top:hover { color: #080808; }
+  html.light-theme #about { border-color: #ccc; }
+  html.light-theme #experience { border-color: #ccc; }
+  html.light-theme #contact { border-color: #ccc; }
+  html.light-theme .about-headline em { color: #888; }
+  html.light-theme .about-body { color: #666; }
+  html.light-theme .skills-grid { border-color: #ccc; }
+  html.light-theme .skill-item { border-color: #ccc; }
+  html.light-theme .skill-num { color: #aaa; }
+  html.light-theme .exp-table thead th { border-color: #ccc; color: #888; }
+  html.light-theme .exp-table tbody tr { border-color: #e5e5e5; }
+  html.light-theme .exp-table tbody tr:hover { background: #e8e6e0; }
+  html.light-theme .exp-table tbody td { color: #080808; }
+  html.light-theme .exp-table tbody td:nth-child(2) { color: #666; }
+  html.light-theme .exp-table tbody td:nth-child(3) { color: #666; }
+  html.light-theme .exp-arrow { color: #bbb; }
+  html.light-theme .contact-headline em { color: #888; }
+  html.light-theme .contact-links { border-color: #ccc; }
+  html.light-theme .contact-link { border-color: #ccc; color: #080808; }
+  html.light-theme .cl-label { color: #888; }
+  html.light-theme .cl-arrow { color: #aaa; }
+  html.light-theme .about-photo { background: #e5e3de; border-color: #ccc; color: #aaa; }
+  html.light-theme .section-label { color: #888; }
+  html.light-theme .section-label.sticky { background: #f2f0eb; }
+  html.light-theme .mobile-menu { background: #f2f0eb; }
+  html.light-theme .mobile-menu a { color: #080808; }
 
   /* ABOUT PHOTO PARALLAX */
   .about-photo {
@@ -1345,17 +1390,16 @@
   });
 
   // PANEL WIPE HELPER — 5 staggered columns, bottom to top
-  // Animation only starts when the bottom of the trigger reaches the viewport bottom
-  // (i.e. at the actual section boundary), not when the trigger first enters view.
+  // Starts as the trigger enters the viewport, completes quickly so no dead space
   function setupPanelWipe(triggerId, panelSelector) {
     const trigger = document.getElementById(triggerId);
     const panels = trigger.querySelectorAll(panelSelector);
     const delays = [0, 0.08, 0.16, 0.10, 0.04]; // stagger: edges first, center last
 
     lenis.on('scroll', ({ scroll }) => {
-      const h = trigger.offsetHeight;
-      const animStart = trigger.offsetTop + h - window.innerHeight;
-      const animDistance = window.innerHeight;
+      // Start when trigger top is 60% up the viewport, finish over 60vh of scroll
+      const animStart = trigger.offsetTop - window.innerHeight * 0.6;
+      const animDistance = window.innerHeight * 0.6;
       const progress = Math.max(0, Math.min(1, (scroll - animStart) / animDistance));
 
       panels.forEach((el, i) => {
