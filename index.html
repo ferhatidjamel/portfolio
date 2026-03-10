@@ -4,6 +4,15 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Ferhati Djamel — UI/UX Designer</title>
+<meta name="description" content="UI/UX Designer specialising in crafting digital experiences that balance functionality with intentional, user-centered design.">
+<meta property="og:title" content="Ferhati Djamel — UI/UX Designer">
+<meta property="og:description" content="UI/UX Designer specialising in crafting digital experiences that balance functionality with intentional, user-centered design.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://ferhatidjamel.github.io/portfolio/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Ferhati Djamel — UI/UX Designer">
+<meta name="twitter:description" content="UI/UX Designer crafting intentional digital experiences.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%23080808' rx='16' width='100' height='100'/><text x='50' y='68' font-family='system-ui' font-size='48' font-weight='800' fill='%23f2f0eb' text-anchor='middle'>FD</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -89,6 +98,102 @@
     will-change: transform;
     transform: translateY(100%);
   }
+
+  /* GRAIN TEXTURE OVERLAY */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 9990;
+    pointer-events: none;
+    opacity: 0.035;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+    background-size: 128px 128px;
+  }
+
+  /* SCROLL PROGRESS BAR */
+  .scroll-progress {
+    position: fixed;
+    top: 0; left: 0;
+    width: 0%;
+    height: 2px;
+    background: var(--white);
+    z-index: 999;
+    mix-blend-mode: difference;
+    transition: none;
+  }
+
+  /* HERO BACKGROUND INITIALS */
+  .hero-bg-text {
+    position: absolute;
+    top: 50%; right: -5%;
+    transform: translateY(-50%);
+    font-family: var(--sans);
+    font-size: clamp(200px, 35vw, 500px);
+    font-weight: 800;
+    letter-spacing: -0.05em;
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(242,240,235,0.06);
+    line-height: 0.85;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  /* MAGNETIC CONTACT HEADLINE */
+  .contact-headline {
+    display: inline-block;
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  /* MOBILE HAMBURGER */
+  .nav-hamburger {
+    display: none;
+    flex-direction: column;
+    gap: 6px;
+    cursor: pointer;
+    z-index: 101;
+    padding: 4px;
+  }
+  .nav-hamburger span {
+    width: 24px;
+    height: 1px;
+    background: var(--white);
+    transition: transform 0.3s ease, opacity 0.3s ease;
+  }
+  .nav-hamburger.active span:nth-child(1) { transform: rotate(45deg) translate(4px, 5px); }
+  .nav-hamburger.active span:nth-child(2) { opacity: 0; }
+  .nav-hamburger.active span:nth-child(3) { transform: rotate(-45deg) translate(4px, -5px); }
+
+  .mobile-menu {
+    position: fixed;
+    inset: 0;
+    background: var(--black);
+    z-index: 99;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 40px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+  }
+  .mobile-menu.open {
+    opacity: 1;
+    pointer-events: all;
+  }
+  .mobile-menu a {
+    font-family: var(--sans);
+    font-size: clamp(32px, 8vw, 48px);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    text-decoration: none;
+    color: var(--white);
+    opacity: 0.6;
+    transition: opacity 0.2s;
+  }
+  .mobile-menu a:hover { opacity: 1; }
 
   /* CUSTOM CURSOR */
   .cursor {
@@ -340,6 +445,8 @@
     transition: gap 0.3s ease;
     cursor: none;
   }
+  .project-card.reversed .project-img { order: 2; }
+  .project-card.reversed .project-info { order: 1; }
   .project-card:hover { gap: 32px; }
   .project-card:hover .project-img img { transform: scale(1.03); }
   .project-img {
@@ -737,17 +844,25 @@
   @media (max-width: 768px) {
     nav { padding: 24px; }
     .nav-links { display: none; }
+    .nav-hamburger { display: flex; }
     #home { padding: 0 24px 64px; }
     #projects, #about, #experience, #contact { padding: 80px 24px; }
     footer { padding: 24px; }
     .project-card { grid-template-columns: 1fr; gap: 24px; }
+    .project-card.reversed { direction: ltr; }
     .about-grid { grid-template-columns: 1fr; gap: 48px; }
     .about-right { order: -1; }
     .contact-headline { font-size: clamp(40px, 12vw, 80px); }
+    .hero-bg-text { font-size: clamp(150px, 40vw, 300px); right: -10%; }
+    .cursor, .cursor-ring { display: none; }
+    body { cursor: auto; }
   }
 </style>
 </head>
 <body>
+
+<!-- SCROLL PROGRESS -->
+<div class="scroll-progress" id="scrollProgress"></div>
 
 <!-- CURSOR -->
 <div class="cursor" id="cursor"></div>
@@ -769,10 +884,21 @@
     <li><a href="#about"><span class="num">02</span> About</a></li>
     <li><a href="#contact"><span class="num">03</span> Contact</a></li>
   </ul>
+  <div class="nav-hamburger" id="hamburger">
+    <span></span><span></span><span></span>
+  </div>
 </nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#projects" class="mobile-link">Projects</a>
+  <a href="#about" class="mobile-link">About</a>
+  <a href="#contact" class="mobile-link">Contact</a>
+</div>
 
 <!-- HERO -->
 <section id="home">
+  <div class="hero-bg-text">FD</div>
   <p class="hero-eyebrow">UI/UX Designer — Algeria</p>
   <h1 class="hero-title">
     Ferhati<br>
@@ -847,11 +973,11 @@
   </div>
 
   <!-- Project 2 -->
-  <div class="project-card slide-right" style="direction: rtl;">
+  <div class="project-card reversed slide-right">
     <div class="project-img scale-reveal">
       <div class="img-placeholder">{ Project Cover }</div>
     </div>
-    <div class="project-info" style="direction: ltr;">
+    <div class="project-info">
       <div>
         <p class="project-client">Client Name</p>
         <h3 class="project-name">Project Title Two</h3>
@@ -885,11 +1011,11 @@
   </div>
 
   <!-- Project 4 -->
-  <div class="project-card slide-right" style="direction: rtl;">
+  <div class="project-card reversed slide-right">
     <div class="project-img scale-reveal">
       <div class="img-placeholder">{ Project Cover }</div>
     </div>
-    <div class="project-info" style="direction: ltr;">
+    <div class="project-info">
       <div>
         <p class="project-client">Client Name</p>
         <h3 class="project-name">Project Title Four</h3>
@@ -1011,7 +1137,7 @@
 
 <!-- FOOTER -->
 <footer>
-  <span class="footer-copy">© 2024 — Ferhati Djamel</span>
+  <span class="footer-copy">© 2026 — Ferhati Djamel</span>
   <a href="#home" class="back-top">{ Back to Top }</a>
 </footer>
 
@@ -1168,8 +1294,63 @@
       e.preventDefault();
       const target = document.querySelector(anchor.getAttribute('href'));
       if (target) lenis.scrollTo(target, { offset: 0, duration: 1 });
+      // Close mobile menu if open
+      const mm = document.getElementById('mobileMenu');
+      const hb = document.getElementById('hamburger');
+      if (mm.classList.contains('open')) {
+        mm.classList.remove('open');
+        hb.classList.remove('active');
+        lenis.start();
+      }
     });
   });
+
+  // SCROLL PROGRESS BAR
+  const scrollBar = document.getElementById('scrollProgress');
+  lenis.on('scroll', ({ scroll }) => {
+    const docH = document.documentElement.scrollHeight - window.innerHeight;
+    const pct = (scroll / docH) * 100;
+    scrollBar.style.width = pct + '%';
+  });
+
+  // HAMBURGER MENU
+  const hamburger = document.getElementById('hamburger');
+  const mobileMenu = document.getElementById('mobileMenu');
+  hamburger.addEventListener('click', () => {
+    hamburger.classList.toggle('active');
+    mobileMenu.classList.toggle('open');
+    if (mobileMenu.classList.contains('open')) {
+      lenis.stop();
+    } else {
+      lenis.start();
+    }
+  });
+  document.querySelectorAll('.mobile-link').forEach(link => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      hamburger.classList.remove('active');
+      mobileMenu.classList.remove('open');
+      lenis.start();
+      const target = document.querySelector(link.getAttribute('href'));
+      if (target) setTimeout(() => lenis.scrollTo(target, { duration: 1 }), 100);
+    });
+  });
+
+  // MAGNETIC CONTACT HEADLINE
+  const contactHL = document.querySelector('.contact-headline');
+  if (contactHL && window.innerWidth > 768) {
+    contactHL.addEventListener('mousemove', (e) => {
+      const rect = contactHL.getBoundingClientRect();
+      const cx = rect.left + rect.width / 2;
+      const cy = rect.top + rect.height / 2;
+      const dx = (e.clientX - cx) * 0.08;
+      const dy = (e.clientY - cy) * 0.08;
+      contactHL.style.transform = `translate(${dx}px, ${dy}px)`;
+    });
+    contactHL.addEventListener('mouseleave', () => {
+      contactHL.style.transform = 'translate(0, 0)';
+    });
+  }
 </script>
 </body>
 </html>
