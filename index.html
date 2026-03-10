@@ -140,6 +140,109 @@
     user-select: none;
   }
 
+  /* CURSOR INVERSION ON LIGHT SECTIONS */
+  .cursor.inverted { background: var(--black); }
+  .cursor-ring.inverted { border-color: rgba(8,8,8,0.4); }
+  body:has(a:hover) .cursor.inverted { width: 14px; height: 14px; }
+  body:has(a:hover) .cursor-ring.inverted { width: 50px; height: 50px; border-color: rgba(8,8,8,0.8); }
+
+  /* HERO CHAR-BY-CHAR REVEAL */
+  .hero-char {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(60px) rotate(5deg);
+    animation: charReveal 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+  @keyframes charReveal {
+    to { opacity: 1; transform: translateY(0) rotate(0); }
+  }
+
+  /* STICKY SECTION LABELS */
+  .section-label.sticky {
+    position: sticky;
+    top: 28px;
+    z-index: 10;
+    background: inherit;
+    padding: 8px 0;
+  }
+  .light-section .section-label.sticky { background: var(--white); }
+
+  /* PAGE TRANSITION OVERLAY */
+  .page-transition {
+    position: fixed;
+    inset: 0;
+    background: var(--black);
+    z-index: 998;
+    transform: scaleY(0);
+    transform-origin: bottom;
+    pointer-events: none;
+  }
+  .page-transition.active {
+    animation: pageWipe 0.8s cubic-bezier(0.76, 0, 0.24, 1) forwards;
+  }
+  @keyframes pageWipe {
+    0% { transform: scaleY(0); transform-origin: bottom; }
+    50% { transform: scaleY(1); transform-origin: bottom; }
+    50.01% { transform-origin: top; }
+    100% { transform: scaleY(0); transform-origin: top; }
+  }
+
+  /* THEME TOGGLE */
+  .theme-toggle {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--white);
+    background: none;
+    border: 1px solid rgba(242,240,235,0.2);
+    padding: 6px 14px;
+    cursor: pointer;
+    transition: border-color 0.3s, color 0.3s;
+    mix-blend-mode: difference;
+  }
+  .theme-toggle:hover { border-color: rgba(242,240,235,0.6); }
+
+  /* LIGHT THEME */
+  html.light-theme {
+    --black: #f2f0eb;
+    --white: #080808;
+    --grey: #666;
+    --grey-light: #ccc;
+  }
+  html.light-theme body { background: #f2f0eb; color: #080808; }
+  html.light-theme .wipe-panel { background: #080808; }
+  html.light-theme .dwp { background: #f2f0eb; }
+  html.light-theme .light-section { background: #080808; color: #f2f0eb; }
+  html.light-theme .light-section .section-label { color: #888; }
+  html.light-theme .light-section .project-client { color: #888; }
+  html.light-theme .light-section .project-desc { color: #999; }
+  html.light-theme .light-section .tag { color: #999; border-color: #444; }
+  html.light-theme .light-section .project-num { color: #444; }
+  html.light-theme .light-section .project-card { border-bottom-color: #333; }
+  html.light-theme .light-section .projects-header { border-bottom-color: #333; }
+  html.light-theme .light-section .projects-count { color: #888; }
+  html.light-theme .light-section .project-img { background: #1a1a1a; }
+  html.light-theme .light-section .img-placeholder { background: #1a1a1a; border-color: #333; color: #555; }
+  html.light-theme .light-section .section-label.sticky { background: #080808; }
+  html.light-theme .dark-panel-trigger { background: #080808; }
+  html.light-theme #loader { background: #f2f0eb; }
+  html.light-theme .loader-name { color: #080808; }
+  html.light-theme .cursor { background: #080808; }
+  html.light-theme .cursor-ring { border-color: rgba(8,8,8,0.4); }
+  html.light-theme .hero-bg-text { -webkit-text-stroke: 1px rgba(8,8,8,0.06); }
+
+  /* ABOUT PHOTO PARALLAX */
+  .about-photo {
+    will-change: transform;
+  }
+
+  /* ANIMATED COUNTER */
+  .counter-num {
+    display: inline-block;
+    min-width: 1.2em;
+  }
+
   /* MAGNETIC CONTACT HEADLINE */
   .contact-headline {
     display: inline-block;
@@ -841,6 +944,21 @@
     transform: translateX(0);
   }
 
+  /* PREFERS REDUCED MOTION */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+    .hero-char { opacity: 1; transform: none; animation: none; }
+    .fade-up, .slide-left, .slide-right, .scale-reveal,
+    .skill-item, .exp-table tbody tr { opacity: 1; transform: none; }
+    .marquee-track { animation: none; }
+    .wipe-panel, .dwp { transform: none; }
+    html { scroll-behavior: smooth; }
+  }
+
   @media (max-width: 768px) {
     nav { padding: 24px; }
     .nav-links { display: none; }
@@ -860,6 +978,9 @@
 </style>
 </head>
 <body>
+
+<!-- PAGE TRANSITION OVERLAY -->
+<div class="page-transition" id="pageTransition"></div>
 
 <!-- SCROLL PROGRESS -->
 <div class="scroll-progress" id="scrollProgress"></div>
@@ -884,8 +1005,11 @@
     <li><a href="#about"><span class="num">02</span> About</a></li>
     <li><a href="#contact"><span class="num">03</span> Contact</a></li>
   </ul>
+  <div style="display:flex;align-items:center;gap:24px;">
+  <button class="theme-toggle" id="themeToggle">Light</button>
   <div class="nav-hamburger" id="hamburger">
     <span></span><span></span><span></span>
+  </div>
   </div>
 </nav>
 
@@ -949,8 +1073,8 @@
 <!-- PROJECTS (LIGHT) -->
 <section id="projects" class="light-section">
   <div class="projects-header fade-up">
-    <p class="section-label">Featured Work</p>
-    <span class="projects-count">04 Projects</span>
+    <p class="section-label sticky">Featured Work</p>
+    <span class="projects-count"><span class="counter-num" data-target="04">00</span> Projects</span>
   </div>
 
   <!-- Project 1 -->
@@ -1043,7 +1167,7 @@
 
 <!-- ABOUT -->
 <section id="about">
-  <p class="section-label">About</p>
+  <p class="section-label sticky">About</p>
 
   <div class="about-grid">
     <div class="about-left fade-up">
@@ -1075,7 +1199,7 @@
 
 <!-- EXPERIENCE -->
 <section id="experience">
-  <p class="section-label">Experience</p>
+  <p class="section-label sticky">Experience</p>
   <table class="exp-table fade-up">
     <thead>
       <tr>
@@ -1106,7 +1230,7 @@
 
 <!-- CONTACT -->
 <section id="contact">
-  <p class="section-label">Contact</p>
+  <p class="section-label sticky">Contact</p>
   <h2 class="contact-headline fade-up">
     Let's<br><em>work</em><br>together.
   </h2>
@@ -1352,6 +1476,116 @@
     });
     contactHL.addEventListener('mouseleave', () => {
       contactHL.style.transform = 'translate(0, 0)';
+    });
+  }
+
+  // 1. CURSOR INVERSION ON LIGHT SECTIONS
+  const lightSection = document.querySelector('.light-section');
+  if (lightSection && window.innerWidth > 768) {
+    lenis.on('scroll', () => {
+      const rect = lightSection.getBoundingClientRect();
+      const inLight = my > rect.top && my < rect.bottom;
+      cursor.classList.toggle('inverted', inLight);
+      ring.classList.toggle('inverted', inLight);
+    });
+    document.addEventListener('mousemove', () => {
+      if (lightSection) {
+        const rect = lightSection.getBoundingClientRect();
+        const inLight = my > rect.top && my < rect.bottom;
+        cursor.classList.toggle('inverted', inLight);
+        ring.classList.toggle('inverted', inLight);
+      }
+    });
+  }
+
+  // 2. HERO CHAR-BY-CHAR REVEAL
+  const heroTitleEl = document.querySelector('.hero-title');
+  if (heroTitleEl) {
+    const html = heroTitleEl.innerHTML;
+    // Split into chars while preserving HTML tags
+    let charIndex = 0;
+    const baseDelay = 2.3; // match hero animation delay
+    let newHtml = '';
+    let inTag = false;
+    for (let i = 0; i < html.length; i++) {
+      const ch = html[i];
+      if (ch === '<') { inTag = true; newHtml += ch; continue; }
+      if (ch === '>') { inTag = false; newHtml += ch; continue; }
+      if (inTag) { newHtml += ch; continue; }
+      if (ch === '\n' || ch.trim() === '' && (html[i-1] === '>' || html[i+1] === '<')) {
+        newHtml += ch;
+        continue;
+      }
+      if (ch === ' ') {
+        newHtml += ' ';
+        continue;
+      }
+      const delay = baseDelay + charIndex * 0.035;
+      newHtml += `<span class="hero-char" style="animation-delay:${delay}s">${ch}</span>`;
+      charIndex++;
+    }
+    heroTitleEl.innerHTML = newHtml;
+    heroTitleEl.style.animation = 'none';
+    heroTitleEl.style.opacity = '1';
+  }
+
+  // 4. PAGE TRANSITION ON PROJECT CLICK
+  const pageTransition = document.getElementById('pageTransition');
+  document.querySelectorAll('.project-card').forEach(card => {
+    card.style.cursor = 'none';
+    card.addEventListener('click', (e) => {
+      e.preventDefault();
+      pageTransition.classList.add('active');
+      setTimeout(() => {
+        pageTransition.classList.remove('active');
+      }, 800);
+    });
+  });
+
+  // 6. ANIMATED COUNTER FOR PROJECTS COUNT
+  const counterEl = document.querySelector('.counter-num');
+  if (counterEl) {
+    const target = parseInt(counterEl.dataset.target);
+    const counterObserver = new IntersectionObserver((entries) => {
+      if (entries[0] && entries[0].isIntersecting) {
+        let current = 0;
+        const step = () => {
+          current++;
+          counterEl.textContent = String(current).padStart(2, '0');
+          if (current < target) setTimeout(step, 150);
+        };
+        step();
+        counterObserver.disconnect();
+      }
+    }, { threshold: 0.5 });
+    counterObserver.observe(counterEl);
+  }
+
+  // 7. PARALLAX ON ABOUT PHOTO
+  const aboutPhoto = document.querySelector('.about-photo');
+  if (aboutPhoto) {
+    lenis.on('scroll', ({ scroll }) => {
+      const rect = aboutPhoto.getBoundingClientRect();
+      const center = rect.top + rect.height / 2;
+      const viewCenter = window.innerHeight / 2;
+      const offset = (center - viewCenter) * 0.08;
+      aboutPhoto.style.transform = `translateY(${offset}px)`;
+    });
+  }
+
+  // 8. DARK/LIGHT THEME TOGGLE
+  const themeToggle = document.getElementById('themeToggle');
+  if (themeToggle) {
+    const saved = localStorage.getItem('theme');
+    if (saved === 'light') {
+      document.documentElement.classList.add('light-theme');
+      themeToggle.textContent = 'Dark';
+    }
+    themeToggle.addEventListener('click', () => {
+      document.documentElement.classList.toggle('light-theme');
+      const isLight = document.documentElement.classList.contains('light-theme');
+      themeToggle.textContent = isLight ? 'Dark' : 'Light';
+      localStorage.setItem('theme', isLight ? 'light' : 'dark');
     });
   }
 </script>
