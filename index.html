@@ -28,42 +28,44 @@
     cursor: none;
   }
 
-  /* SCROLL-DRIVEN COLOR TRANSITION */
-  .color-transition-trigger {
+  /* SCROLL-DRIVEN PANEL WIPE TRANSITION */
+  .panel-wipe-trigger {
     position: relative;
-    height: 100vh;
-    z-index: 1;
+    height: 50vh;
+    z-index: 3;
   }
-  .color-transition-trigger .inner {
+  .panel-wipe-trigger .inner {
     position: sticky;
     top: 0;
     height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     overflow: hidden;
+    pointer-events: none;
   }
-  .color-wipe {
+  .wipe-panel {
     position: absolute;
-    inset: 0;
     background: var(--white);
-    border-radius: 24px;
-    transform: scale(0.15);
-    opacity: 0;
-    transition: none;
+    will-change: transform;
   }
-  .transition-text {
-    position: relative;
-    z-index: 2;
-    font-family: var(--sans);
-    font-size: clamp(32px, 5vw, 64px);
-    font-weight: 700;
-    letter-spacing: -0.03em;
-    text-align: center;
-    color: var(--white);
-    mix-blend-mode: difference;
-    opacity: 0;
-    transform: translateY(30px);
+  /* 3 panels slide from different directions */
+  .wp-1 {
+    top: 0; left: 0;
+    width: 45%; height: 55%;
+    transform: translateX(-110%);
+  }
+  .wp-2 {
+    top: 0; right: 0;
+    width: 60%; height: 50%;
+    transform: translateY(-110%);
+  }
+  .wp-3 {
+    bottom: 0; left: 25%;
+    width: 80%; height: 60%;
+    transform: translateY(110%);
+  }
+  .wp-4 {
+    top: 30%; left: 0;
+    width: 100%; height: 70%;
+    transform: translateX(110%);
   }
 
   /* LIGHT SECTIONS */
@@ -85,24 +87,44 @@
   .light-section .img-placeholder { background: #eee; border-color: #ccc; color: #aaa; }
   .light-section .project-name { transition: color 0.3s ease; }
 
-  /* DARK RETURN TRANSITION */
-  .dark-return-trigger {
+  /* DARK RETURN PANEL WIPE */
+  .dark-panel-trigger {
     position: relative;
-    height: 80vh;
-    z-index: 2;
+    height: 50vh;
+    z-index: 3;
     background: var(--white);
   }
-  .dark-return-trigger .inner {
+  .dark-panel-trigger .inner {
     position: sticky;
     top: 0;
     height: 100vh;
     overflow: hidden;
+    pointer-events: none;
   }
-  .dark-wipe {
+  .dwp {
     position: absolute;
-    inset: 0;
     background: var(--black);
-    clip-path: circle(0% at 50% 50%);
+    will-change: transform;
+  }
+  .dwp-1 {
+    top: 0; right: 0;
+    width: 50%; height: 50%;
+    transform: translateX(110%);
+  }
+  .dwp-2 {
+    bottom: 0; left: 0;
+    width: 55%; height: 60%;
+    transform: translateY(110%);
+  }
+  .dwp-3 {
+    top: 0; left: 0;
+    width: 60%; height: 55%;
+    transform: translateY(-110%);
+  }
+  .dwp-4 {
+    bottom: 0; right: 0;
+    width: 100%; height: 70%;
+    transform: translateX(110%);
   }
 
   /* CUSTOM CURSOR */
@@ -829,11 +851,13 @@
   </div>
 </div>
 
-<!-- COLOR TRANSITION: DARK → LIGHT -->
-<div class="color-transition-trigger" id="colorTransition">
+<!-- PANEL WIPE: DARK → LIGHT -->
+<div class="panel-wipe-trigger" id="panelWipe">
   <div class="inner">
-    <div class="color-wipe" id="colorWipe"></div>
-    <p class="transition-text" id="transitionText">Selected Work</p>
+    <div class="wipe-panel wp-1"></div>
+    <div class="wipe-panel wp-2"></div>
+    <div class="wipe-panel wp-3"></div>
+    <div class="wipe-panel wp-4"></div>
   </div>
 </div>
 
@@ -921,10 +945,13 @@
   </div>
 </section>
 
-<!-- COLOR TRANSITION: LIGHT → DARK -->
-<div class="dark-return-trigger" id="darkReturn">
+<!-- PANEL WIPE: LIGHT → DARK -->
+<div class="dark-panel-trigger" id="darkPanelWipe">
   <div class="inner">
-    <div class="dark-wipe" id="darkWipe"></div>
+    <div class="dwp dwp-1"></div>
+    <div class="dwp dwp-2"></div>
+    <div class="dwp dwp-3"></div>
+    <div class="dwp dwp-4"></div>
   </div>
 </div>
 
@@ -1107,43 +1134,53 @@
     }
   });
 
-  // SCROLL-DRIVEN COLOR TRANSITION (DARK → LIGHT)
-  const colorTrigger = document.getElementById('colorTransition');
-  const colorWipe = document.getElementById('colorWipe');
-  const transitionText = document.getElementById('transitionText');
+  // PANEL WIPE: DARK → LIGHT
+  const panelWipe = document.getElementById('panelWipe');
+  const wpPanels = panelWipe.querySelectorAll('.wipe-panel');
+  // Each panel: [element, axis, direction, delay]
+  const wpConfig = [
+    [wpPanels[0], 'X', -110, 0],    // left panel, slides from left
+    [wpPanels[1], 'Y', -110, 0.1],  // top-right, slides from top
+    [wpPanels[2], 'Y', 110,  0.15], // bottom-center, slides from bottom
+    [wpPanels[3], 'X', 110,  0.25], // right, slides from right (covers all)
+  ];
 
   lenis.on('scroll', ({ scroll }) => {
-    const rect = colorTrigger.getBoundingClientRect();
-    const triggerStart = colorTrigger.offsetTop;
-    const triggerH = colorTrigger.offsetHeight;
-    const progress = Math.max(0, Math.min(1, (scroll - triggerStart) / triggerH));
+    const start = panelWipe.offsetTop;
+    const h = panelWipe.offsetHeight;
+    const raw = (scroll - start) / h;
+    const progress = Math.max(0, Math.min(1, raw));
 
-    // Scale from small circle to full screen
-    const scale = 0.15 + progress * 2;
-    const opacity = Math.min(1, progress * 2);
-    const radius = Math.max(0, 24 - progress * 24);
-    colorWipe.style.transform = `scale(${scale})`;
-    colorWipe.style.opacity = opacity;
-    colorWipe.style.borderRadius = radius + 'px';
-
-    // Text reveal
-    const textProgress = Math.max(0, Math.min(1, (progress - 0.2) / 0.4));
-    const textOut = Math.max(0, Math.min(1, (progress - 0.7) / 0.3));
-    transitionText.style.opacity = textProgress - textOut;
-    transitionText.style.transform = `translateY(${30 - textProgress * 30}px)`;
+    wpConfig.forEach(([el, axis, from, delay]) => {
+      const p = Math.max(0, Math.min(1, (progress - delay) / (1 - delay)));
+      const ease = 1 - Math.pow(1 - p, 3); // cubic ease-out
+      const val = from * (1 - ease);
+      el.style.transform = `translate${axis}(${val}%)`;
+    });
   });
 
-  // SCROLL-DRIVEN COLOR TRANSITION (LIGHT → DARK)
-  const darkReturn = document.getElementById('darkReturn');
-  const darkWipe = document.getElementById('darkWipe');
+  // PANEL WIPE: LIGHT → DARK
+  const darkPanelWipe = document.getElementById('darkPanelWipe');
+  const dwpPanels = darkPanelWipe.querySelectorAll('.dwp');
+  const dwpConfig = [
+    [dwpPanels[0], 'X', 110, 0],     // right panel from right
+    [dwpPanels[1], 'Y', 110, 0.1],   // bottom-left from bottom
+    [dwpPanels[2], 'Y', -110, 0.15], // top-left from top
+    [dwpPanels[3], 'X', 110, 0.25],  // full-width from right
+  ];
 
   lenis.on('scroll', ({ scroll }) => {
-    const triggerStart = darkReturn.offsetTop;
-    const triggerH = darkReturn.offsetHeight;
-    const progress = Math.max(0, Math.min(1, (scroll - triggerStart) / (triggerH * 0.8)));
+    const start = darkPanelWipe.offsetTop;
+    const h = darkPanelWipe.offsetHeight;
+    const raw = (scroll - start) / h;
+    const progress = Math.max(0, Math.min(1, raw));
 
-    const radius = progress * 100;
-    darkWipe.style.clipPath = `circle(${radius}% at 50% 50%)`;
+    dwpConfig.forEach(([el, axis, from, delay]) => {
+      const p = Math.max(0, Math.min(1, (progress - delay) / (1 - delay)));
+      const ease = 1 - Math.pow(1 - p, 3);
+      const val = from * (1 - ease);
+      el.style.transform = `translate${axis}(${val}%)`;
+    });
   });
 
   // MARQUEE SPEED BOOST ON SCROLL
