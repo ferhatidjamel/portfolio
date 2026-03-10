@@ -28,6 +28,83 @@
     cursor: none;
   }
 
+  /* SCROLL-DRIVEN COLOR TRANSITION */
+  .color-transition-trigger {
+    position: relative;
+    height: 100vh;
+    z-index: 1;
+  }
+  .color-transition-trigger .inner {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  .color-wipe {
+    position: absolute;
+    inset: 0;
+    background: var(--white);
+    border-radius: 24px;
+    transform: scale(0.15);
+    opacity: 0;
+    transition: none;
+  }
+  .transition-text {
+    position: relative;
+    z-index: 2;
+    font-family: var(--sans);
+    font-size: clamp(32px, 5vw, 64px);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    text-align: center;
+    color: var(--white);
+    mix-blend-mode: difference;
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  /* LIGHT SECTIONS */
+  .light-section {
+    background: var(--white);
+    color: var(--black);
+    position: relative;
+    z-index: 2;
+  }
+  .light-section .section-label { color: #888; }
+  .light-section .project-client { color: #888; }
+  .light-section .project-desc { color: #666; }
+  .light-section .tag { color: #666; border-color: #ccc; }
+  .light-section .project-num { color: #ccc; }
+  .light-section .project-card { border-bottom-color: #ddd; }
+  .light-section .projects-header { border-bottom-color: #ddd; }
+  .light-section .projects-count { color: #888; }
+  .light-section .project-img { background: #eee; }
+  .light-section .img-placeholder { background: #eee; border-color: #ccc; color: #aaa; }
+  .light-section .project-name { transition: color 0.3s ease; }
+
+  /* DARK RETURN TRANSITION */
+  .dark-return-trigger {
+    position: relative;
+    height: 80vh;
+    z-index: 2;
+    background: var(--white);
+  }
+  .dark-return-trigger .inner {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow: hidden;
+  }
+  .dark-wipe {
+    position: absolute;
+    inset: 0;
+    background: var(--black);
+    clip-path: circle(0% at 50% 50%);
+  }
+
   /* CUSTOM CURSOR */
   .cursor {
     position: fixed;
@@ -563,12 +640,118 @@
   /* ANIMATIONS */
   .fade-up {
     opacity: 0;
-    transform: translateY(40px);
-    transition: opacity 0.8s ease, transform 0.8s ease;
+    transform: translateY(60px);
+    transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1), transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
   }
   .fade-up.visible {
     opacity: 1;
     transform: translateY(0);
+  }
+
+  /* SLIDE FROM LEFT / RIGHT */
+  .slide-left {
+    opacity: 0;
+    transform: translateX(-80px);
+    transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1), transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .slide-left.visible {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  .slide-right {
+    opacity: 0;
+    transform: translateX(80px);
+    transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1), transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .slide-right.visible {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  /* SCALE REVEAL */
+  .scale-reveal {
+    opacity: 0;
+    transform: scale(0.92);
+    transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .scale-reveal.visible {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  /* HERO PARALLAX */
+  #home .hero-title,
+  #home .hero-eyebrow,
+  #home .hero-bottom {
+    will-change: transform, opacity;
+    transition: transform 0.05s linear, opacity 0.05s linear;
+  }
+
+  /* ENHANCED PROJECT HOVER */
+  .project-card {
+    transition: gap 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s ease;
+  }
+  .project-card:hover .project-img img { transform: scale(1.05); }
+  .project-card:hover .project-name { color: #555; }
+  .light-section .project-card:hover .project-name { color: #000; }
+  .project-img img { transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+
+  /* NAV ANIMATION */
+  nav {
+    transform: translateY(-100%);
+    animation: navSlideIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation-delay: 2s;
+  }
+  @keyframes navSlideIn {
+    to { transform: translateY(0); }
+  }
+
+  /* HERO STAGGER ENTRANCE */
+  .hero-eyebrow {
+    opacity: 0;
+    animation: heroFadeIn 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation-delay: 2.1s;
+  }
+  .hero-title {
+    opacity: 0;
+    animation: heroFadeIn 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation-delay: 2.3s;
+  }
+  .hero-bottom {
+    opacity: 0;
+    animation: heroFadeIn 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation-delay: 2.6s;
+  }
+  @keyframes heroFadeIn {
+    from { opacity: 0; transform: translateY(40px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* MARQUEE SPEED ON SCROLL */
+  .marquee-track {
+    transition: animation-duration 0.3s;
+  }
+
+  /* SKILL ITEMS STAGGER */
+  .skill-item {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .skill-item.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* EXPERIENCE ROWS STAGGER */
+  .exp-table tbody tr {
+    opacity: 0;
+    transform: translateX(-30px);
+    transition: opacity 0.6s ease, transform 0.6s ease, background 0.2s;
+  }
+  .exp-table tbody tr.visible {
+    opacity: 1;
+    transform: translateX(0);
   }
 
   @media (max-width: 768px) {
@@ -646,16 +829,24 @@
   </div>
 </div>
 
-<!-- PROJECTS -->
-<section id="projects">
+<!-- COLOR TRANSITION: DARK → LIGHT -->
+<div class="color-transition-trigger" id="colorTransition">
+  <div class="inner">
+    <div class="color-wipe" id="colorWipe"></div>
+    <p class="transition-text" id="transitionText">Selected Work</p>
+  </div>
+</div>
+
+<!-- PROJECTS (LIGHT) -->
+<section id="projects" class="light-section">
   <div class="projects-header fade-up">
     <p class="section-label">Featured Work</p>
     <span class="projects-count">04 Projects</span>
   </div>
 
   <!-- Project 1 -->
-  <div class="project-card fade-up">
-    <div class="project-img">
+  <div class="project-card slide-left">
+    <div class="project-img scale-reveal">
       <div class="img-placeholder">{ Project Cover }</div>
     </div>
     <div class="project-info">
@@ -673,8 +864,8 @@
   </div>
 
   <!-- Project 2 -->
-  <div class="project-card fade-up" style="direction: rtl;">
-    <div class="project-img">
+  <div class="project-card slide-right" style="direction: rtl;">
+    <div class="project-img scale-reveal">
       <div class="img-placeholder">{ Project Cover }</div>
     </div>
     <div class="project-info" style="direction: ltr;">
@@ -692,8 +883,8 @@
   </div>
 
   <!-- Project 3 -->
-  <div class="project-card fade-up">
-    <div class="project-img">
+  <div class="project-card slide-left">
+    <div class="project-img scale-reveal">
       <div class="img-placeholder">{ Project Cover }</div>
     </div>
     <div class="project-info">
@@ -711,8 +902,8 @@
   </div>
 
   <!-- Project 4 -->
-  <div class="project-card fade-up" style="direction: rtl;">
-    <div class="project-img">
+  <div class="project-card slide-right" style="direction: rtl;">
+    <div class="project-img scale-reveal">
       <div class="img-placeholder">{ Project Cover }</div>
     </div>
     <div class="project-info" style="direction: ltr;">
@@ -729,6 +920,13 @@
     </div>
   </div>
 </section>
+
+<!-- COLOR TRANSITION: LIGHT → DARK -->
+<div class="dark-return-trigger" id="darkReturn">
+  <div class="inner">
+    <div class="dark-wipe" id="darkWipe"></div>
+  </div>
+</div>
 
 <!-- ABOUT -->
 <section id="about">
@@ -830,7 +1028,21 @@
   <a href="#home" class="back-top">{ Back to Top }</a>
 </footer>
 
+<!-- LENIS SMOOTH SCROLL -->
+<script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"></script>
 <script>
+  // SMOOTH SCROLL (LENIS)
+  const lenis = new Lenis({
+    duration: 1.2,
+    easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+    smoothWheel: true,
+  });
+  function raf(time) {
+    lenis.raf(time);
+    requestAnimationFrame(raf);
+  }
+  requestAnimationFrame(raf);
+
   // CURSOR
   const cursor = document.getElementById('cursor');
   const ring = document.getElementById('cursorRing');
@@ -869,15 +1081,122 @@
     loaderPct.textContent = Math.floor(pct) + '%';
   }, 80);
 
-  // SCROLL ANIMATIONS
-  const observer = new IntersectionObserver((entries) => {
+  // HERO PARALLAX ON SCROLL
+  const heroTitle = document.querySelector('.hero-title');
+  const heroEyebrow = document.querySelector('.hero-eyebrow');
+  const heroBottom = document.querySelector('.hero-bottom');
+  const homeSection = document.getElementById('home');
+
+  lenis.on('scroll', ({ scroll }) => {
+    const homeH = homeSection.offsetHeight;
+    if (scroll < homeH) {
+      const ratio = scroll / homeH;
+      const titleY = scroll * 0.3;
+      const eyebrowY = scroll * 0.15;
+      const bottomY = scroll * 0.2;
+      const opacity = 1 - ratio * 1.5;
+
+      heroTitle.style.transform = `translateY(${titleY}px)`;
+      heroTitle.style.opacity = Math.max(0, opacity);
+      heroEyebrow.style.transform = `translateY(${eyebrowY}px)`;
+      heroEyebrow.style.opacity = Math.max(0, opacity);
+      heroBottom.style.transform = `translateY(${bottomY}px)`;
+      heroBottom.style.opacity = Math.max(0, opacity);
+    }
+  });
+
+  // SCROLL-DRIVEN COLOR TRANSITION (DARK → LIGHT)
+  const colorTrigger = document.getElementById('colorTransition');
+  const colorWipe = document.getElementById('colorWipe');
+  const transitionText = document.getElementById('transitionText');
+
+  lenis.on('scroll', ({ scroll }) => {
+    const rect = colorTrigger.getBoundingClientRect();
+    const triggerStart = colorTrigger.offsetTop;
+    const triggerH = colorTrigger.offsetHeight;
+    const progress = Math.max(0, Math.min(1, (scroll - triggerStart) / triggerH));
+
+    // Scale from small circle to full screen
+    const scale = 0.15 + progress * 2;
+    const opacity = Math.min(1, progress * 2);
+    const radius = Math.max(0, 24 - progress * 24);
+    colorWipe.style.transform = `scale(${scale})`;
+    colorWipe.style.opacity = opacity;
+    colorWipe.style.borderRadius = radius + 'px';
+
+    // Text reveal
+    const textProgress = Math.max(0, Math.min(1, (progress - 0.2) / 0.4));
+    const textOut = Math.max(0, Math.min(1, (progress - 0.7) / 0.3));
+    transitionText.style.opacity = textProgress - textOut;
+    transitionText.style.transform = `translateY(${30 - textProgress * 30}px)`;
+  });
+
+  // SCROLL-DRIVEN COLOR TRANSITION (LIGHT → DARK)
+  const darkReturn = document.getElementById('darkReturn');
+  const darkWipe = document.getElementById('darkWipe');
+
+  lenis.on('scroll', ({ scroll }) => {
+    const triggerStart = darkReturn.offsetTop;
+    const triggerH = darkReturn.offsetHeight;
+    const progress = Math.max(0, Math.min(1, (scroll - triggerStart) / (triggerH * 0.8)));
+
+    const radius = progress * 100;
+    darkWipe.style.clipPath = `circle(${radius}% at 50% 50%)`;
+  });
+
+  // MARQUEE SPEED BOOST ON SCROLL
+  const marqueeTrack = document.querySelector('.marquee-track');
+  let lastScroll = 0;
+  lenis.on('scroll', ({ scroll, velocity }) => {
+    const speed = Math.min(Math.abs(velocity) * 0.3, 3);
+    const baseSpeed = 18;
+    const newSpeed = Math.max(3, baseSpeed - speed * 5);
+    marqueeTrack.style.animationDuration = newSpeed + 's';
+  });
+
+  // SCROLL ANIMATIONS (reveal on scroll)
+  const animObserver = new IntersectionObserver((entries) => {
     entries.forEach((entry, i) => {
       if (entry.isIntersecting) {
-        setTimeout(() => entry.target.classList.add('visible'), i * 80);
+        setTimeout(() => entry.target.classList.add('visible'), i * 100);
       }
     });
   }, { threshold: 0.1 });
-  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+  document.querySelectorAll('.fade-up, .slide-left, .slide-right, .scale-reveal').forEach(el => animObserver.observe(el));
+
+  // SKILL ITEMS STAGGER
+  const skillObserver = new IntersectionObserver((entries) => {
+    if (entries[0] && entries[0].isIntersecting) {
+      document.querySelectorAll('.skill-item').forEach((item, i) => {
+        setTimeout(() => item.classList.add('visible'), i * 100);
+      });
+      skillObserver.disconnect();
+    }
+  }, { threshold: 0.2 });
+  const skillsGrid = document.querySelector('.skills-grid');
+  if (skillsGrid) skillObserver.observe(skillsGrid);
+
+  // EXPERIENCE ROWS STAGGER
+  const expObserver = new IntersectionObserver((entries) => {
+    if (entries[0] && entries[0].isIntersecting) {
+      document.querySelectorAll('.exp-table tbody tr').forEach((row, i) => {
+        setTimeout(() => row.classList.add('visible'), i * 150);
+      });
+      expObserver.disconnect();
+    }
+  }, { threshold: 0.2 });
+  const expTable = document.querySelector('.exp-table');
+  if (expTable) expObserver.observe(expTable);
+
+  // NAV LINKS SMOOTH SCROLL WITH LENIS
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', (e) => {
+      e.preventDefault();
+      const target = document.querySelector(anchor.getAttribute('href'));
+      if (target) lenis.scrollTo(target, { offset: 0, duration: 1.5 });
+    });
+  });
 </script>
 </body>
 </html>
