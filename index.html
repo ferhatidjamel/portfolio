@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ferhati Djamel — UI/UX Designer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --black: #080808;
+    --white: #f2f0eb;
+    --grey: #888;
+    --grey-light: #333;
+    --mono: 'DM Mono', monospace;
+    --sans: 'Syne', sans-serif;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: var(--sans);
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* CUSTOM CURSOR */
+  .cursor {
+    position: fixed;
+    width: 10px; height: 10px;
+    background: var(--white);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: transform 0.1s, width 0.2s, height 0.2s, background 0.2s;
+  }
+  .cursor-ring {
+    position: fixed;
+    width: 36px; height: 36px;
+    border: 1px solid rgba(242,240,235,0.4);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%, -50%);
+    transition: transform 0.18s ease, width 0.3s, height 0.3s, border-color 0.3s;
+  }
+  body:has(a:hover) .cursor { width: 14px; height: 14px; }
+  body:has(a:hover) .cursor-ring { width: 50px; height: 50px; border-color: rgba(242,240,235,0.8); }
+
+  /* LOADER */
+  #loader {
+    position: fixed; inset: 0;
+    background: var(--black);
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+  }
+  .loader-name {
+    font-family: var(--sans);
+    font-size: clamp(28px, 5vw, 56px);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--white);
+  }
+  .loader-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    color: var(--grey);
+    text-transform: uppercase;
+  }
+  .loader-bar-wrap {
+    width: 200px;
+    height: 1px;
+    background: var(--grey-light);
+    overflow: hidden;
+  }
+  .loader-bar {
+    height: 100%;
+    background: var(--white);
+    width: 0%;
+    transition: width 0.05s linear;
+  }
+  .loader-pct {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--grey);
+    letter-spacing: 0.1em;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 28px 48px;
+    mix-blend-mode: difference;
+  }
+  .nav-logo {
+    font-family: var(--sans);
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-decoration: none;
+    color: var(--white);
+    text-transform: uppercase;
+  }
+  .nav-links {
+    display: flex;
+    gap: 40px;
+    list-style: none;
+  }
+  .nav-links a {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-decoration: none;
+    color: var(--white);
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    opacity: 0.6;
+    transition: opacity 0.2s;
+  }
+  .nav-links a:hover { opacity: 1; }
+  .nav-links .num { opacity: 0.4; }
+
+  /* HERO */
+  #home {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 0 48px 80px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-eyebrow {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--grey);
+    margin-bottom: 28px;
+  }
+  .hero-title {
+    font-family: var(--sans);
+    font-size: clamp(56px, 9vw, 140px);
+    font-weight: 800;
+    line-height: 0.92;
+    letter-spacing: -0.03em;
+    margin-bottom: 48px;
+  }
+  .hero-title em {
+    font-style: italic;
+    font-weight: 400;
+    color: var(--grey);
+  }
+  .hero-bottom {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 32px;
+  }
+  .hero-bio {
+    font-family: var(--mono);
+    font-size: 13px;
+    line-height: 1.8;
+    color: var(--grey);
+    max-width: 420px;
+  }
+  .hero-scroll {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--grey);
+    text-decoration: none;
+    writing-mode: vertical-rl;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: color 0.2s;
+  }
+  .hero-scroll::before {
+    content: '';
+    width: 1px;
+    height: 60px;
+    background: var(--grey);
+    display: block;
+  }
+  .hero-scroll:hover { color: var(--white); }
+
+  /* MARQUEE */
+  .marquee-wrap {
+    overflow: hidden;
+    border-top: 1px solid var(--grey-light);
+    border-bottom: 1px solid var(--grey-light);
+    padding: 16px 0;
+    white-space: nowrap;
+  }
+  .marquee-track {
+    display: inline-flex;
+    animation: marquee 18s linear infinite;
+    gap: 0;
+  }
+  .marquee-item {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--grey);
+    padding: 0 40px;
+  }
+  .marquee-item span { color: var(--white); margin: 0 8px; }
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  /* SECTION LABELS */
+  .section-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--grey);
+    margin-bottom: 64px;
+  }
+  .section-label::before { content: '{ '; }
+  .section-label::after { content: ' }'; }
+
+  /* PROJECTS */
+  #projects {
+    padding: 120px 48px;
+  }
+  .projects-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 80px;
+    border-bottom: 1px solid var(--grey-light);
+    padding-bottom: 32px;
+  }
+  .projects-title {
+    font-family: var(--sans);
+    font-size: clamp(36px, 5vw, 64px);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+  }
+  .projects-count {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--grey);
+    letter-spacing: 0.15em;
+  }
+
+  .project-card {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    padding: 48px 0;
+    border-bottom: 1px solid var(--grey-light);
+    text-decoration: none;
+    color: inherit;
+    transition: gap 0.3s ease;
+    cursor: none;
+  }
+  .project-card:hover { gap: 32px; }
+  .project-card:hover .project-img img { transform: scale(1.03); }
+  .project-img {
+    aspect-ratio: 16/10;
+    overflow: hidden;
+    background: #111;
+    position: relative;
+  }
+  .project-img img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s ease;
+    display: block;
+  }
+  .project-img .img-placeholder {
+    width: 100%; height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    color: var(--grey-light);
+    text-transform: uppercase;
+    background: #111;
+    border: 1px dashed #222;
+  }
+  .project-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 8px 0;
+  }
+  .project-client {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--grey);
+    margin-bottom: 16px;
+  }
+  .project-name {
+    font-family: var(--sans);
+    font-size: clamp(24px, 3vw, 42px);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    margin-bottom: 20px;
+  }
+  .project-desc {
+    font-family: var(--mono);
+    font-size: 12px;
+    line-height: 1.8;
+    color: var(--grey);
+    margin-bottom: 32px;
+    max-width: 360px;
+  }
+  .project-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .tag {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--grey);
+    border: 1px solid var(--grey-light);
+    padding: 6px 12px;
+  }
+  .project-num {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: #333;
+    letter-spacing: 0.1em;
+    align-self: flex-start;
+  }
+
+  /* ABOUT */
+  #about {
+    padding: 120px 48px;
+    border-top: 1px solid var(--grey-light);
+  }
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    margin-top: 80px;
+  }
+  .about-left {}
+  .about-headline {
+    font-family: var(--sans);
+    font-size: clamp(28px, 3.5vw, 52px);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    margin-bottom: 40px;
+  }
+  .about-headline em {
+    font-style: italic;
+    font-weight: 400;
+    color: var(--grey);
+  }
+  .about-body {
+    font-family: var(--mono);
+    font-size: 13px;
+    line-height: 2;
+    color: var(--grey);
+    margin-bottom: 24px;
+  }
+  .about-right {}
+  .about-photo {
+    width: 100%;
+    aspect-ratio: 3/4;
+    background: #111;
+    border: 1px dashed #222;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    color: #333;
+    text-transform: uppercase;
+    margin-bottom: 32px;
+    overflow: hidden;
+  }
+  .about-photo img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+  }
+
+  /* SKILLS */
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0;
+    margin-top: 48px;
+    border-top: 1px solid var(--grey-light);
+  }
+  .skill-item {
+    padding: 28px 0;
+    border-bottom: 1px solid var(--grey-light);
+    display: flex;
+    align-items: baseline;
+    gap: 20px;
+  }
+  .skill-item:nth-child(odd) { border-right: 1px solid var(--grey-light); padding-right: 40px; }
+  .skill-item:nth-child(even) { padding-left: 40px; }
+  .skill-num {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: #444;
+    letter-spacing: 0.1em;
+    min-width: 24px;
+  }
+  .skill-name {
+    font-family: var(--sans);
+    font-size: clamp(16px, 2vw, 22px);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  /* EXPERIENCE */
+  #experience {
+    padding: 80px 48px 120px;
+    border-top: 1px solid var(--grey-light);
+  }
+  .exp-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 64px;
+  }
+  .exp-table thead th {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--grey);
+    text-align: left;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--grey-light);
+  }
+  .exp-table tbody tr {
+    border-bottom: 1px solid #1a1a1a;
+    transition: background 0.2s;
+  }
+  .exp-table tbody tr:hover { background: #0f0f0f; }
+  .exp-table tbody td {
+    font-family: var(--mono);
+    font-size: 13px;
+    padding: 24px 0;
+    color: var(--white);
+    vertical-align: middle;
+  }
+  .exp-table tbody td:nth-child(2) { color: var(--grey); }
+  .exp-table tbody td:nth-child(3) { color: var(--grey); letter-spacing: 0.05em; }
+  .exp-arrow { color: #333; margin: 0 8px; }
+
+  /* CONTACT */
+  #contact {
+    padding: 120px 48px;
+    border-top: 1px solid var(--grey-light);
+  }
+  .contact-headline {
+    font-family: var(--sans);
+    font-size: clamp(48px, 8vw, 120px);
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    line-height: 0.9;
+    margin: 80px 0 80px;
+  }
+  .contact-headline em {
+    font-style: italic;
+    font-weight: 400;
+    color: var(--grey);
+  }
+  .contact-links {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    border-top: 1px solid var(--grey-light);
+  }
+  .contact-link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 28px 0;
+    border-bottom: 1px solid var(--grey-light);
+    text-decoration: none;
+    color: var(--white);
+    transition: padding-left 0.3s ease;
+  }
+  .contact-link:hover { padding-left: 16px; }
+  .contact-link:hover .cl-arrow { transform: rotate(-45deg); }
+  .cl-left { display: flex; align-items: center; gap: 24px; }
+  .cl-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--grey);
+    min-width: 80px;
+  }
+  .cl-value {
+    font-family: var(--sans);
+    font-size: clamp(18px, 2.5vw, 28px);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+  .cl-arrow {
+    font-size: 24px;
+    color: var(--grey);
+    transition: transform 0.3s ease;
+  }
+
+  /* FOOTER */
+  footer {
+    padding: 32px 48px;
+    border-top: 1px solid var(--grey-light);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .footer-copy {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--grey);
+    letter-spacing: 0.1em;
+  }
+  .back-top {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--grey);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .back-top:hover { color: var(--white); }
+
+  /* ANIMATIONS */
+  .fade-up {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+  .fade-up.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  @media (max-width: 768px) {
+    nav { padding: 24px; }
+    .nav-links { display: none; }
+    #home { padding: 0 24px 64px; }
+    #projects, #about, #experience, #contact { padding: 80px 24px; }
+    footer { padding: 24px; }
+    .project-card { grid-template-columns: 1fr; gap: 24px; }
+    .about-grid { grid-template-columns: 1fr; gap: 48px; }
+    .about-right { order: -1; }
+    .contact-headline { font-size: clamp(40px, 12vw, 80px); }
+  }
+</style>
+</head>
+<body>
+
+<!-- CURSOR -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- LOADER -->
+<div id="loader">
+  <div class="loader-name">FD</div>
+  <div class="loader-label">{ Loading }</div>
+  <div class="loader-bar-wrap"><div class="loader-bar" id="loaderBar"></div></div>
+  <div class="loader-pct" id="loaderPct">0%</div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <a href="#home" class="nav-logo">FerhatiDjamel</a>
+  <ul class="nav-links">
+    <li><a href="#projects"><span class="num">01</span> Projects</a></li>
+    <li><a href="#about"><span class="num">02</span> About</a></li>
+    <li><a href="#contact"><span class="num">03</span> Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="home">
+  <p class="hero-eyebrow">UI/UX Designer — Algeria</p>
+  <h1 class="hero-title">
+    Ferhati<br>
+    <em>Djamel</em>
+  </h1>
+  <div class="hero-bottom">
+    <p class="hero-bio">
+      I am a UI/UX Designer specialising in crafting<br>
+      digital experiences that balance functionality<br>
+      with intentional, user-centered design.
+    </p>
+    <a href="#projects" class="hero-scroll">{ Scroll }</a>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-wrap">
+  <div class="marquee-track">
+    <span class="marquee-item">FerhatiDjamel <span>✦</span></span>
+    <span class="marquee-item">UI/UX Design <span>✦</span></span>
+    <span class="marquee-item">Digital Experiences <span>✦</span></span>
+    <span class="marquee-item">Interaction Design <span>✦</span></span>
+    <span class="marquee-item">Prototyping <span>✦</span></span>
+    <span class="marquee-item">FerhatiDjamel <span>✦</span></span>
+    <span class="marquee-item">UI/UX Design <span>✦</span></span>
+    <span class="marquee-item">Digital Experiences <span>✦</span></span>
+    <span class="marquee-item">Interaction Design <span>✦</span></span>
+    <span class="marquee-item">Prototyping <span>✦</span></span>
+    <span class="marquee-item">FerhatiDjamel <span>✦</span></span>
+    <span class="marquee-item">UI/UX Design <span>✦</span></span>
+    <span class="marquee-item">Digital Experiences <span>✦</span></span>
+    <span class="marquee-item">Interaction Design <span>✦</span></span>
+    <span class="marquee-item">Prototyping <span>✦</span></span>
+  </div>
+</div>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="projects-header fade-up">
+    <p class="section-label">Featured Work</p>
+    <span class="projects-count">04 Projects</span>
+  </div>
+
+  <!-- Project 1 -->
+  <div class="project-card fade-up">
+    <div class="project-img">
+      <div class="img-placeholder">{ Project Cover }</div>
+    </div>
+    <div class="project-info">
+      <div>
+        <p class="project-client">Client Name</p>
+        <h3 class="project-name">Project Title One</h3>
+        <p class="project-desc">A brief description of the project, the problem solved, and the outcome achieved through thoughtful design.</p>
+        <div class="project-tags">
+          <span class="tag">UI Design</span>
+          <span class="tag">UX Design</span>
+        </div>
+      </div>
+      <span class="project-num">01 →</span>
+    </div>
+  </div>
+
+  <!-- Project 2 -->
+  <div class="project-card fade-up" style="direction: rtl;">
+    <div class="project-img">
+      <div class="img-placeholder">{ Project Cover }</div>
+    </div>
+    <div class="project-info" style="direction: ltr;">
+      <div>
+        <p class="project-client">Client Name</p>
+        <h3 class="project-name">Project Title Two</h3>
+        <p class="project-desc">A brief description of the project, the problem solved, and the outcome achieved through thoughtful design.</p>
+        <div class="project-tags">
+          <span class="tag">UI Design</span>
+          <span class="tag">Prototyping</span>
+        </div>
+      </div>
+      <span class="project-num">02 →</span>
+    </div>
+  </div>
+
+  <!-- Project 3 -->
+  <div class="project-card fade-up">
+    <div class="project-img">
+      <div class="img-placeholder">{ Project Cover }</div>
+    </div>
+    <div class="project-info">
+      <div>
+        <p class="project-client">Client Name</p>
+        <h3 class="project-name">Project Title Three</h3>
+        <p class="project-desc">A brief description of the project, the problem solved, and the outcome achieved through thoughtful design.</p>
+        <div class="project-tags">
+          <span class="tag">UX Design</span>
+          <span class="tag">Research</span>
+        </div>
+      </div>
+      <span class="project-num">03 →</span>
+    </div>
+  </div>
+
+  <!-- Project 4 -->
+  <div class="project-card fade-up" style="direction: rtl;">
+    <div class="project-img">
+      <div class="img-placeholder">{ Project Cover }</div>
+    </div>
+    <div class="project-info" style="direction: ltr;">
+      <div>
+        <p class="project-client">Client Name</p>
+        <h3 class="project-name">Project Title Four</h3>
+        <p class="project-desc">A brief description of the project, the problem solved, and the outcome achieved through thoughtful design.</p>
+        <div class="project-tags">
+          <span class="tag">UI Design</span>
+          <span class="tag">Art Direction</span>
+        </div>
+      </div>
+      <span class="project-num">04 →</span>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <p class="section-label">About</p>
+
+  <div class="about-grid">
+    <div class="about-left fade-up">
+      <h2 class="about-headline">I pair strong <em>visual design</em> with a focus on user-centered thinking.</h2>
+      <p class="about-body">
+        Placeholder bio — tell your story here. Describe your background, your approach to design, and what drives you to create meaningful digital experiences.
+      </p>
+      <p class="about-body">
+        With a focus on learning platforms and mobile-first UX, I bring both aesthetic sensibility and functional clarity to every project I take on.
+      </p>
+
+      <!-- Skills -->
+      <p class="section-label" style="margin-top: 64px; margin-bottom: 0;">My Skillset</p>
+      <div class="skills-grid">
+        <div class="skill-item"><span class="skill-num">01</span><span class="skill-name">UI Design</span></div>
+        <div class="skill-item"><span class="skill-num">02</span><span class="skill-name">UX Design</span></div>
+        <div class="skill-item"><span class="skill-num">03</span><span class="skill-name">Prototyping</span></div>
+        <div class="skill-item"><span class="skill-num">04</span><span class="skill-name">User Research</span></div>
+        <div class="skill-item"><span class="skill-num">05</span><span class="skill-name">Figma</span></div>
+        <div class="skill-item"><span class="skill-num">06</span><span class="skill-name">Design Systems</span></div>
+      </div>
+    </div>
+
+    <div class="about-right fade-up">
+      <div class="about-photo">{ Profile Photo }</div>
+    </div>
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section id="experience">
+  <p class="section-label">Experience</p>
+  <table class="exp-table fade-up">
+    <thead>
+      <tr>
+        <th>Role</th>
+        <th>Company</th>
+        <th>Year</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>UI/UX Designer</td>
+        <td>Company Name</td>
+        <td>2023 <span class="exp-arrow">→</span> Now</td>
+      </tr>
+      <tr>
+        <td>UI Designer</td>
+        <td>Company Name</td>
+        <td>2021 <span class="exp-arrow">→</span> 2023</td>
+      </tr>
+      <tr>
+        <td>Junior Designer</td>
+        <td>Company Name</td>
+        <td>2019 <span class="exp-arrow">→</span> 2021</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <p class="section-label">Contact</p>
+  <h2 class="contact-headline fade-up">
+    Let's<br><em>work</em><br>together.
+  </h2>
+  <div class="contact-links">
+    <a href="mailto:ferhatidjamel8@gmail.com" class="contact-link fade-up">
+      <div class="cl-left">
+        <span class="cl-label">Email</span>
+        <span class="cl-value">ferhatidjamel8@gmail.com</span>
+      </div>
+      <span class="cl-arrow">↗</span>
+    </a>
+    <a href="https://linkedin.com" target="_blank" class="contact-link fade-up">
+      <div class="cl-left">
+        <span class="cl-label">LinkedIn</span>
+        <span class="cl-value">Ferhati Djamel</span>
+      </div>
+      <span class="cl-arrow">↗</span>
+    </a>
+    <a href="https://behance.net" target="_blank" class="contact-link fade-up">
+      <div class="cl-left">
+        <span class="cl-label">Behance</span>
+        <span class="cl-value">@ferhatidjamel</span>
+      </div>
+      <span class="cl-arrow">↗</span>
+    </a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <span class="footer-copy">© 2024 — Ferhati Djamel</span>
+  <a href="#home" class="back-top">{ Back to Top }</a>
+</footer>
+
+<script>
+  // CURSOR
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+  document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+  function animCursor() {
+    cursor.style.left = mx + 'px';
+    cursor.style.top = my + 'px';
+    rx += (mx - rx) * 0.12;
+    ry += (my - ry) * 0.12;
+    ring.style.left = rx + 'px';
+    ring.style.top = ry + 'px';
+    requestAnimationFrame(animCursor);
+  }
+  animCursor();
+
+  // LOADER
+  const loaderBar = document.getElementById('loaderBar');
+  const loaderPct = document.getElementById('loaderPct');
+  const loader = document.getElementById('loader');
+  let pct = 0;
+  const interval = setInterval(() => {
+    pct += Math.random() * 12 + 4;
+    if (pct >= 100) {
+      pct = 100;
+      clearInterval(interval);
+      loaderBar.style.width = '100%';
+      loaderPct.textContent = '100%';
+      setTimeout(() => {
+        loader.style.transition = 'opacity 0.8s ease';
+        loader.style.opacity = '0';
+        setTimeout(() => { loader.style.display = 'none'; }, 800);
+      }, 300);
+    }
+    loaderBar.style.width = pct + '%';
+    loaderPct.textContent = Math.floor(pct) + '%';
+  }, 80);
+
+  // SCROLL ANIMATIONS
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 80);
+      }
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
