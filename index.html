@@ -28,7 +28,7 @@
     cursor: none;
   }
 
-  /* SCROLL-DRIVEN PANEL WIPE TRANSITION */
+  /* SCROLL-DRIVEN PANEL WIPE — 5 vertical columns, bottom to top */
   .panel-wipe-trigger {
     position: relative;
     height: 50vh;
@@ -40,32 +40,13 @@
     height: 100vh;
     overflow: hidden;
     pointer-events: none;
+    display: flex;
   }
   .wipe-panel {
-    position: absolute;
+    flex: 1;
     background: var(--white);
     will-change: transform;
-  }
-  /* 3 panels slide from different directions */
-  .wp-1 {
-    top: 0; left: 0;
-    width: 45%; height: 55%;
-    transform: translateX(-110%);
-  }
-  .wp-2 {
-    top: 0; right: 0;
-    width: 60%; height: 50%;
-    transform: translateY(-110%);
-  }
-  .wp-3 {
-    bottom: 0; left: 25%;
-    width: 80%; height: 60%;
-    transform: translateY(110%);
-  }
-  .wp-4 {
-    top: 30%; left: 0;
-    width: 100%; height: 70%;
-    transform: translateX(110%);
+    transform: translateY(100%);
   }
 
   /* LIGHT SECTIONS */
@@ -87,7 +68,7 @@
   .light-section .img-placeholder { background: #eee; border-color: #ccc; color: #aaa; }
   .light-section .project-name { transition: color 0.3s ease; }
 
-  /* DARK RETURN PANEL WIPE */
+  /* DARK RETURN PANEL WIPE — 5 vertical columns, bottom to top */
   .dark-panel-trigger {
     position: relative;
     height: 50vh;
@@ -100,31 +81,13 @@
     height: 100vh;
     overflow: hidden;
     pointer-events: none;
+    display: flex;
   }
   .dwp {
-    position: absolute;
+    flex: 1;
     background: var(--black);
     will-change: transform;
-  }
-  .dwp-1 {
-    top: 0; right: 0;
-    width: 50%; height: 50%;
-    transform: translateX(110%);
-  }
-  .dwp-2 {
-    bottom: 0; left: 0;
-    width: 55%; height: 60%;
-    transform: translateY(110%);
-  }
-  .dwp-3 {
-    top: 0; left: 0;
-    width: 60%; height: 55%;
-    transform: translateY(-110%);
-  }
-  .dwp-4 {
-    bottom: 0; right: 0;
-    width: 100%; height: 70%;
-    transform: translateX(110%);
+    transform: translateY(100%);
   }
 
   /* CUSTOM CURSOR */
@@ -749,11 +712,6 @@
     to { opacity: 1; transform: translateY(0); }
   }
 
-  /* MARQUEE SPEED ON SCROLL */
-  .marquee-track {
-    transition: animation-duration 0.3s;
-  }
-
   /* SKILL ITEMS STAGGER */
   .skill-item {
     opacity: 0;
@@ -854,10 +812,11 @@
 <!-- PANEL WIPE: DARK → LIGHT -->
 <div class="panel-wipe-trigger" id="panelWipe">
   <div class="inner">
-    <div class="wipe-panel wp-1"></div>
-    <div class="wipe-panel wp-2"></div>
-    <div class="wipe-panel wp-3"></div>
-    <div class="wipe-panel wp-4"></div>
+    <div class="wipe-panel"></div>
+    <div class="wipe-panel"></div>
+    <div class="wipe-panel"></div>
+    <div class="wipe-panel"></div>
+    <div class="wipe-panel"></div>
   </div>
 </div>
 
@@ -948,10 +907,11 @@
 <!-- PANEL WIPE: LIGHT → DARK -->
 <div class="dark-panel-trigger" id="darkPanelWipe">
   <div class="inner">
-    <div class="dwp dwp-1"></div>
-    <div class="dwp dwp-2"></div>
-    <div class="dwp dwp-3"></div>
-    <div class="dwp dwp-4"></div>
+    <div class="dwp"></div>
+    <div class="dwp"></div>
+    <div class="dwp"></div>
+    <div class="dwp"></div>
+    <div class="dwp"></div>
   </div>
 </div>
 
@@ -1134,63 +1094,37 @@
     }
   });
 
-  // PANEL WIPE: DARK → LIGHT
-  const panelWipe = document.getElementById('panelWipe');
-  const wpPanels = panelWipe.querySelectorAll('.wipe-panel');
-  // Each panel: [element, axis, direction, delay]
-  const wpConfig = [
-    [wpPanels[0], 'X', -110, 0],    // left panel, slides from left
-    [wpPanels[1], 'Y', -110, 0.1],  // top-right, slides from top
-    [wpPanels[2], 'Y', 110,  0.15], // bottom-center, slides from bottom
-    [wpPanels[3], 'X', 110,  0.25], // right, slides from right (covers all)
-  ];
+  // PANEL WIPE HELPER — 5 staggered columns, bottom to top
+  function setupPanelWipe(triggerId, panelSelector) {
+    const trigger = document.getElementById(triggerId);
+    const panels = trigger.querySelectorAll(panelSelector);
+    const delays = [0, 0.08, 0.16, 0.10, 0.04]; // stagger: edges first, center last
 
-  lenis.on('scroll', ({ scroll }) => {
-    const start = panelWipe.offsetTop;
-    const h = panelWipe.offsetHeight;
-    const raw = (scroll - start) / h;
-    const progress = Math.max(0, Math.min(1, raw));
+    lenis.on('scroll', ({ scroll }) => {
+      const start = trigger.offsetTop;
+      const h = trigger.offsetHeight;
+      const progress = Math.max(0, Math.min(1, (scroll - start) / h));
 
-    wpConfig.forEach(([el, axis, from, delay]) => {
-      const p = Math.max(0, Math.min(1, (progress - delay) / (1 - delay)));
-      const ease = 1 - Math.pow(1 - p, 3); // cubic ease-out
-      const val = from * (1 - ease);
-      el.style.transform = `translate${axis}(${val}%)`;
+      panels.forEach((el, i) => {
+        const d = delays[i];
+        const p = Math.max(0, Math.min(1, (progress - d) / (0.7 - d)));
+        const ease = 1 - Math.pow(1 - p, 4); // quartic ease-out
+        const y = 100 * (1 - ease);
+        el.style.transform = `translateY(${y}%)`;
+      });
     });
-  });
+  }
 
-  // PANEL WIPE: LIGHT → DARK
-  const darkPanelWipe = document.getElementById('darkPanelWipe');
-  const dwpPanels = darkPanelWipe.querySelectorAll('.dwp');
-  const dwpConfig = [
-    [dwpPanels[0], 'X', 110, 0],     // right panel from right
-    [dwpPanels[1], 'Y', 110, 0.1],   // bottom-left from bottom
-    [dwpPanels[2], 'Y', -110, 0.15], // top-left from top
-    [dwpPanels[3], 'X', 110, 0.25],  // full-width from right
-  ];
+  setupPanelWipe('panelWipe', '.wipe-panel');
+  setupPanelWipe('darkPanelWipe', '.dwp');
 
-  lenis.on('scroll', ({ scroll }) => {
-    const start = darkPanelWipe.offsetTop;
-    const h = darkPanelWipe.offsetHeight;
-    const raw = (scroll - start) / h;
-    const progress = Math.max(0, Math.min(1, raw));
-
-    dwpConfig.forEach(([el, axis, from, delay]) => {
-      const p = Math.max(0, Math.min(1, (progress - delay) / (1 - delay)));
-      const ease = 1 - Math.pow(1 - p, 3);
-      const val = from * (1 - ease);
-      el.style.transform = `translate${axis}(${val}%)`;
-    });
-  });
-
-  // MARQUEE SPEED BOOST ON SCROLL
+  // MARQUEE — gentle speed boost on scroll, capped
   const marqueeTrack = document.querySelector('.marquee-track');
-  let lastScroll = 0;
-  lenis.on('scroll', ({ scroll, velocity }) => {
-    const speed = Math.min(Math.abs(velocity) * 0.3, 3);
-    const baseSpeed = 18;
-    const newSpeed = Math.max(3, baseSpeed - speed * 5);
-    marqueeTrack.style.animationDuration = newSpeed + 's';
+  lenis.on('scroll', ({ velocity }) => {
+    const v = Math.abs(velocity);
+    // base 18s, boost down to min 12s — subtle, never crazy
+    const dur = Math.max(12, 18 - v * 1.5);
+    marqueeTrack.style.animationDuration = dur + 's';
   });
 
   // SCROLL ANIMATIONS (reveal on scroll)
