@@ -40,7 +40,7 @@
   /* SCROLL-DRIVEN PANEL WIPE — 5 vertical columns, bottom to top */
   .panel-wipe-trigger {
     position: relative;
-    height: 110vh;
+    height: 100vh;
     z-index: 3;
   }
   .panel-wipe-trigger .inner {
@@ -53,6 +53,7 @@
   }
   .wipe-panel {
     flex: 1;
+    margin: 0 -0.5px;
     background: var(--white);
     will-change: transform;
     transform: translateY(100%);
@@ -80,7 +81,7 @@
   /* DARK RETURN PANEL WIPE — 5 vertical columns, bottom to top */
   .dark-panel-trigger {
     position: relative;
-    height: 110vh;
+    height: 100vh;
     z-index: 3;
     background: var(--white);
   }
@@ -94,6 +95,7 @@
   }
   .dwp {
     flex: 1;
+    margin: 0 -0.5px;
     background: var(--black);
     will-change: transform;
     transform: translateY(100%);
@@ -1184,16 +1186,17 @@
   <!-- Project 1 -->
   <div class="project-card slide-left">
     <div class="project-img clip-reveal">
-      <div class="img-placeholder">{ Project Cover }</div>
+      <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=960&h=600&fit=crop&q=80" alt="Aura — Learning Platform" loading="lazy">
     </div>
     <div class="project-info">
       <div>
-        <p class="project-client">Client Name</p>
-        <h3 class="project-name">Project Title One</h3>
-        <p class="project-desc">A brief description of the project, the problem solved, and the outcome achieved through thoughtful design.</p>
+        <p class="project-client">Aura Education</p>
+        <h3 class="project-name">Aura — Learning Platform Redesign</h3>
+        <p class="project-desc">Redesigned the end-to-end learning experience for 50k+ students, improving course completion rates by 34% through a cleaner information hierarchy and adaptive UI.</p>
         <div class="project-tags">
           <span class="tag">UI Design</span>
-          <span class="tag">UX Design</span>
+          <span class="tag">UX Research</span>
+          <span class="tag">Design System</span>
         </div>
       </div>
       <span class="project-num">01 →</span>
@@ -1457,9 +1460,8 @@
     const delays = [0, 0.08, 0.16, 0.10, 0.04]; // stagger: edges first, center last
 
     lenis.on('scroll', ({ scroll }) => {
-      // Start when trigger top is 60% up the viewport, finish over 60vh of scroll
-      const animStart = trigger.offsetTop - window.innerHeight * 0.6;
-      const animDistance = window.innerHeight * 0.6;
+      const animStart = trigger.offsetTop - window.innerHeight * 0.7;
+      const animDistance = window.innerHeight * 0.7;
       const progress = Math.max(0, Math.min(1, (scroll - animStart) / animDistance));
 
       panels.forEach((el, i) => {
