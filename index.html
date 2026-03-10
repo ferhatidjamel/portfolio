@@ -40,7 +40,7 @@
   /* SCROLL-DRIVEN PANEL WIPE — 5 vertical columns, bottom to top */
   .panel-wipe-trigger {
     position: relative;
-    height: 50vh;
+    height: 150vh;
     z-index: 3;
   }
   .panel-wipe-trigger .inner {
@@ -80,7 +80,7 @@
   /* DARK RETURN PANEL WIPE — 5 vertical columns, bottom to top */
   .dark-panel-trigger {
     position: relative;
-    height: 50vh;
+    height: 150vh;
     z-index: 3;
     background: var(--white);
   }
@@ -1221,15 +1221,18 @@
   });
 
   // PANEL WIPE HELPER — 5 staggered columns, bottom to top
+  // Animation only starts when the bottom of the trigger reaches the viewport bottom
+  // (i.e. at the actual section boundary), not when the trigger first enters view.
   function setupPanelWipe(triggerId, panelSelector) {
     const trigger = document.getElementById(triggerId);
     const panels = trigger.querySelectorAll(panelSelector);
     const delays = [0, 0.08, 0.16, 0.10, 0.04]; // stagger: edges first, center last
 
     lenis.on('scroll', ({ scroll }) => {
-      const start = trigger.offsetTop;
       const h = trigger.offsetHeight;
-      const progress = Math.max(0, Math.min(1, (scroll - start) / h));
+      const animStart = trigger.offsetTop + h - window.innerHeight;
+      const animDistance = window.innerHeight;
+      const progress = Math.max(0, Math.min(1, (scroll - animStart) / animDistance));
 
       panels.forEach((el, i) => {
         const d = delays[i];
