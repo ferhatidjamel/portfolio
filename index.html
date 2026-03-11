@@ -37,6 +37,24 @@
     cursor: none;
   }
 
+  /* COLUMN-BASED PAGE TRANSITION (Dylan Brouwer style) */
+  .page-cols {
+    position: fixed;
+    inset: 0;
+    z-index: 500;
+    display: flex;
+    pointer-events: none;
+  }
+  .page-col {
+    flex: 1;
+    background: var(--white);
+    transform: scaleY(0);
+    transform-origin: bottom;
+    will-change: transform;
+  }
+  .page-cols.entering .page-col { transform-origin: bottom; }
+  .page-cols.leaving .page-col { transform-origin: top; }
+
   /* SCROLL-DRIVEN PANEL WIPE — fixed overlay, zero document space */
   .wipe-overlay {
     position: fixed;
@@ -255,26 +273,6 @@
     padding: 8px 0;
   }
   .light-section .section-label.sticky { background: var(--white); }
-
-  /* PAGE TRANSITION OVERLAY */
-  .page-transition {
-    position: fixed;
-    inset: 0;
-    background: var(--black);
-    z-index: 998;
-    transform: scaleY(0);
-    transform-origin: bottom;
-    pointer-events: none;
-  }
-  .page-transition.active {
-    animation: pageWipe 0.8s cubic-bezier(0.76, 0, 0.24, 1) forwards;
-  }
-  @keyframes pageWipe {
-    0% { transform: scaleY(0); transform-origin: bottom; }
-    50% { transform: scaleY(1); transform-origin: bottom; }
-    50.01% { transform-origin: top; }
-    100% { transform: scaleY(0); transform-origin: top; }
-  }
 
   /* THEME TOGGLE */
   .theme-toggle {
@@ -945,6 +943,9 @@
   footer {
     padding: 32px 48px;
     border-top: 1px solid var(--grey-light);
+    overflow: hidden;
+  }
+  .footer-inner {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -1134,6 +1135,171 @@
   }
   html.light-theme .footer-clock { color: #888; }
 
+  /* TEXT BLUR-REVEAL (Dylan Brouwer style) */
+  .blur-reveal .word {
+    display: inline-block;
+    opacity: 0;
+    filter: blur(10px);
+    transform: translateY(8px) rotateX(8deg);
+    transition: opacity 0.7s ease, filter 0.7s ease, transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .blur-reveal.visible .word {
+    opacity: 1;
+    filter: blur(0);
+    transform: translateY(0) rotateX(0);
+  }
+
+  /* IMAGE BLUR-UP LOADING */
+  .blur-up {
+    filter: blur(16px);
+    transition: filter 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    transform: scale(1.05);
+  }
+  .blur-up.loaded {
+    filter: blur(0);
+    transform: scale(1);
+  }
+
+  /* NAV HIDE/SHOW ON SCROLL */
+  nav {
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  nav.nav-hidden {
+    transform: translateY(-100%) !important;
+  }
+
+  /* BUTTON SWOOSH EFFECT */
+  .btn-swoosh {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--white);
+    background: transparent;
+    border: 1px solid var(--grey-light);
+    padding: 14px 28px;
+    cursor: none;
+    overflow: hidden;
+    text-decoration: none;
+    transition: border-color 0.3s;
+  }
+  .btn-swoosh::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--white);
+    transform: translateX(-101%);
+    transition: transform 0.5s cubic-bezier(0.76, 0, 0.24, 1);
+    z-index: 0;
+  }
+  .btn-swoosh:hover::before { transform: translateX(0); }
+  .btn-swoosh:hover { border-color: var(--white); color: var(--black); }
+  .btn-swoosh span {
+    position: relative;
+    z-index: 1;
+    transition: color 0.3s ease;
+  }
+  .btn-swoosh .btn-arrow {
+    position: relative;
+    z-index: 1;
+    transition: transform 0.3s ease, color 0.3s ease;
+  }
+  .btn-swoosh:hover .btn-arrow { transform: rotate(-45deg); }
+  .light-section .btn-swoosh { color: var(--black); border-color: #ccc; }
+  .light-section .btn-swoosh::before { background: var(--black); }
+  .light-section .btn-swoosh:hover { color: var(--white); border-color: var(--black); }
+
+  /* ANIMATED GLOW LINES */
+  .glow-lines {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 48px;
+  }
+  .glow-line {
+    width: 1px;
+    height: 100%;
+    background: rgba(255,255,255,0.03);
+    position: relative;
+    overflow: hidden;
+  }
+  .glow-line .glow {
+    position: absolute;
+    top: -120px;
+    left: 0;
+    width: 1px;
+    height: 120px;
+    background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.15), transparent);
+    opacity: 0;
+    will-change: transform, opacity;
+  }
+  html.light-theme .glow-line { background: rgba(0,0,0,0.04); }
+  html.light-theme .glow-line .glow {
+    background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.12), transparent);
+  }
+
+  /* FOOTER PARALLAX */
+  .footer-inner {
+    transition: transform 0.05s linear;
+    will-change: transform;
+  }
+
+  /* ASYMMETRIC PROJECT GRID */
+  .projects-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    row-gap: 80px;
+  }
+  .projects-grid .project-card {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    border-bottom: none;
+    padding: 0;
+    grid-template-columns: unset;
+    text-decoration: none;
+    color: inherit;
+    cursor: none;
+  }
+  .projects-grid .project-card:nth-child(even) {
+    margin-top: 120px;
+  }
+  .projects-grid .project-card .project-img {
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+  }
+  .projects-grid .project-card:nth-child(1) .project-img { aspect-ratio: 9/10; }
+  .projects-grid .project-card:nth-child(2) .project-img { aspect-ratio: 6/8; }
+  .projects-grid .project-card:nth-child(3) .project-img { aspect-ratio: 6/4; }
+  .projects-grid .project-card:nth-child(4) .project-img { aspect-ratio: 9/10; }
+  .projects-grid .project-info {
+    padding: 0;
+  }
+  .projects-grid .project-card .project-name {
+    font-size: clamp(20px, 2.2vw, 32px);
+    margin-bottom: 12px;
+  }
+  .projects-grid .project-card .project-desc {
+    max-width: 100%;
+  }
+  .projects-grid .project-num {
+    margin-top: 16px;
+  }
+
+  /* MARQUEE SKEW */
+  .marquee-wrap {
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
   /* PREFERS REDUCED MOTION */
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after {
@@ -1144,11 +1310,15 @@
     .hero-char { opacity: 1; transform: none; animation: none; }
     .fade-up, .slide-left, .slide-right, .scale-reveal,
     .skill-item, .exp-table tbody tr { opacity: 1; transform: none; }
+    .blur-reveal .word { opacity: 1; filter: none; transform: none; }
+    .blur-up { filter: none; transform: none; }
     .marquee-track { animation: none; }
     .wipe-panel { transform: none; }
     .wipe-overlay { visibility: hidden !important; }
+    .page-col { transform: none; }
     .clip-reveal { clip-path: none; }
     .velocity-skew { transform: none !important; }
+    .glow-lines { display: none; }
     html { scroll-behavior: smooth; }
   }
 
@@ -1159,6 +1329,8 @@
     #home { padding: 0 24px 64px; }
     #projects, #about, #experience, #contact { padding: 80px 24px; }
     footer { padding: 24px; }
+    .projects-grid { grid-template-columns: 1fr; gap: 48px; }
+    .projects-grid .project-card:nth-child(even) { margin-top: 0; }
     .project-card { grid-template-columns: 1fr; gap: 24px; }
     .project-card.reversed { direction: ltr; }
     .about-grid { grid-template-columns: 1fr; gap: 48px; }
@@ -1166,14 +1338,26 @@
     .contact-headline { font-size: clamp(40px, 12vw, 80px); }
     .hero-bg-text { font-size: clamp(150px, 40vw, 300px); right: -10%; }
     .cursor, .cursor-ring, .cursor-text { display: none; }
+    .glow-lines { display: none; }
     body { cursor: auto; }
   }
 </style>
 </head>
 <body>
 
-<!-- PAGE TRANSITION OVERLAY -->
-<div class="page-transition" id="pageTransition"></div>
+<!-- COLUMN PAGE TRANSITION (Dylan Brouwer style) -->
+<div class="page-cols" id="pageCols">
+  <div class="page-col"></div><div class="page-col"></div><div class="page-col"></div><div class="page-col"></div><div class="page-col"></div>
+</div>
+
+<!-- ANIMATED GLOW LINES -->
+<div class="glow-lines" id="glowLines">
+  <div class="glow-line"><div class="glow"></div></div>
+  <div class="glow-line"><div class="glow"></div></div>
+  <div class="glow-line"><div class="glow"></div></div>
+  <div class="glow-line"><div class="glow"></div></div>
+  <div class="glow-line"><div class="glow"></div></div>
+</div>
 
 <!-- SCROLL PROGRESS -->
 <div class="scroll-progress" id="scrollProgress"></div>
@@ -1218,7 +1402,7 @@
 <section id="home">
   <div class="hero-bg-text">FD</div>
   <p class="hero-eyebrow">UI/UX Designer — Algeria</p>
-  <h1 class="hero-title">
+  <h1 class="hero-title blur-reveal">
     Ferhati<br>
     <em>Djamel</em>
   </h1>
@@ -1228,7 +1412,7 @@
       digital experiences that balance functionality<br>
       with intentional, user-centered design.
     </p>
-    <a href="#projects" class="hero-scroll">{ Scroll }</a>
+    <a href="#projects" class="hero-scroll" data-cursor="Scroll">{ Scroll }</a>
   </div>
 </section>
 
@@ -1285,92 +1469,95 @@
     <span class="projects-count"><span class="counter-num" data-target="04">00</span> Projects</span>
   </div>
 
-  <!-- Project 1 -->
-  <div class="project-card slide-left"
-    data-client="Aura Education"
-    data-title="Aura — Learning Platform Redesign"
-    data-role="Lead UI/UX Designer"
-    data-year="2025"
-    data-scope="UI Design, UX Research, Design System"
-    data-hero="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1400&h=800&fit=crop&q=80"
-    data-body="Aura Education needed a complete overhaul of their learning platform serving 50k+ students across 12 countries. The existing interface suffered from poor information hierarchy, inconsistent patterns, and a 23% course abandonment rate.
+  <div class="projects-grid">
+    <!-- Project 1 -->
+    <div class="project-card fade-up"
+      data-cursor="View"
+      data-client="Aura Education"
+      data-title="Aura — Learning Platform Redesign"
+      data-role="Lead UI/UX Designer"
+      data-year="2025"
+      data-scope="UI Design, UX Research, Design System"
+      data-hero="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1400&h=800&fit=crop&q=80"
+      data-body="Aura Education needed a complete overhaul of their learning platform serving 50k+ students across 12 countries. The existing interface suffered from poor information hierarchy, inconsistent patterns, and a 23% course abandonment rate.
 
 I led the redesign from discovery through delivery — conducting 40+ user interviews, mapping pain points across the student journey, and establishing a component-driven design system with 120+ reusable elements. The new adaptive UI responds to learning context, surfacing relevant content based on progress and behavior.
 
 The result: course completion rates improved by 34%, average session time increased by 2.4x, and student satisfaction scores rose from 3.1 to 4.6 out of 5."
-    data-gallery="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1200&h=600&fit=crop&q=80,https://images.unsplash.com/photo-1586717791821-3f44a563fa4c?w=600&h=375&fit=crop&q=80,https://images.unsplash.com/photo-1561070791-2526d30994b5?w=600&h=375&fit=crop&q=80">
-    <div class="project-img clip-reveal">
-      <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=960&h=600&fit=crop&q=80" alt="Aura — Learning Platform" loading="lazy">
-    </div>
-    <div class="project-info">
-      <div>
-        <p class="project-client">Aura Education</p>
-        <h3 class="project-name">Aura — Learning Platform Redesign</h3>
-        <p class="project-desc">Redesigned the end-to-end learning experience for 50k+ students, improving course completion rates by 34% through a cleaner information hierarchy and adaptive UI.</p>
-        <div class="project-tags">
-          <span class="tag">UI Design</span>
-          <span class="tag">UX Research</span>
-          <span class="tag">Design System</span>
-        </div>
+      data-gallery="https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1200&h=600&fit=crop&q=80,https://images.unsplash.com/photo-1586717791821-3f44a563fa4c?w=600&h=375&fit=crop&q=80,https://images.unsplash.com/photo-1561070791-2526d30994b5?w=600&h=375&fit=crop&q=80">
+      <div class="project-img clip-reveal">
+        <img class="blur-up" src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=960&h=600&fit=crop&q=80" alt="Aura — Learning Platform" loading="lazy">
       </div>
-      <span class="project-num">01 →</span>
+      <div class="project-info">
+        <div>
+          <p class="project-client">Aura Education</p>
+          <h3 class="project-name">Aura — Learning Platform Redesign</h3>
+          <p class="project-desc">Redesigned the end-to-end learning experience for 50k+ students, improving course completion rates by 34%.</p>
+          <div class="project-tags">
+            <span class="tag">UI Design</span>
+            <span class="tag">UX Research</span>
+            <span class="tag">Design System</span>
+          </div>
+        </div>
+        <span class="project-num">01</span>
+      </div>
     </div>
-  </div>
 
-  <!-- Project 2 -->
-  <div class="project-card reversed slide-right">
-    <div class="project-img clip-reveal">
-      <div class="img-placeholder">{ Project Cover }</div>
-    </div>
-    <div class="project-info">
-      <div>
-        <p class="project-client">Client Name</p>
-        <h3 class="project-name">Project Title Two</h3>
-        <p class="project-desc">A brief description of the project, the problem solved, and the outcome achieved through thoughtful design.</p>
-        <div class="project-tags">
-          <span class="tag">UI Design</span>
-          <span class="tag">Prototyping</span>
-        </div>
+    <!-- Project 2 -->
+    <div class="project-card fade-up" data-cursor="View">
+      <div class="project-img clip-reveal">
+        <div class="img-placeholder">{ Project Cover }</div>
       </div>
-      <span class="project-num">02 →</span>
+      <div class="project-info">
+        <div>
+          <p class="project-client">Client Name</p>
+          <h3 class="project-name">Project Title Two</h3>
+          <p class="project-desc">A brief description of the project, the problem solved, and the outcome achieved.</p>
+          <div class="project-tags">
+            <span class="tag">UI Design</span>
+            <span class="tag">Prototyping</span>
+          </div>
+        </div>
+        <span class="project-num">02</span>
+      </div>
     </div>
-  </div>
 
-  <!-- Project 3 -->
-  <div class="project-card slide-left">
-    <div class="project-img clip-reveal">
-      <div class="img-placeholder">{ Project Cover }</div>
-    </div>
-    <div class="project-info">
-      <div>
-        <p class="project-client">Client Name</p>
-        <h3 class="project-name">Project Title Three</h3>
-        <p class="project-desc">A brief description of the project, the problem solved, and the outcome achieved through thoughtful design.</p>
-        <div class="project-tags">
-          <span class="tag">UX Design</span>
-          <span class="tag">Research</span>
-        </div>
+    <!-- Project 3 -->
+    <div class="project-card fade-up" data-cursor="View">
+      <div class="project-img clip-reveal">
+        <div class="img-placeholder">{ Project Cover }</div>
       </div>
-      <span class="project-num">03 →</span>
+      <div class="project-info">
+        <div>
+          <p class="project-client">Client Name</p>
+          <h3 class="project-name">Project Title Three</h3>
+          <p class="project-desc">A brief description of the project, the problem solved, and the outcome achieved.</p>
+          <div class="project-tags">
+            <span class="tag">UX Design</span>
+            <span class="tag">Research</span>
+          </div>
+        </div>
+        <span class="project-num">03</span>
+      </div>
     </div>
-  </div>
 
-  <!-- Project 4 -->
-  <div class="project-card reversed slide-right">
-    <div class="project-img clip-reveal">
-      <div class="img-placeholder">{ Project Cover }</div>
-    </div>
-    <div class="project-info">
-      <div>
-        <p class="project-client">Client Name</p>
-        <h3 class="project-name">Project Title Four</h3>
-        <p class="project-desc">A brief description of the project, the problem solved, and the outcome achieved through thoughtful design.</p>
-        <div class="project-tags">
-          <span class="tag">UI Design</span>
-          <span class="tag">Art Direction</span>
-        </div>
+    <!-- Project 4 -->
+    <div class="project-card fade-up" data-cursor="View">
+      <div class="project-img clip-reveal">
+        <div class="img-placeholder">{ Project Cover }</div>
       </div>
-      <span class="project-num">04 →</span>
+      <div class="project-info">
+        <div>
+          <p class="project-client">Client Name</p>
+          <h3 class="project-name">Project Title Four</h3>
+          <p class="project-desc">A brief description of the project, the problem solved, and the outcome achieved.</p>
+          <div class="project-tags">
+            <span class="tag">UI Design</span>
+            <span class="tag">Art Direction</span>
+          </div>
+        </div>
+        <span class="project-num">04</span>
+      </div>
     </div>
   </div>
 </section>
@@ -1381,7 +1568,7 @@ The result: course completion rates improved by 34%, average session time increa
 
   <div class="about-grid">
     <div class="about-left fade-up">
-      <h2 class="about-headline velocity-skew">I pair strong <em>visual design</em> with a focus on user-centered thinking.</h2>
+      <h2 class="about-headline velocity-skew blur-reveal">I pair strong <em>visual design</em> with a focus on user-centered thinking.</h2>
       <p class="about-body">
         Placeholder bio — tell your story here. Describe your background, your approach to design, and what drives you to create meaningful digital experiences.
       </p>
@@ -1441,25 +1628,25 @@ The result: course completion rates improved by 34%, average session time increa
 <!-- CONTACT -->
 <section id="contact">
   <p class="section-label sticky">Contact</p>
-  <h2 class="contact-headline velocity-skew fade-up">
+  <h2 class="contact-headline velocity-skew blur-reveal">
     Let's<br><em>work</em><br>together.
   </h2>
   <div class="contact-links">
-    <a href="mailto:ferhatidjamel8@gmail.com" class="contact-link magnetic fade-up">
+    <a href="mailto:ferhatidjamel8@gmail.com" class="contact-link magnetic fade-up" data-cursor="Email">
       <div class="cl-left">
         <span class="cl-label">Email</span>
         <span class="cl-value">ferhatidjamel8@gmail.com</span>
       </div>
       <span class="cl-arrow">↗</span>
     </a>
-    <a href="https://linkedin.com" target="_blank" class="contact-link magnetic fade-up">
+    <a href="https://linkedin.com" target="_blank" class="contact-link magnetic fade-up" data-cursor="Open">
       <div class="cl-left">
         <span class="cl-label">LinkedIn</span>
         <span class="cl-value">Ferhati Djamel</span>
       </div>
       <span class="cl-arrow">↗</span>
     </a>
-    <a href="https://behance.net" target="_blank" class="contact-link magnetic fade-up">
+    <a href="https://behance.net" target="_blank" class="contact-link magnetic fade-up" data-cursor="Open">
       <div class="cl-left">
         <span class="cl-label">Behance</span>
         <span class="cl-value">@ferhatidjamel</span>
@@ -1471,15 +1658,17 @@ The result: course completion rates improved by 34%, average session time increa
 
 <!-- FOOTER -->
 <footer>
-  <span class="footer-copy">© 2026 — Ferhati Djamel</span>
-  <span class="footer-clock" id="footerClock"></span>
-  <a href="#home" class="back-top">{ Back to Top }</a>
+  <div class="footer-inner" id="footerInner">
+    <span class="footer-copy">© 2026 — Ferhati Djamel</span>
+    <span class="footer-clock" id="footerClock"></span>
+    <a href="#home" class="back-top magnetic" data-cursor="Top">{ Back to Top }</a>
+  </div>
 </footer>
 
 <!-- LENIS SMOOTH SCROLL -->
 <script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"></script>
 <script>
-  // SMOOTH SCROLL (LENIS) — lightweight, no heavy momentum
+  // SMOOTH SCROLL (LENIS)
   const lenis = new Lenis({
     duration: 0.8,
     easing: (t) => 1 - Math.pow(1 - t, 3),
@@ -1496,6 +1685,7 @@ The result: course completion rates improved by 34%, average session time increa
   // CURSOR
   const cursor = document.getElementById('cursor');
   const ring = document.getElementById('cursorRing');
+  const cursorText = document.getElementById('cursorText');
   let mx = 0, my = 0, rx = 0, ry = 0;
   document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
   function animCursor() {
@@ -1505,6 +1695,10 @@ The result: course completion rates improved by 34%, average session time increa
     ry += (my - ry) * 0.12;
     ring.style.left = rx + 'px';
     ring.style.top = ry + 'px';
+    if (cursorText) {
+      cursorText.style.left = mx + 'px';
+      cursorText.style.top = my + 'px';
+    }
     requestAnimationFrame(animCursor);
   }
   animCursor();
@@ -1531,7 +1725,117 @@ The result: course completion rates improved by 34%, average session time increa
     loaderPct.textContent = Math.floor(pct) + '%';
   }, 80);
 
-  // HERO PARALLAX ON SCROLL
+  // ─── COLUMN PAGE TRANSITION (Dylan Brouwer style) ───
+  const pageCols = document.getElementById('pageCols');
+  const pageColEls = pageCols.querySelectorAll('.page-col');
+
+  function colTransition(onMid) {
+    // Enter: columns scale up from bottom
+    pageCols.style.pointerEvents = 'all';
+    pageCols.classList.add('entering');
+    pageCols.classList.remove('leaving');
+    pageColEls.forEach((col, i) => {
+      col.style.transformOrigin = 'bottom';
+      col.style.transition = `transform 0.5s cubic-bezier(0.76, 0, 0.24, 1) ${i * 0.06}s`;
+      col.style.transform = 'scaleY(1)';
+    });
+
+    setTimeout(() => {
+      if (onMid) onMid();
+      // Leave: columns scale down from top
+      pageCols.classList.remove('entering');
+      pageCols.classList.add('leaving');
+      pageColEls.forEach((col, i) => {
+        col.style.transformOrigin = 'top';
+        col.style.transition = `transform 0.5s cubic-bezier(0.76, 0, 0.24, 1) ${i * 0.06}s`;
+        col.style.transform = 'scaleY(0)';
+      });
+      setTimeout(() => {
+        pageCols.style.pointerEvents = 'none';
+        pageCols.classList.remove('leaving');
+      }, 800);
+    }, 550);
+  }
+
+  // ─── TEXT BLUR-REVEAL (split into words) ───
+  document.querySelectorAll('.blur-reveal').forEach(el => {
+    const nodes = [];
+    // Walk child nodes, preserving <em>, <br>, etc.
+    el.childNodes.forEach(node => {
+      if (node.nodeType === Node.TEXT_NODE) {
+        const words = node.textContent.split(/(\s+)/);
+        words.forEach(w => {
+          if (w.trim()) {
+            const span = document.createElement('span');
+            span.className = 'word';
+            span.textContent = w;
+            nodes.push(span);
+          } else if (w) {
+            nodes.push(document.createTextNode(w));
+          }
+        });
+      } else if (node.nodeName === 'BR') {
+        nodes.push(node.cloneNode());
+      } else if (node.nodeName === 'EM' || node.nodeName === 'STRONG') {
+        // Wrap inner text of <em>/<strong> in word spans
+        const words = node.textContent.split(/(\s+)/);
+        words.forEach(w => {
+          if (w.trim()) {
+            const wrapper = document.createElement(node.nodeName.toLowerCase());
+            const span = document.createElement('span');
+            span.className = 'word';
+            span.textContent = w;
+            wrapper.appendChild(span);
+            nodes.push(wrapper);
+          } else if (w) {
+            nodes.push(document.createTextNode(w));
+          }
+        });
+      } else {
+        nodes.push(node.cloneNode(true));
+      }
+    });
+    el.innerHTML = '';
+    nodes.forEach(n => el.appendChild(n));
+
+    // Add stagger delays
+    const wordEls = el.querySelectorAll('.word');
+    wordEls.forEach((w, i) => {
+      w.style.transitionDelay = `${i * 0.06}s`;
+    });
+  });
+
+  // Observe blur-reveal elements
+  const blurObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.2 });
+  document.querySelectorAll('.blur-reveal').forEach(el => blurObserver.observe(el));
+
+  // ─── NAV HIDE/SHOW ON SCROLL DIRECTION ───
+  const navEl = document.querySelector('nav');
+  let lastScroll = 0;
+  let navHidden = false;
+  lenis.on('scroll', ({ scroll }) => {
+    if (scroll > 200) {
+      if (scroll > lastScroll && !navHidden) {
+        navEl.classList.add('nav-hidden');
+        navHidden = true;
+      } else if (scroll < lastScroll && navHidden) {
+        navEl.classList.remove('nav-hidden');
+        navHidden = false;
+      }
+    } else {
+      navEl.classList.remove('nav-hidden');
+      navHidden = false;
+    }
+    lastScroll = scroll;
+  });
+
+  // ─── HERO PARALLAX ON SCROLL ───
   const heroTitle = document.querySelector('.hero-title');
   const heroEyebrow = document.querySelector('.hero-eyebrow');
   const heroBottom = document.querySelector('.hero-bottom');
@@ -1555,20 +1859,18 @@ The result: course completion rates improved by 34%, average session time increa
     }
   });
 
-  // FIXED PANEL WIPE — driven by scroll position, zero document space
+  // ─── FIXED PANEL WIPE — driven by scroll position ───
   function setupFixedWipe(overlayId, sectionBefore, sectionAfter) {
     const overlay = document.getElementById(overlayId);
     const panels = overlay.querySelectorAll('.wipe-panel');
     const delays = [0, 0.08, 0.16, 0.10, 0.04];
 
     lenis.on('scroll', ({ scroll }) => {
-      // Animate as the boundary between sections enters viewport
       const boundary = sectionAfter.offsetTop;
       const animStart = boundary - window.innerHeight;
       const animDistance = window.innerHeight * 0.6;
       const progress = Math.max(0, Math.min(1, (scroll - animStart) / animDistance));
 
-      // Show overlay only during animation
       if (progress > 0 && progress < 1) {
         overlay.classList.add('active');
       } else {
@@ -1591,16 +1893,31 @@ The result: course completion rates improved by 34%, average session time increa
   setupFixedWipe('wipeToLight', marqueeEl, projectsSection);
   setupFixedWipe('wipeToDark', projectsSection, aboutSection);
 
-  // MARQUEE — gentle speed boost on scroll, capped
+  // ─── MARQUEE — direction reversal + skew on scroll ───
   const marqueeTrack = document.querySelector('.marquee-track');
+  const marqueeWrap = document.querySelector('.marquee-wrap');
+  let marqueeDir = 1;
+  let marqueeSkew = 0;
+
   lenis.on('scroll', ({ velocity }) => {
     const v = Math.abs(velocity);
-    // base 18s, boost down to min 12s — subtle, never crazy
     const dur = Math.max(12, 18 - v * 1.5);
     marqueeTrack.style.animationDuration = dur + 's';
+
+    // Reverse direction based on scroll direction
+    const newDir = velocity < -0.5 ? -1 : velocity > 0.5 ? 1 : marqueeDir;
+    if (newDir !== marqueeDir) {
+      marqueeDir = newDir;
+      marqueeTrack.style.animationDirection = marqueeDir === -1 ? 'reverse' : 'normal';
+    }
+
+    // Skew based on velocity
+    const targetSkew = Math.max(-8, Math.min(8, velocity * 2));
+    marqueeSkew += (targetSkew - marqueeSkew) * 0.1;
+    marqueeWrap.style.transform = `skewX(${marqueeSkew}deg)`;
   });
 
-  // SCROLL ANIMATIONS (reveal on scroll)
+  // ─── SCROLL ANIMATIONS (reveal on scroll) ───
   const animObserver = new IntersectionObserver((entries) => {
     entries.forEach((entry, i) => {
       if (entry.isIntersecting) {
@@ -1611,7 +1928,7 @@ The result: course completion rates improved by 34%, average session time increa
 
   document.querySelectorAll('.fade-up, .slide-left, .slide-right, .scale-reveal').forEach(el => animObserver.observe(el));
 
-  // SKILL ITEMS STAGGER
+  // ─── SKILL ITEMS STAGGER ───
   const skillObserver = new IntersectionObserver((entries) => {
     if (entries[0] && entries[0].isIntersecting) {
       document.querySelectorAll('.skill-item').forEach((item, i) => {
@@ -1623,7 +1940,7 @@ The result: course completion rates improved by 34%, average session time increa
   const skillsGrid = document.querySelector('.skills-grid');
   if (skillsGrid) skillObserver.observe(skillsGrid);
 
-  // EXPERIENCE ROWS STAGGER
+  // ─── EXPERIENCE ROWS STAGGER ───
   const expObserver = new IntersectionObserver((entries) => {
     if (entries[0] && entries[0].isIntersecting) {
       document.querySelectorAll('.exp-table tbody tr').forEach((row, i) => {
@@ -1635,13 +1952,12 @@ The result: course completion rates improved by 34%, average session time increa
   const expTable = document.querySelector('.exp-table');
   if (expTable) expObserver.observe(expTable);
 
-  // NAV LINKS SMOOTH SCROLL WITH LENIS
+  // ─── NAV LINKS SMOOTH SCROLL WITH LENIS ───
   document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', (e) => {
       e.preventDefault();
       const target = document.querySelector(anchor.getAttribute('href'));
       if (target) lenis.scrollTo(target, { offset: 0, duration: 1 });
-      // Close mobile menu if open
       const mm = document.getElementById('mobileMenu');
       const hb = document.getElementById('hamburger');
       if (mm.classList.contains('open')) {
@@ -1652,7 +1968,7 @@ The result: course completion rates improved by 34%, average session time increa
     });
   });
 
-  // SCROLL PROGRESS BAR
+  // ─── SCROLL PROGRESS BAR ───
   const scrollBar = document.getElementById('scrollProgress');
   lenis.on('scroll', ({ scroll }) => {
     const docH = document.documentElement.scrollHeight - window.innerHeight;
@@ -1660,7 +1976,7 @@ The result: course completion rates improved by 34%, average session time increa
     scrollBar.style.width = pct + '%';
   });
 
-  // HAMBURGER MENU
+  // ─── HAMBURGER MENU ───
   const hamburger = document.getElementById('hamburger');
   const mobileMenu = document.getElementById('mobileMenu');
   hamburger.addEventListener('click', () => {
@@ -1683,74 +1999,50 @@ The result: course completion rates improved by 34%, average session time increa
     });
   });
 
-  // MAGNETIC CONTACT HEADLINE
-  const contactHL = document.querySelector('.contact-headline');
-  if (contactHL && window.innerWidth > 768) {
-    contactHL.addEventListener('mousemove', (e) => {
-      const rect = contactHL.getBoundingClientRect();
-      const cx = rect.left + rect.width / 2;
-      const cy = rect.top + rect.height / 2;
-      const dx = (e.clientX - cx) * 0.08;
-      const dy = (e.clientY - cy) * 0.08;
-      contactHL.style.transform = `translate(${dx}px, ${dy}px)`;
-    });
-    contactHL.addEventListener('mouseleave', () => {
-      contactHL.style.transform = 'translate(0, 0)';
-    });
-  }
-
-  // 1. CURSOR INVERSION ON LIGHT SECTIONS
+  // ─── CURSOR INVERSION ON LIGHT SECTIONS ───
   const lightSection = document.querySelector('.light-section');
-  if (lightSection && window.innerWidth > 768) {
-    lenis.on('scroll', () => {
-      const rect = lightSection.getBoundingClientRect();
-      const inLight = my > rect.top && my < rect.bottom;
-      cursor.classList.toggle('inverted', inLight);
-      ring.classList.toggle('inverted', inLight);
-    });
-    document.addEventListener('mousemove', () => {
-      if (lightSection) {
-        const rect = lightSection.getBoundingClientRect();
-        const inLight = my > rect.top && my < rect.bottom;
-        cursor.classList.toggle('inverted', inLight);
-        ring.classList.toggle('inverted', inLight);
-      }
+  function checkCursorInversion() {
+    if (!lightSection || window.innerWidth <= 768) return;
+    const rect = lightSection.getBoundingClientRect();
+    const inLight = my > rect.top && my < rect.bottom;
+    cursor.classList.toggle('inverted', inLight);
+    ring.classList.toggle('inverted', inLight);
+    if (cursorText) cursorText.classList.toggle('inverted', inLight);
+  }
+  lenis.on('scroll', checkCursorInversion);
+  document.addEventListener('mousemove', checkCursorInversion);
+
+  // ─── CONTEXTUAL CURSOR LABELS (data-cursor attribute) ───
+  if (cursorText && window.innerWidth > 768) {
+    document.querySelectorAll('[data-cursor]').forEach(el => {
+      el.addEventListener('mouseenter', () => {
+        cursorText.textContent = el.dataset.cursor;
+        cursorText.classList.add('active');
+        cursor.style.opacity = '0';
+        ring.style.opacity = '0';
+      });
+      el.addEventListener('mouseleave', () => {
+        cursorText.classList.remove('active');
+        cursor.style.opacity = '1';
+        ring.style.opacity = '1';
+      });
     });
   }
 
-  // 2. HERO CHAR-BY-CHAR REVEAL
-  const heroTitleEl = document.querySelector('.hero-title');
+  // ─── HERO WORD-BY-WORD REVEAL (replaces char-by-char) ───
+  // The hero title blur-reveal is already handled by the blur-reveal system above.
+  // We just need to trigger it after loader finishes.
+  const heroTitleEl = document.querySelector('.hero-title.blur-reveal');
   if (heroTitleEl) {
-    const html = heroTitleEl.innerHTML;
-    // Split into chars while preserving HTML tags
-    let charIndex = 0;
-    const baseDelay = 2.3; // match hero animation delay
-    let newHtml = '';
-    let inTag = false;
-    for (let i = 0; i < html.length; i++) {
-      const ch = html[i];
-      if (ch === '<') { inTag = true; newHtml += ch; continue; }
-      if (ch === '>') { inTag = false; newHtml += ch; continue; }
-      if (inTag) { newHtml += ch; continue; }
-      if (ch === '\n' || ch.trim() === '' && (html[i-1] === '>' || html[i+1] === '<')) {
-        newHtml += ch;
-        continue;
-      }
-      if (ch === ' ') {
-        newHtml += ' ';
-        continue;
-      }
-      const delay = baseDelay + charIndex * 0.035;
-      newHtml += `<span class="hero-char" style="animation-delay:${delay}s">${ch}</span>`;
-      charIndex++;
-    }
-    heroTitleEl.innerHTML = newHtml;
     heroTitleEl.style.animation = 'none';
     heroTitleEl.style.opacity = '1';
+    // Trigger after loader
+    setTimeout(() => {
+      heroTitleEl.classList.add('visible');
+    }, 2300);
   }
 
-  // 4. PROJECT DETAIL OVERLAY
-  const pageTransition = document.getElementById('pageTransition');
+  // ─── PROJECT DETAIL OVERLAY with column transition ───
   const projectOverlay = document.getElementById('projectOverlay');
   const poClose = document.getElementById('poClose');
 
@@ -1760,9 +2052,7 @@ The result: course completion rates improved by 34%, average session time increa
       e.preventDefault();
       const d = card.dataset;
       if (!d.title) {
-        // Placeholder cards — just do page transition
-        pageTransition.classList.add('active');
-        setTimeout(() => pageTransition.classList.remove('active'), 800);
+        colTransition();
         return;
       }
       // Fill overlay with project data
@@ -1774,7 +2064,6 @@ The result: course completion rates improved by 34%, average session time increa
       document.getElementById('poHeroImg').src = d.hero;
       document.getElementById('poHeroImg').alt = d.title;
       document.getElementById('poBody').textContent = d.body;
-      // Gallery
       const gallery = document.getElementById('poGallery');
       gallery.innerHTML = '';
       if (d.gallery) {
@@ -1786,27 +2075,22 @@ The result: course completion rates improved by 34%, average session time increa
           gallery.appendChild(img);
         });
       }
-      // Open overlay with transition
-      pageTransition.classList.add('active');
-      setTimeout(() => {
+      colTransition(() => {
         projectOverlay.classList.add('open');
         projectOverlay.scrollTop = 0;
         lenis.stop();
-      }, 400);
-      setTimeout(() => pageTransition.classList.remove('active'), 800);
+      });
     });
   });
 
   poClose.addEventListener('click', () => {
-    pageTransition.classList.add('active');
-    setTimeout(() => {
+    colTransition(() => {
       projectOverlay.classList.remove('open');
       lenis.start();
-    }, 400);
-    setTimeout(() => pageTransition.classList.remove('active'), 800);
+    });
   });
 
-  // 6. ANIMATED COUNTER FOR PROJECTS COUNT
+  // ─── ANIMATED COUNTER FOR PROJECTS COUNT ───
   const counterEl = document.querySelector('.counter-num');
   if (counterEl) {
     const target = parseInt(counterEl.dataset.target);
@@ -1825,7 +2109,7 @@ The result: course completion rates improved by 34%, average session time increa
     counterObserver.observe(counterEl);
   }
 
-  // 7. PARALLAX ON ABOUT PHOTO
+  // ─── PARALLAX ON ABOUT PHOTO ───
   const aboutPhoto = document.querySelector('.about-photo');
   if (aboutPhoto) {
     lenis.on('scroll', ({ scroll }) => {
@@ -1837,7 +2121,7 @@ The result: course completion rates improved by 34%, average session time increa
     });
   }
 
-  // 8. DARK/LIGHT THEME TOGGLE
+  // ─── DARK/LIGHT THEME TOGGLE ───
   const themeToggle = document.getElementById('themeToggle');
   if (themeToggle) {
     const saved = localStorage.getItem('theme');
@@ -1853,40 +2137,7 @@ The result: course completion rates improved by 34%, average session time increa
     });
   }
 
-  // CURSOR "VIEW" TEXT ON PROJECT HOVER
-  const cursorText = document.getElementById('cursorText');
-  if (cursorText && window.innerWidth > 768) {
-    document.querySelectorAll('.project-card').forEach(card => {
-      card.addEventListener('mouseenter', () => {
-        cursorText.classList.add('active');
-        cursor.style.opacity = '0';
-        ring.style.opacity = '0';
-      });
-      card.addEventListener('mouseleave', () => {
-        cursorText.classList.remove('active');
-        cursor.style.opacity = '1';
-        ring.style.opacity = '1';
-      });
-    });
-    // Track cursor-text position
-    function animCursorText() {
-      cursorText.style.left = mx + 'px';
-      cursorText.style.top = my + 'px';
-      requestAnimationFrame(animCursorText);
-    }
-    animCursorText();
-
-    // Inversion for cursor-text
-    document.addEventListener('mousemove', () => {
-      if (lightSection) {
-        const rect = lightSection.getBoundingClientRect();
-        const inLight = my > rect.top && my < rect.bottom;
-        cursorText.classList.toggle('inverted', inLight);
-      }
-    });
-  }
-
-  // SCROLL-VELOCITY TEXT SKEW
+  // ─── SCROLL-VELOCITY TEXT SKEW ───
   const skewEls = document.querySelectorAll('.velocity-skew');
   if (skewEls.length) {
     let currentSkew = 0;
@@ -1899,7 +2150,16 @@ The result: course completion rates improved by 34%, average session time increa
     });
   }
 
-  // CLIP-PATH IMAGE REVEAL ON SCROLL
+  // ─── IMAGE BLUR-UP LOADING ───
+  document.querySelectorAll('.blur-up').forEach(img => {
+    if (img.complete) {
+      img.classList.add('loaded');
+    } else {
+      img.addEventListener('load', () => img.classList.add('loaded'));
+    }
+  });
+
+  // ─── CLIP-PATH IMAGE REVEAL ON SCROLL ───
   const clipObserver = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
@@ -1909,7 +2169,22 @@ The result: course completion rates improved by 34%, average session time increa
   }, { threshold: 0.15 });
   document.querySelectorAll('.clip-reveal').forEach(el => clipObserver.observe(el));
 
-  // FOOTER LIVE CLOCK
+  // ─── FOOTER PARALLAX ───
+  const footerInner = document.getElementById('footerInner');
+  if (footerInner) {
+    lenis.on('scroll', ({ scroll }) => {
+      const footer = footerInner.closest('footer');
+      const rect = footer.getBoundingClientRect();
+      const vh = window.innerHeight;
+      if (rect.top < vh && rect.bottom > 0) {
+        const progress = 1 - (rect.top / vh);
+        const y = (1 - progress) * 25;
+        footerInner.style.transform = `translateY(${y}%)`;
+      }
+    });
+  }
+
+  // ─── FOOTER LIVE CLOCK ───
   const footerClock = document.getElementById('footerClock');
   if (footerClock) {
     function updateClock() {
@@ -1924,7 +2199,32 @@ The result: course completion rates improved by 34%, average session time increa
     setInterval(updateClock, 1000);
   }
 
-  // MAGNETIC HOVER ON NAV + CONTACT LINKS
+  // ─── ANIMATED GLOW LINES ───
+  const glowLines = document.querySelectorAll('.glow-line .glow');
+  if (glowLines.length) {
+    function animateGlow() {
+      const idx = Math.floor(Math.random() * glowLines.length);
+      const glow = glowLines[idx];
+      glow.style.transition = 'none';
+      glow.style.top = '-120px';
+      glow.style.opacity = '0';
+
+      requestAnimationFrame(() => {
+        glow.style.transition = 'top 2.5s cubic-bezier(0.33, 0, 0.67, 1), opacity 0.4s ease';
+        glow.style.opacity = '1';
+        glow.style.top = 'calc(100% + 120px)';
+
+        setTimeout(() => {
+          glow.style.opacity = '0';
+        }, 2100);
+      });
+
+      setTimeout(animateGlow, 1500 + Math.random() * 2000);
+    }
+    setTimeout(animateGlow, 3000);
+  }
+
+  // ─── MAGNETIC HOVER ON NAV + CONTACT LINKS ───
   if (window.innerWidth > 768) {
     document.querySelectorAll('.magnetic').forEach(el => {
       el.addEventListener('mousemove', (e) => {
