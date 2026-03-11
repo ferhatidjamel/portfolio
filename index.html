@@ -559,10 +559,10 @@ nav.hidden { transform: translateY(-100%); }
   letter-spacing: 0.1em;
 }
 
-/* Asymmetric grid */
+/* 12-Column Dynamic Grid */
 .projects-grid {
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
+  grid-template-columns: repeat(12, 1fr);
   gap: 32px;
   row-gap: 100px;
 }
@@ -573,10 +573,21 @@ nav.hidden { transform: translateY(-100%); }
   display: block;
 }
 
-.project-card:nth-child(1) { grid-column: 4 / 7; }
-.project-card:nth-child(2) { grid-column: 1 / 3; margin-top: -120px; }
-.project-card:nth-child(3) { grid-column: 2 / 7; }
-.project-card:nth-child(4) { grid-column: 1 / 4; }
+/* Card Type A: Full-width 16:10 (columns 1-12) */
+.project-card:nth-child(4n+1) { grid-column: 1 / 13; }
+.project-card:nth-child(4n+1) .img-placeholder { aspect-ratio: 16 / 10; }
+
+/* Card Type B: Right narrow 1:1 (columns 7-12) */
+.project-card:nth-child(4n+2) { grid-column: 7 / 13; }
+.project-card:nth-child(4n+2) .img-placeholder { aspect-ratio: 1 / 1; }
+
+/* Card Type C: Left wide 6:7 (columns 1-6) */
+.project-card:nth-child(4n+3) { grid-column: 1 / 7; }
+.project-card:nth-child(4n+3) .img-placeholder { aspect-ratio: 6 / 7; }
+
+/* Card Type D: Right wide 6:7 (columns 7-12) */
+.project-card:nth-child(4n+4) { grid-column: 7 / 13; }
+.project-card:nth-child(4n+4) .img-placeholder { aspect-ratio: 6 / 7; }
 
 .project-img-wrap {
   position: relative;
@@ -598,8 +609,6 @@ nav.hidden { transform: translateY(-100%); }
   transition: transform 0.8s var(--ease-out);
 }
 
-.project-card:nth-child(1) .img-placeholder { aspect-ratio: 9/10; }
-.project-card:nth-child(3) .img-placeholder { aspect-ratio: 16/9; }
 
 .project-card:hover .img-placeholder {
   transform: scale(1.03);
@@ -1047,6 +1056,63 @@ footer {
   background: var(--bg);
 }
 
+/* Animation Keyframes */
+@keyframes blur-load {
+  0% {
+    opacity: 0;
+    filter: blur(16px);
+  }
+  100% {
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+
+@keyframes glow {
+  0%, 100% {
+    text-shadow: 0 0 10px rgba(10, 10, 10, 0.3),
+                 0 0 20px rgba(10, 10, 10, 0.15);
+  }
+  50% {
+    text-shadow: 0 0 20px rgba(10, 10, 10, 0.5),
+                 0 0 40px rgba(10, 10, 10, 0.25);
+  }
+}
+
+@keyframes word-stagger {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes elastic-hover {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes slide-in {
+  0% {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
 /* ══════════════════════════════════════════════════════════════
    UTILITY & ANIMATION CLASSES
    ══════════════════════════════════════════════════════════════ */
@@ -1093,20 +1159,22 @@ footer {
   .hero-showreel-bg { display: none; }
 
   .projects-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(12, 1fr);
     row-gap: 60px;
   }
 
-  .project-card:nth-child(1),
-  .project-card:nth-child(2),
-  .project-card:nth-child(3),
-  .project-card:nth-child(4) {
-    grid-column: auto;
+  .project-card:nth-child(4n+1),
+  .project-card:nth-child(4n+2),
+  .project-card:nth-child(4n+3),
+  .project-card:nth-child(4n+4) {
+    grid-column: 1 / 13;
     margin-top: 0;
   }
 
-  .project-card:nth-child(1) .img-placeholder,
-  .project-card:nth-child(3) .img-placeholder {
+  .project-card:nth-child(4n+1) .img-placeholder,
+  .project-card:nth-child(4n+2) .img-placeholder,
+  .project-card:nth-child(4n+3) .img-placeholder,
+  .project-card:nth-child(4n+4) .img-placeholder {
     aspect-ratio: 4/3;
   }
 
