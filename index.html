@@ -14,17 +14,23 @@
 <meta name="twitter:description" content="UI/UX Designer crafting intentional digital experiences.">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%23080808' rx='16' width='100' height='100'/><text x='50' y='68' font-family='system-ui' font-size='48' font-weight='800' fill='%23f2f0eb' text-anchor='middle'>FD</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
   :root {
-    --black: #080808;
-    --white: #f2f0eb;
-    --grey: #888;
-    --grey-light: #333;
-    --mono: 'DM Mono', monospace;
-    --sans: 'Syne', sans-serif;
+    --black: #0a0a0a;
+    --white: #ffffff;
+    --grey-100: #f5f5f5;
+    --grey-200: #e5e5e5;
+    --grey-300: #d0d0d0;
+    --grey-400: #a8a8a8;
+    --grey-500: #808080;
+    --grey-600: #555555;
+    --grey-700: #333333;
+    --grey-800: #1a1a1a;
+    --accent: #f0f0f0;
+    --mono: 'IBM Plex Mono', monospace;
   }
 
   html { scroll-behavior: auto; /* Lenis handles smooth scrolling */ }
@@ -32,28 +38,44 @@
   body {
     background: var(--black);
     color: var(--white);
-    font-family: var(--sans);
+    font-family: var(--mono);
     overflow-x: hidden;
     cursor: none;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 1.6;
   }
 
-  /* COLUMN-BASED PAGE TRANSITION (Dylan Brouwer style) */
+  /* COLUMN-BASED PAGE TRANSITION — Dylan Brouwer style (scaleX horizontal reveal) */
   .page-cols {
     position: fixed;
     inset: 0;
     z-index: 500;
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
     pointer-events: none;
+    gap: 0;
   }
   .page-col {
-    flex: 1;
-    background: var(--white);
-    transform: scaleY(0);
-    transform-origin: bottom;
+    background: var(--black);
+    transform: scaleX(1);
+    transform-origin: left;
     will-change: transform;
+    border-right: 1px solid var(--grey-800);
   }
-  .page-cols.entering .page-col { transform-origin: bottom; }
-  .page-cols.leaving .page-col { transform-origin: top; }
+  .page-col.is-pad { background: transparent; border: none; }
+  .page-cols.entering .page-col { transform-origin: left; transform: scaleX(1); }
+  .page-cols.leaving .page-col { transform-origin: right; transform: scaleX(0); }
+
+  /* Tablet: 6 columns */
+  @media (max-width: 991px) {
+    .page-cols { grid-template-columns: repeat(6, 1fr); }
+  }
+
+  /* Mobile: 4 columns */
+  @media (max-width: 767px) {
+    .page-cols { grid-template-columns: repeat(4, 1fr); }
+  }
 
   /* SCROLL-DRIVEN PANEL WIPE — fixed overlay, zero document space */
   .wipe-overlay {
@@ -102,7 +124,7 @@
     overflow-y: auto;
     opacity: 0;
     pointer-events: none;
-    transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: opacity 0.5s cubic-bezier(0.625, 0.05, 0, 1);
   }
   .project-overlay.open {
     opacity: 1;
@@ -258,7 +280,7 @@
     display: inline-block;
     opacity: 0;
     transform: translateY(60px) rotate(5deg);
-    animation: charReveal 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation: charReveal 0.6s cubic-bezier(0.625, 0.05, 0, 1) forwards;
   }
   @keyframes charReveal {
     to { opacity: 1; transform: translateY(0) rotate(0); }
@@ -378,7 +400,7 @@
   /* MAGNETIC CONTACT HEADLINE */
   .contact-headline {
     display: inline-block;
-    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: transform 0.3s cubic-bezier(0.625, 0.05, 0, 1);
   }
 
   /* MOBILE HAMBURGER */
@@ -558,11 +580,12 @@
     margin-bottom: 28px;
   }
   .hero-title {
-    font-family: var(--sans);
-    font-size: clamp(56px, 9vw, 140px);
-    font-weight: 800;
-    line-height: 0.92;
-    letter-spacing: -0.03em;
+    font-family: var(--mono);
+    font-size: clamp(48px, 8vw, 120px);
+    font-weight: 700;
+    line-height: 0.95;
+    letter-spacing: -0.01em;
+    text-transform: lowercase;
     margin-bottom: 48px;
   }
   .hero-title em {
@@ -724,9 +747,9 @@
     margin-bottom: 16px;
   }
   .project-name {
-    font-family: var(--sans);
+    font-family: var(--mono);
     font-size: clamp(24px, 3vw, 42px);
-    font-weight: 700;
+    font-weight: 600;
     letter-spacing: -0.02em;
     line-height: 1.1;
     margin-bottom: 20px;
@@ -774,12 +797,13 @@
   }
   .about-left {}
   .about-headline {
-    font-family: var(--sans);
-    font-size: clamp(28px, 3.5vw, 52px);
-    font-weight: 700;
-    letter-spacing: -0.03em;
-    line-height: 1.1;
+    font-family: var(--mono);
+    font-size: clamp(24px, 3vw, 48px);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    line-height: 1.15;
     margin-bottom: 40px;
+    text-transform: lowercase;
   }
   .about-headline em {
     font-style: italic;
@@ -888,12 +912,13 @@
     border-top: 1px solid var(--grey-light);
   }
   .contact-headline {
-    font-family: var(--sans);
-    font-size: clamp(48px, 8vw, 120px);
-    font-weight: 800;
-    letter-spacing: -0.04em;
-    line-height: 0.9;
+    font-family: var(--mono);
+    font-size: clamp(42px, 7vw, 100px);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 0.95;
     margin: 80px 0 80px;
+    text-transform: lowercase;
   }
   .contact-headline em {
     font-style: italic;
@@ -971,7 +996,7 @@
   .fade-up {
     opacity: 0;
     transform: translateY(60px);
-    transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1), transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: opacity 0.9s cubic-bezier(0.625, 0.05, 0, 1), transform 0.9s cubic-bezier(0.625, 0.05, 0, 1);
   }
   .fade-up.visible {
     opacity: 1;
@@ -982,7 +1007,7 @@
   .slide-left {
     opacity: 0;
     transform: translateX(-80px);
-    transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1), transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: opacity 0.9s cubic-bezier(0.625, 0.05, 0, 1), transform 0.9s cubic-bezier(0.625, 0.05, 0, 1);
   }
   .slide-left.visible {
     opacity: 1;
@@ -991,7 +1016,7 @@
   .slide-right {
     opacity: 0;
     transform: translateX(80px);
-    transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1), transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: opacity 0.9s cubic-bezier(0.625, 0.05, 0, 1), transform 0.9s cubic-bezier(0.625, 0.05, 0, 1);
   }
   .slide-right.visible {
     opacity: 1;
@@ -1002,7 +1027,7 @@
   .scale-reveal {
     opacity: 0;
     transform: scale(0.92);
-    transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: opacity 0.8s cubic-bezier(0.625, 0.05, 0, 1), transform 0.8s cubic-bezier(0.625, 0.05, 0, 1);
   }
   .scale-reveal.visible {
     opacity: 1;
@@ -1019,17 +1044,17 @@
 
   /* ENHANCED PROJECT HOVER */
   .project-card {
-    transition: gap 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s ease;
+    transition: gap 0.4s cubic-bezier(0.625, 0.05, 0, 1), transform 0.4s ease;
   }
   .project-card:hover .project-img img { transform: scale(1.05); }
   .project-card:hover .project-name { color: #555; }
   .light-section .project-card:hover .project-name { color: #000; }
-  .project-img img { transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+  .project-img img { transition: transform 0.8s cubic-bezier(0.625, 0.05, 0, 1); }
 
   /* NAV ANIMATION */
   nav {
     transform: translateY(-100%);
-    animation: navSlideIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation: navSlideIn 0.8s cubic-bezier(0.625, 0.05, 0, 1) forwards;
     animation-delay: 2s;
   }
   @keyframes navSlideIn {
@@ -1039,17 +1064,17 @@
   /* HERO STAGGER ENTRANCE */
   .hero-eyebrow {
     opacity: 0;
-    animation: heroFadeIn 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation: heroFadeIn 1s cubic-bezier(0.625, 0.05, 0, 1) forwards;
     animation-delay: 2.1s;
   }
   .hero-title {
     opacity: 0;
-    animation: heroFadeIn 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation: heroFadeIn 1.2s cubic-bezier(0.625, 0.05, 0, 1) forwards;
     animation-delay: 2.3s;
   }
   .hero-bottom {
     opacity: 0;
-    animation: heroFadeIn 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation: heroFadeIn 1s cubic-bezier(0.625, 0.05, 0, 1) forwards;
     animation-delay: 2.6s;
   }
   @keyframes heroFadeIn {
@@ -1096,7 +1121,7 @@
     pointer-events: none;
     z-index: 9999;
     transform: translate(-50%, -50%) scale(0);
-    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), background 0.2s, color 0.2s;
+    transition: transform 0.35s cubic-bezier(0.625, 0.05, 0, 1), background 0.2s, color 0.2s;
     mix-blend-mode: normal;
   }
   .cursor-text.active { transform: translate(-50%, -50%) scale(1); }
@@ -1108,13 +1133,13 @@
   /* SCROLL VELOCITY SKEW */
   .velocity-skew {
     will-change: transform;
-    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: transform 0.3s cubic-bezier(0.625, 0.05, 0, 1);
   }
 
   /* CLIP-PATH IMAGE REVEAL */
   .clip-reveal {
     clip-path: inset(100% 0 0 0);
-    transition: clip-path 1s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: clip-path 1s cubic-bezier(0.625, 0.05, 0, 1);
   }
   .clip-reveal.visible {
     clip-path: inset(0 0 0 0);
@@ -1123,7 +1148,7 @@
   /* MAGNETIC HOVER */
   .magnetic {
     display: inline-block;
-    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: transform 0.3s cubic-bezier(0.625, 0.05, 0, 1);
   }
 
   /* FOOTER CLOCK */
@@ -1141,7 +1166,7 @@
     opacity: 0;
     filter: blur(10px);
     transform: translateY(8px) rotateX(8deg);
-    transition: opacity 0.7s ease, filter 0.7s ease, transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: opacity 0.7s ease, filter 0.7s ease, transform 0.7s cubic-bezier(0.625, 0.05, 0, 1);
   }
   .blur-reveal.visible .word {
     opacity: 1;
@@ -1152,7 +1177,7 @@
   /* IMAGE BLUR-UP LOADING */
   .blur-up {
     filter: blur(16px);
-    transition: filter 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: filter 0.8s cubic-bezier(0.625, 0.05, 0, 1);
     transform: scale(1.05);
   }
   .blur-up.loaded {
@@ -1162,7 +1187,7 @@
 
   /* NAV HIDE/SHOW ON SCROLL */
   nav {
-    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: transform 0.5s cubic-bezier(0.625, 0.05, 0, 1);
   }
   nav.nav-hidden {
     transform: translateY(-100%) !important;
@@ -1193,7 +1218,7 @@
     inset: 0;
     background: var(--white);
     transform: translateX(-101%);
-    transition: transform 0.5s cubic-bezier(0.76, 0, 0.24, 1);
+    transition: transform 0.5s cubic-bezier(0.625, 0.05, 0, 1);
     z-index: 0;
   }
   .btn-swoosh:hover::before { transform: translateX(0); }
@@ -1297,7 +1322,7 @@
 
   /* MARQUEE SKEW */
   .marquee-wrap {
-    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: transform 0.4s cubic-bezier(0.625, 0.05, 0, 1);
   }
 
   /* PREFERS REDUCED MOTION */
@@ -1345,9 +1370,16 @@
 </head>
 <body>
 
-<!-- COLUMN PAGE TRANSITION (Dylan Brouwer style) -->
+<!-- COLUMN PAGE TRANSITION (Dylan Brouwer style — scaleX horizontal) -->
 <div class="page-cols" id="pageCols">
-  <div class="page-col"></div><div class="page-col"></div><div class="page-col"></div><div class="page-col"></div><div class="page-col"></div>
+  <div class="page-col is-pad"></div>
+  <div class="page-col"></div>
+  <div class="page-col"></div>
+  <div class="page-col"></div>
+  <div class="page-col"></div>
+  <div class="page-col"></div>
+  <div class="page-col"></div>
+  <div class="page-col is-pad"></div>
 </div>
 
 <!-- ANIMATED GLOW LINES -->
@@ -1725,36 +1757,49 @@ The result: course completion rates improved by 34%, average session time increa
     loaderPct.textContent = Math.floor(pct) + '%';
   }, 80);
 
-  // ─── COLUMN PAGE TRANSITION (Dylan Brouwer style) ───
+  // ─── COLUMN PAGE TRANSITION (Dylan Brouwer style — scaleX horizontal reveal) ───
   const pageCols = document.getElementById('pageCols');
-  const pageColEls = pageCols.querySelectorAll('.page-col');
+  let pageColEls = [];
+
+  function updatePageCols() {
+    pageColEls = Array.from(pageCols.querySelectorAll('.page-col'));
+  }
+  updatePageCols();
 
   function colTransition(onMid) {
-    // Enter: columns scale up from bottom
+    const easing = 'cubic-bezier(0.625, 0.05, 0, 1)';
+    const revealDuration = 0.7; // 700ms reveal
+    const coverDuration = 0.55; // 550ms cover
+    const stagger = 0.06; // 60ms stagger
+
     pageCols.style.pointerEvents = 'all';
     pageCols.classList.add('entering');
     pageCols.classList.remove('leaving');
+
+    // Columns scale in from left
     pageColEls.forEach((col, i) => {
-      col.style.transformOrigin = 'bottom';
-      col.style.transition = `transform 0.5s cubic-bezier(0.76, 0, 0.24, 1) ${i * 0.06}s`;
-      col.style.transform = 'scaleY(1)';
+      col.style.transformOrigin = 'left';
+      col.style.transition = `transform ${revealDuration}s ${easing} ${i * stagger}s`;
+      col.style.transform = 'scaleX(1)';
     });
 
     setTimeout(() => {
       if (onMid) onMid();
-      // Leave: columns scale down from top
+
+      // Columns scale out to right
       pageCols.classList.remove('entering');
       pageCols.classList.add('leaving');
       pageColEls.forEach((col, i) => {
-        col.style.transformOrigin = 'top';
-        col.style.transition = `transform 0.5s cubic-bezier(0.76, 0, 0.24, 1) ${i * 0.06}s`;
-        col.style.transform = 'scaleY(0)';
+        col.style.transformOrigin = 'right';
+        col.style.transition = `transform ${coverDuration}s ${easing} ${i * stagger}s`;
+        col.style.transform = 'scaleX(0)';
       });
+
       setTimeout(() => {
         pageCols.style.pointerEvents = 'none';
         pageCols.classList.remove('leaving');
-      }, 800);
-    }, 550);
+      }, Math.max(revealDuration * 1000 + pageColEls.length * stagger * 1000, coverDuration * 1000 + pageColEls.length * stagger * 1000));
+    }, revealDuration * 1000 / 2);
   }
 
   // ─── TEXT BLUR-REVEAL (split into words) ───
