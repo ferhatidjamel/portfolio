@@ -1732,6 +1732,55 @@ footer {
       });
     });
 
+    /* ─── IMAGE BLUR-LOAD EFFECT ─── */
+    document.querySelectorAll('img').forEach(function(img) {
+      if (!img.complete) {
+        img.style.filter = 'blur(16px)';
+        img.style.opacity = '0';
+        img.addEventListener('load', function() {
+          gsap.to(img, {
+            opacity: 1,
+            filter: 'blur(0px)',
+            duration: 1.1,
+            ease: 'power2.out'
+          });
+        });
+      } else {
+        img.style.filter = 'blur(0px)';
+        img.style.opacity = '1';
+      }
+    });
+
+    /* ─── ELASTIC HOVER ON PROJECT CARDS ─── */
+    document.querySelectorAll('.project-card').forEach(function(card) {
+      card.addEventListener('mouseenter', function() {
+        gsap.to(card, {
+          scale: 1.02,
+          duration: 0.6,
+          ease: 'elastic.out(1.2, 0.4)',
+          overwrite: 'auto'
+        });
+        gsap.to(card.querySelector('.project-meta'), {
+          opacity: 1,
+          duration: 0.4,
+          ease: 'power2.out'
+        });
+      });
+      card.addEventListener('mouseleave', function() {
+        gsap.to(card, {
+          scale: 1,
+          duration: 0.6,
+          ease: 'elastic.out(1.2, 0.4)',
+          overwrite: 'auto'
+        });
+      });
+    });
+
+    /* ─── GLOW EFFECT ON PROJECT NAMES ─── */
+    document.querySelectorAll('.project-name').forEach(function(el) {
+      el.style.animation = 'glow 3s ease-in-out infinite';
+    });
+
     /* ─── MARQUEE ─── */
     var marqueeTrack = document.getElementById('marqueeTrack');
     var marqueeX = 0;
