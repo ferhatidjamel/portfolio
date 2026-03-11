@@ -58,7 +58,7 @@
   }
   .page-col {
     background: var(--black);
-    transform: scaleX(1);
+    transform: scaleX(0);
     transform-origin: left;
     will-change: transform;
     border-right: 1px solid var(--grey-800);
@@ -1340,7 +1340,7 @@
     .marquee-track { animation: none; }
     .wipe-panel { transform: none; }
     .wipe-overlay { visibility: hidden !important; }
-    .page-col { transform: none; }
+    .page-col { transform: scaleX(0); }
     .clip-reveal { clip-path: none; }
     .velocity-skew { transform: none !important; }
     .glow-lines { display: none; }
