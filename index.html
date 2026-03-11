@@ -1298,7 +1298,7 @@ footer {
   <a href="#hero" class="nav-logo">Ferhatidjamel</a>
   <div class="nav-right">
     <ul class="nav-links">
-      <li><a href="#work">Work</a></li>
+      <li><a href="work.html">Work</a></li>
       <li><a href="#about">About</a></li>
       <li><a href="#experience">Experience</a></li>
       <li><a href="#contact">Contact</a></li>
@@ -1312,7 +1312,7 @@ footer {
 
 <!-- MOBILE MENU -->
 <div class="mobile-menu" id="mobileMenu">
-  <a href="#work" class="mobile-link">Work</a>
+  <a href="work.html" class="mobile-link">Work</a>
   <a href="#about" class="mobile-link">About</a>
   <a href="#experience" class="mobile-link">Experience</a>
   <a href="#contact" class="mobile-link">Contact</a>
@@ -1364,112 +1364,15 @@ footer {
   </div>
 </div>
 
-<!-- ════════════ WORK ════════════ -->
-<section id="work">
-  <div class="projects-header">
-    <div class="section-label">Featured Work</div>
-    <div class="projects-count">04 Projects</div>
-  </div>
-
-  <div class="projects-grid">
-    <!-- Project 1: Mintra Learning Platform -->
-    <a class="project-card" data-cursor="View" data-project="0">
-      <div class="project-img-wrap">
-        <img src="images/mintra-learning.jpg" alt="Mintra Learning Platform" class="fade-up" style="width:100%;height:auto;display:block;aspect-ratio:9/10;object-fit:cover;">
-      </div>
-      <div class="project-meta">
-        <div>
-          <div class="project-client">Mintra Platform</div>
-          <div class="project-name">Learning Platform — Vibrant UI System</div>
-          <div class="project-tags">
-            <span class="tag">UI Design</span>
-            <span class="tag">Color System</span>
-            <span class="tag">Interaction</span>
-          </div>
-        </div>
-        <div class="project-num">01</div>
-      </div>
-    </a>
-
-    <!-- Project 2: Apple Watch Face -->
-    <a class="project-card" data-cursor="View" data-project="1">
-      <div class="project-img-wrap">
-        <img src="images/watch-face-design.jpg" alt="Apple Watch Face Design" class="fade-up" style="width:100%;height:auto;display:block;aspect-ratio:4/3;object-fit:cover;">
-      </div>
-      <div class="project-meta">
-        <div>
-          <div class="project-client">Personal Project</div>
-          <div class="project-name">Minimal Watch Face — Typographic System</div>
-          <div class="project-tags">
-            <span class="tag">Wearable Design</span>
-            <span class="tag">Typography</span>
-            <span class="tag">Minimalism</span>
-          </div>
-        </div>
-        <div class="project-num">02</div>
-      </div>
-    </a>
-
-    <!-- Project 3: Taga Posters -->
-    <a class="project-card" data-cursor="View" data-project="2">
-      <div class="project-img-wrap">
-        <img src="images/taga-poster-design.jpg" alt="Taga Poster Design" class="fade-up" style="width:100%;height:auto;display:block;aspect-ratio:16/9;object-fit:cover;">
-      </div>
-      <div class="project-meta">
-        <div>
-          <div class="project-client">Taga Movement</div>
-          <div class="project-name">Taga — Drift Poster Campaign</div>
-          <div class="project-tags">
-            <span class="tag">Poster Design</span>
-            <span class="tag">Typography</span>
-            <span class="tag">Editorial</span>
-          </div>
-        </div>
-        <div class="project-num">03</div>
-      </div>
-    </a>
-
-    <!-- Project 4: NXT Academy Branding -->
-    <a class="project-card" data-cursor="View" data-project="3">
-      <div class="project-img-wrap">
-        <img src="images/nxt-academy-billboard.jpg" alt="NXT Academy Billboard" class="fade-up" style="width:100%;height:auto;display:block;aspect-ratio:4/3;object-fit:cover;">
-      </div>
-      <div class="project-meta">
-        <div>
-          <div class="project-client">NXT Youth Academy</div>
-          <div class="project-name">NXT — Billboard & Signage System</div>
-          <div class="project-tags">
-            <span class="tag">Branding</span>
-            <span class="tag">Environmental Design</span>
-            <span class="tag">Advertising</span>
-          </div>
-        </div>
-        <div class="project-num">04</div>
-      </div>
-    </a>
-  </div>
+<!-- ════════════ WORK PREVIEW ════════════ -->
+<section id="work" style="border-top: 1px solid var(--border); padding: 120px 48px; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 60vh; text-align: center;">
+  <h2 style="font-size: clamp(32px, 5vw, 64px); font-weight: 700; letter-spacing: -0.03em; line-height: 1.1; margin-bottom: 24px; color: var(--fg);">Explore My Work</h2>
+  <p style="font-size: 14px; color: var(--grey-dark); max-width: 500px; margin-bottom: 48px; line-height: 1.8;">View all my featured projects, including UI systems, branding, posters, and more. Each project represents a unique approach to design thinking and visual communication.</p>
+  <a href="work.html" class="magnetic-btn" data-magnetic style="display: inline-flex; gap: 10px; align-items: center; font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; padding: 14px 28px; border: 1px solid var(--fg); background: none; color: var(--fg); position: relative; overflow: hidden; transition: color 0.4s, background 0.4s, transform 0.3s var(--ease-out); will-change: transform;">
+    View All Projects
+    <span style="transition: transform 0.3s;">→</span>
+  </a>
 </section>
-
-<!-- ════════════ PROJECT DETAIL OVERLAY ════════════ -->
-<div class="project-overlay" id="projectOverlay">
-  <button class="po-close" id="poClose">Close</button>
-  <div class="po-hero-img" id="poHeroImg">Project Hero Image</div>
-  <div class="po-content">
-    <div class="po-client" id="poClient"></div>
-    <h2 class="po-title" id="poTitle"></h2>
-    <div class="po-meta">
-      <div><div class="po-meta-label">Role</div><div class="po-meta-value" id="poRole"></div></div>
-      <div><div class="po-meta-label">Year</div><div class="po-meta-value" id="poYear"></div></div>
-      <div><div class="po-meta-label">Scope</div><div class="po-meta-value" id="poScope"></div></div>
-    </div>
-    <div class="po-body" id="poBody"></div>
-    <div class="po-gallery">
-      <div class="po-gallery-placeholder">Gallery Image 1</div>
-      <div class="po-gallery-placeholder">Gallery Image 2</div>
-      <div class="po-gallery-placeholder">Gallery Image 3</div>
-    </div>
-  </div>
-</div>
 
 <!-- ════════════ ABOUT ════════════ -->
 <section id="about">
@@ -2001,6 +1904,16 @@ footer {
           e.preventDefault();
           lenis.scrollTo(target, { offset: -20 });
         }
+      });
+    });
+
+    /* ─── PAGE NAVIGATION WITH TRANSITIONS ─── */
+    document.querySelectorAll('a[href="work.html"]').forEach(function(link) {
+      link.addEventListener('click', function(e) {
+        e.preventDefault();
+        ptRevealIn(function() {
+          window.location.href = 'work.html';
+        });
       });
     });
 
