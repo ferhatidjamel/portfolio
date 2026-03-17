@@ -309,121 +309,89 @@ nav.hidden { transform: translateY(-100%); }
 }
 
 /* ══════════════════════════════════════════════════════════════
-   HERO SECTION — STICKY WITH SCROLL FADE
+   HERO REDESIGN
    ══════════════════════════════════════════════════════════════ */
-.hero-sticky-wrap {
-  height: 200vh;
-  position: relative;
-}
-
-#hero {
+.hero {
   height: 100vh;
+  position: relative;
   display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  padding: 0 48px 80px;
-  position: sticky;
-  top: 0;
-  overflow: hidden;
-  will-change: opacity, filter;
-}
-
-/* Showreel background */
-.hero-showreel-bg {
-  position: absolute;
-  top: 50%;
-  right: 5%;
-  transform: translateY(-50%);
-  width: 45%;
-  aspect-ratio: 16/10;
-  background: #e8e6e0;
-  overflow: hidden;
-  opacity: 0.15;
+  align-items: center;
+  justify-content: center;
   z-index: 0;
 }
 
-.hero-showreel-bg video {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.hero-content {
-  position: relative;
+.hero__content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
   z-index: 2;
 }
 
-.hero-eyebrow {
-  font-size: 11px;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--grey);
-  margin-bottom: 24px;
-}
-
-.hero-title {
-  font-size: clamp(48px, 8vw, 120px);
+.hero__first,
+.hero__last {
+  display: block;
+  font-family: var(--mono);
   font-weight: 700;
-  letter-spacing: -0.04em;
-  line-height: 0.95;
-  margin-bottom: 40px;
-}
-
-.hero-title em {
-  font-style: italic;
-  font-weight: 300;
-  color: var(--grey);
-}
-
-.hero-title .word {
-  display: inline-block;
-  overflow: hidden;
-}
-
-.hero-title .word-inner {
-  display: inline-block;
-  transform: translateY(120%);
-}
-
-.hero-bio {
-  max-width: 420px;
-  font-size: 13px;
-  line-height: 1.8;
-  color: var(--grey-dark);
-  margin-bottom: 48px;
-}
-
-.hero-cta {
-  display: inline-flex;
-  gap: 16px;
-  align-items: center;
-}
-
-.hero-scroll {
-  font-size: 10px;
-  letter-spacing: 0.2em;
+  font-size: 13vw;
   text-transform: uppercase;
-  color: var(--grey);
-  display: inline-flex;
-  align-items: center;
-  gap: 12px;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  color: var(--fg);
+  margin: 0;
+}
+
+.hero__last {
+  margin-bottom: 32px;
+}
+
+.hero__descriptor {
+  font-family: var(--mono);
+  font-style: italic;
+  font-size: 14px;
+  opacity: 0.6;
+  color: var(--fg);
+  margin: 0 0 40px;
+}
+
+.hero__cursor {
+  animation: blink 0.8s steps(1) infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+
+.hero__ctas {
+  display: flex;
+  flex-direction: row;
+  gap: 24px;
+}
+
+.hero__cta {
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--fg);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.2s ease;
+}
+
+.hero__cta:hover {
+  border-bottom-color: currentColor;
+}
+
+.hero__scroll {
   position: absolute;
-  bottom: 48px;
-  right: 48px;
-  writing-mode: vertical-rl;
-}
-
-.hero-scroll::before {
-  content: '';
-  width: 1px;
-  height: 40px;
-  background: var(--grey);
-  animation: scrollPulse 2s ease infinite;
-}
-
-@keyframes scrollPulse {
-  0%, 100% { opacity: 0.3; transform: scaleY(0.5); transform-origin: top; }
-  50% { opacity: 1; transform: scaleY(1); }
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--fg);
+  pointer-events: none;
+  z-index: 2;
 }
 
 /* ══════════════════════════════════════════════════════════════
@@ -1082,15 +1050,12 @@ footer {
   .pt-overlay { grid-template-columns: repeat(6, 1fr); }
   .glow-lines { grid-template-columns: repeat(6, 1fr); }
 
-  #hero { padding: 0 32px 64px; }
   #work { padding: 80px 32px; }
   #about { padding: 80px 32px; }
   #experience { padding: 80px 32px; }
   #contact { padding: 80px 32px; }
   nav { padding: 24px 32px; }
   footer { padding: 24px 32px; }
-
-  .hero-showreel-bg { display: none; }
 
   .projects-grid {
     grid-template-columns: repeat(2, 1fr);
@@ -1132,9 +1097,15 @@ footer {
   .nav-links { display: none; }
   .nav-hamburger { display: flex; }
 
-  #hero { padding: 0 24px 48px; min-height: 90vh; }
-  .hero-sticky-wrap { height: 100vh; }
-  .hero-scroll { display: none; }
+  .hero__first,
+  .hero__last {
+    font-size: clamp(64px, 18vw, 96px);
+  }
+
+  .hero__ctas {
+    flex-direction: column;
+    gap: 16px;
+  }
 
   #work { padding: 64px 24px; }
   #about { padding: 64px 24px; }
@@ -1175,13 +1146,10 @@ footer {
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;
   }
-  .hero-title .word-inner { transform: none; }
   .blur-reveal .word { opacity: 1; filter: none; transform: none; }
   .fade-up { opacity: 1; transform: none; }
   .pt-col { transform: scaleX(0); }
   html { scroll-behavior: smooth; }
-  .hero-sticky-wrap { height: auto; }
-  #hero { position: relative; }
 }
 </style>
 </head>
@@ -1251,27 +1219,20 @@ footer {
 </div>
 
 <!-- ════════════ HERO ════════════ -->
-<div class="hero-sticky-wrap">
-  <section id="hero">
-    <div class="hero-showreel-bg">
-      <!-- Replace with your showreel video -->
-      <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:var(--grey);">Showreel</div>
+<section class="hero" id="hero">
+  <div class="hero__content">
+    <span class="hero__first">FERHATI</span>
+    <span class="hero__last">DJAMEL</span>
+    <p class="hero__descriptor">
+      UI/UX Designer — Algiers, Algeria<span class="hero__cursor">_</span>
+    </p>
+    <div class="hero__ctas">
+      <a href="#work" class="hero__cta">View Work →</a>
+      <a href="#contact" class="hero__cta">Get in Touch →</a>
     </div>
-    <div class="hero-content">
-      <div class="hero-eyebrow">Designer — Algiers, Algeria</div>
-      <h1 class="hero-title">
-        <span class="word"><span class="word-inner">Ferhati</span></span><br>
-        <span class="word"><span class="word-inner"><em>Djamel</em></span></span>
-      </h1>
-      <p class="hero-bio blur-reveal">I craft bold, purposeful designs across digital and physical spaces. Driven by typography, geometry, and meaningful visual communication.</p>
-      <div class="hero-cta">
-        <a href="#work" class="magnetic-btn" data-magnetic>View Work <span class="btn-arrow">→</span></a>
-        <a href="#contact" class="magnetic-btn" data-magnetic>Get in Touch <span class="btn-arrow">→</span></a>
-      </div>
-    </div>
-    <div class="hero-scroll">Scroll</div>
-  </section>
-</div>
+  </div>
+  <span class="hero__scroll" aria-hidden="true">↓</span>
+</section>
 
 <!-- ════════════ MARQUEE ════════════ -->
 <div class="marquee-wrap">
@@ -1611,26 +1572,66 @@ footer {
       lastScroll = current;
     });
 
-    /* ─── HERO WORD REVEAL ─── */
-    gsap.to('.hero-title .word-inner', {
-      y: 0, duration: 1, stagger: 0.15, ease: 'expo.out', delay: 0.2
-    });
+    /* ─── HERO ENTRANCE ANIMATION ─── */
+    var prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    /* ─── HERO STICKY SCROLL FADE-OUT ─── */
-    var heroEl = document.getElementById('hero');
-    ScrollTrigger.create({
-      trigger: '.hero-sticky-wrap',
-      start: 'top top',
-      end: 'bottom top',
-      scrub: true,
-      onUpdate: function(self) {
-        var progress = self.progress;
-        // Fade and blur hero as user scrolls past
-        var opacity = 1 - Math.pow(progress, 0.6);
-        var blur = progress * 12;
-        heroEl.style.opacity = opacity;
-        if (canBlur) heroEl.style.filter = 'blur(' + blur + 'px)';
-      }
+    if (prefersReducedMotion) {
+      gsap.set(['.hero__first', '.hero__last', '.hero__descriptor', '.hero__ctas'], { opacity: 1 });
+      gsap.set('.hero__scroll', { opacity: 0.5 });
+    } else {
+      var heroTl = gsap.timeline({
+        onComplete: function() {
+          gsap.set(['.hero__first', '.hero__last', '.hero__descriptor'], {
+            clearProps: 'filter,webkitFilter',
+          });
+          gsap.to('.hero__scroll', {
+            opacity: 0.4,
+            duration: 2,
+            ease: 'sine.inOut',
+            yoyo: true,
+            repeat: -1,
+          });
+        },
+      });
+
+      heroTl
+        .from('.hero__first', {
+          opacity: 0,
+          filter: 'blur(10px)',
+          webkitFilter: 'blur(10px)',
+          duration: 0.7,
+          ease: 'power2.out',
+        })
+        .from('.hero__last', {
+          opacity: 0,
+          filter: 'blur(10px)',
+          webkitFilter: 'blur(10px)',
+          duration: 0.7,
+          ease: 'power2.out',
+        }, '>+0.08')
+        .from('.hero__descriptor', {
+          opacity: 0,
+          filter: 'blur(10px)',
+          webkitFilter: 'blur(10px)',
+          duration: 0.8,
+          ease: 'power2.out',
+        }, '>+0.12')
+        .from('.hero__ctas', {
+          opacity: 0,
+          duration: 0.5,
+        }, '>+0.10')
+        .from('.hero__scroll', {
+          opacity: 0,
+          duration: 0.5,
+        }, '>+0.20');
+    }
+
+    /* ─── HERO CTA SMOOTH SCROLL ─── */
+    document.querySelectorAll('.hero__cta').forEach(function(link) {
+      link.addEventListener('click', function(e) {
+        e.preventDefault();
+        lenis.scrollTo(link.getAttribute('href'));
+      });
     });
 
     /* ─── BLUR-REVEAL TEXT ─── */
