@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lab — Ferhati Djamel</title>
+  <meta name="description" content="Personal experiments and side projects by Ferhati Djamel">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect fill='%23080808' rx='16' width='100' height='100'/><text x='50' y='68' font-family='system-ui' font-size='48' font-weight='800' fill='%23f2f0eb' text-anchor='middle'>FD</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&display=swap" rel="stylesheet">
+
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #0a0a0a;
+      --fg: #f2f0eb;
+      --grey: #777;
+      --grey-dark: #aaa;
+      --border: #222;
+      --mono: 'IBM Plex Mono', monospace;
+      --ease: cubic-bezier(0.625, 0.05, 0, 1);
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    html, body {
+      height: 100%;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--fg);
+      font-family: var(--mono);
+      font-size: 13px;
+      font-weight: 400;
+      line-height: 1.7;
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    ::selection { background: var(--fg); color: var(--bg); }
+    a { color: inherit; text-decoration: none; }
+    button { font-family: inherit; cursor: none; }
+
+    /* ══════ GRAIN ══════ */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      z-index: 9990;
+      pointer-events: none;
+      opacity: 0.03;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-repeat: repeat;
+      background-size: 128px 128px;
+    }
+
+    /* ══════ PAGE VEIL ══════ */
+    .page-veil {
+      position: fixed;
+      inset: 0;
+      z-index: 900;
+      background: var(--bg);
+      pointer-events: none;
+      opacity: 1;
+    }
+
+    /* ══════ CURSOR ══════ */
+    .cursor {
+      position: fixed; top: 0; left: 0;
+      width: 8px; height: 8px; border-radius: 50%;
+      pointer-events: none; z-index: 9999;
+      transform: translate(-50%, -50%);
+      mix-blend-mode: difference; background: #fff;
+    }
+
+    /* ══════ NAV ══════ */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 28px 48px;
+      mix-blend-mode: difference;
+    }
+    .nav-logo {
+      font-size: 12px; font-weight: 700;
+      letter-spacing: 0.12em; text-transform: uppercase; color: #fff;
+    }
+    .nav-center {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+    .nav-right { display: flex; align-items: center; gap: 32px; }
+    .nav-links { display: flex; gap: 32px; list-style: none; }
+    .nav-links a {
+      font-size: 11px; letter-spacing: 0.1em;
+      text-transform: uppercase; color: #fff;
+      position: relative; padding-bottom: 2px;
+    }
+    .nav-links a::after {
+      content: ''; position: absolute;
+      bottom: 0; left: 0; right: 0; height: 1px;
+      background: currentColor; transform: scaleX(0);
+      transform-origin: right; transition: transform 0.4s var(--ease);
+    }
+    .nav-links a:hover::after { transform: scaleX(1); transform-origin: left; }
+
+    .nav-cta {
+      font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;
+      color: var(--bg); background: #fff; border: none;
+      padding: 8px 20px; mix-blend-mode: difference; transition: opacity 0.3s;
+    }
+    .nav-cta:hover { opacity: 0.8; }
+
+    .nav-hamburger {
+      display: none; flex-direction: column; gap: 5px;
+      background: none; border: none; padding: 4px;
+    }
+    .nav-hamburger span { width: 20px; height: 1.5px; background: #fff; }
+
+    .mobile-menu {
+      position: fixed; inset: 0; z-index: 99;
+      background: var(--bg); display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 40px;
+      opacity: 0; pointer-events: none; transition: opacity 0.4s;
+    }
+    .mobile-menu.open { opacity: 1; pointer-events: all; }
+    .mobile-menu a { font-size: 24px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; }
+
+    /* ══════ EMPTY STATE ══════ */
+    .lab-empty {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      text-align: center;
+      padding: 48px;
+    }
+
+    .lab-empty-label {
+      font-size: 10px;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--grey);
+      margin-bottom: 32px;
+    }
+
+    .lab-empty-title {
+      font-size: clamp(32px, 5vw, 56px);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      margin-bottom: 20px;
+      color: var(--fg);
+    }
+
+    .lab-empty-desc {
+      font-size: 14px;
+      color: var(--grey);
+      max-width: 420px;
+      line-height: 1.8;
+      margin-bottom: 48px;
+    }
+
+    .lab-empty-badge {
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--grey);
+      border: 1px solid var(--border);
+      padding: 8px 20px;
+    }
+
+    /* ══════ RESPONSIVE ══════ */
+    @media (max-width: 767px) {
+      nav { padding: 20px 24px; }
+      .nav-center { position: static; transform: none; }
+      .nav-links, .nav-cta { display: none; }
+      .nav-hamburger { display: flex; }
+      .cursor { display: none; }
+      body { cursor: auto; }
+      button, a { cursor: pointer; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="page-veil" id="pageVeil"></div>
+
+<div class="cursor" id="cursor"></div>
+
+<nav id="nav">
+  <a href="index.html" class="nav-logo">Ferhatidjamel</a>
+  <div class="nav-center">
+    <ul class="nav-links">
+      <li><a href="work.html">Work</a></li>
+      <li><a href="lab.html">Lab</a></li>
+      <li><a href="index.html#about">About</a></li>
+    </ul>
+  </div>
+  <div class="nav-right">
+    <a href="index.html#contact" class="nav-cta">Get in Touch</a>
+    <button class="nav-hamburger" id="hamburger" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu">
+  <a href="work.html" class="mobile-link">Work</a>
+  <a href="lab.html" class="mobile-link">Lab</a>
+  <a href="index.html#about" class="mobile-link">About</a>
+  <a href="index.html#contact" class="mobile-link">Get in Touch</a>
+</div>
+
+<main class="lab-empty">
+  <div class="lab-empty-label">Lab</div>
+  <h1 class="lab-empty-title">Coming Soon</h1>
+  <p class="lab-empty-desc">Personal experiments, side projects, and creative explorations. This space is being prepared.</p>
+  <div class="lab-empty-badge">In Progress</div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/gsap.min.js"></script>
+<script>
+(function() {
+  'use strict';
+
+  var veil = document.getElementById('pageVeil');
+
+  function navigateWithTransition(href) {
+    sessionStorage.setItem('pt-from-other', '1');
+    gsap.to(veil, {
+      opacity: 1,
+      duration: 0.5,
+      ease: 'power2.inOut',
+      onComplete: function() {
+        window.location.href = href;
+      }
+    });
+  }
+
+  /* ─── ENTRANCE ─── */
+  window.addEventListener('load', function() {
+    var content = document.querySelector('.lab-empty');
+    var navEl = document.getElementById('nav');
+
+    gsap.set(content, { opacity: 0, y: 30 });
+    gsap.set(navEl, { opacity: 0, y: -15 });
+
+    setTimeout(function() {
+      gsap.to(veil, { opacity: 0, duration: 0.6, ease: 'power2.out' });
+      gsap.to(navEl, { opacity: 1, y: 0, duration: 0.8, ease: 'expo.out', delay: 0.1 });
+      gsap.to(content, { opacity: 1, y: 0, duration: 1, ease: 'expo.out', delay: 0.2 });
+    }, 100);
+  });
+
+  /* ─── NAVIGATION ─── */
+  document.querySelectorAll('a[href^="index.html"], a[href="work.html"]').forEach(function(link) {
+    link.addEventListener('click', function(e) {
+      e.preventDefault();
+      navigateWithTransition(link.getAttribute('href'));
+    });
+  });
+
+  /* ─── CURSOR ─── */
+  var cursor = document.getElementById('cursor');
+  var cx = { current: 0, target: 0 };
+  var cy = { current: 0, target: 0 };
+
+  if (window.matchMedia('(pointer: fine)').matches) {
+    document.addEventListener('mousemove', function(e) {
+      cx.target = e.clientX;
+      cy.target = e.clientY;
+    });
+    (function loop() {
+      cx.current += (cx.target - cx.current) * 0.15;
+      cy.current += (cy.target - cy.current) * 0.15;
+      cursor.style.left = cx.current + 'px';
+      cursor.style.top = cy.current + 'px';
+      requestAnimationFrame(loop);
+    })();
+    document.querySelectorAll('a, button').forEach(function(el) {
+      el.addEventListener('mouseenter', function() { gsap.to(cursor, { scale: 1.8, duration: 0.3 }); });
+      el.addEventListener('mouseleave', function() { gsap.to(cursor, { scale: 1, duration: 0.3 }); });
+    });
+  }
+
+  /* ─── MOBILE MENU ─── */
+  var hamburger = document.getElementById('hamburger');
+  var mobileMenu = document.getElementById('mobileMenu');
+  hamburger.addEventListener('click', function() {
+    hamburger.classList.toggle('open');
+    mobileMenu.classList.toggle('open');
+  });
+  document.querySelectorAll('.mobile-link').forEach(function(link) {
+    link.addEventListener('click', function() {
+      hamburger.classList.remove('open');
+      mobileMenu.classList.remove('open');
+    });
+  });
+
+})();
+</script>
+</body>
+</html>

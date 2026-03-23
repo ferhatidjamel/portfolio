@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,25 +10,22 @@
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&display=swap" rel="stylesheet">
 
   <style>
-    /* ══════════════════════════════════════════════════════════════
-       RESET & ROOT
-       ══════════════════════════════════════════════════════════════ */
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
     :root {
-      --bg: #f5f3ee;
-      --fg: #0a0a0a;
-      --grey: #888;
-      --grey-light: #ccc;
-      --grey-dark: #555;
-      --border: #ddd;
+      --bg: #0a0a0a;
+      --fg: #f2f0eb;
+      --grey: #777;
+      --grey-dark: #aaa;
+      --border: #222;
       --mono: 'IBM Plex Mono', monospace;
       --ease: cubic-bezier(0.625, 0.05, 0, 1);
       --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    html {
-      scroll-behavior: auto;
+    html, body {
+      height: 100%;
+      overflow: hidden;
       -webkit-font-smoothing: antialiased;
       text-rendering: optimizeLegibility;
     }
@@ -40,57 +37,15 @@
       font-size: 13px;
       font-weight: 400;
       line-height: 1.7;
-      overflow-x: hidden;
       cursor: none;
-      transition: background 0.6s, color 0.6s;
     }
 
-    ::selection {
-      background: var(--fg);
-      color: var(--bg);
-    }
-
+    ::selection { background: var(--fg); color: var(--bg); }
     a { color: inherit; text-decoration: none; }
     img { display: block; max-width: 100%; }
     button { font-family: inherit; cursor: none; }
 
-    /* ══════════════════════════════════════════════════════════════
-       DARK THEME
-       ══════════════════════════════════════════════════════════════ */
-    html.dark {
-      --bg: #0a0a0a;
-      --fg: #f2f0eb;
-      --grey: #777;
-      --grey-light: #444;
-      --grey-dark: #aaa;
-      --border: #222;
-    }
-
-    html.dark body { background: #0a0a0a; color: #f2f0eb; }
-    html.dark .project-overlay { background: #0a0a0a; color: #f2f0eb; }
-
-    /* ══════════════════════════════════════════════════════════════
-       PAGE TRANSITION COLUMNS
-       ══════════════════════════════════════════════════════════════ */
-    .pt-overlay {
-      position: fixed;
-      inset: 0;
-      z-index: 900;
-      display: grid;
-      grid-template-columns: repeat(8, 1fr);
-      pointer-events: none;
-    }
-
-    .pt-col {
-      background: var(--fg);
-      transform: scaleX(0);
-      transform-origin: left;
-      will-change: transform;
-    }
-
-    /* ══════════════════════════════════════════════════════════════
-       GRAIN TEXTURE
-       ══════════════════════════════════════════════════════════════ */
+    /* ══════ GRAIN ══════ */
     body::after {
       content: '';
       position: fixed;
@@ -103,563 +58,338 @@
       background-size: 128px 128px;
     }
 
-    /* ══════════════════════════════════════════════════════════════
-       SCROLL PROGRESS
-       ══════════════════════════════════════════════════════════════ */
-    .scroll-progress {
+    /* ══════ PAGE VEIL ══════ */
+    .page-veil {
       position: fixed;
-      top: 0; left: 0;
-      width: 0%;
-      height: 2px;
-      background: var(--fg);
-      z-index: 999;
-      transform-origin: left;
+      inset: 0;
+      z-index: 900;
+      background: var(--bg);
+      pointer-events: none;
+      opacity: 1;
     }
 
-    /* ══════════════════════════════════════════════════════════════
-       CUSTOM CURSOR
-       ══════════════════════════════════════════════════════════════ */
+    /* ══════ CURSOR ══════ */
     .cursor {
-      position: fixed;
-      top: 0; left: 0;
-      width: 8px; height: 8px;
-      border-radius: 50%;
-      pointer-events: none;
-      z-index: 9999;
+      position: fixed; top: 0; left: 0;
+      width: 8px; height: 8px; border-radius: 50%;
+      pointer-events: none; z-index: 9999;
       transform: translate(-50%, -50%);
-      mix-blend-mode: difference;
-      background: #fff;
+      mix-blend-mode: difference; background: #fff;
     }
-
     .cursor-label {
-      position: fixed;
-      top: 0; left: 0;
-      pointer-events: none;
-      z-index: 9999;
-      font-family: var(--mono);
-      font-size: 10px;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--bg);
-      background: var(--fg);
-      padding: 6px 12px;
-      border-radius: 20px;
-      opacity: 0;
-      transform: translate(-50%, -50%);
+      position: fixed; top: 0; left: 0;
+      pointer-events: none; z-index: 9999;
+      font-family: var(--mono); font-size: 10px;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--bg); background: var(--fg);
+      padding: 6px 12px; border-radius: 20px;
+      opacity: 0; transform: translate(-50%, -50%);
       white-space: nowrap;
     }
 
-    /* ══════════════════════════════════════════════════════════════
-       NAVIGATION
-       ══════════════════════════════════════════════════════════════ */
+    /* ══════ NAV ══════ */
     nav {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      z-index: 100;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
       padding: 28px 48px;
-      transition: transform 0.4s var(--ease);
-      background: var(--bg);
-      border-bottom: 1px solid var(--border);
+      mix-blend-mode: difference;
     }
-
-    nav.hidden { transform: translateY(-100%); }
-
     .nav-logo {
-      font-family: var(--mono);
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
+      font-size: 12px; font-weight: 700;
+      letter-spacing: 0.12em; text-transform: uppercase; color: #fff;
     }
-
-    .nav-right {
-      display: flex;
-      align-items: center;
-      gap: 32px;
-    }
-
-    .nav-links {
-      display: flex;
-      gap: 32px;
-      list-style: none;
-    }
-
-    .nav-links a {
-      font-size: 11px;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      position: relative;
-      padding-bottom: 2px;
-    }
-
-    .nav-links a::after {
-      content: '';
+    .nav-center {
       position: absolute;
-      bottom: 0; left: 0; right: 0;
-      height: 1px;
-      background: currentColor;
-      transform: scaleX(0);
-      transform-origin: right;
-      transition: transform 0.4s var(--ease);
+      left: 50%;
+      transform: translateX(-50%);
     }
-
-    .nav-links a:hover::after {
-      transform: scaleX(1);
-      transform-origin: left;
+    .nav-right { display: flex; align-items: center; gap: 32px; }
+    .nav-links { display: flex; gap: 32px; list-style: none; }
+    .nav-links a {
+      font-size: 11px; letter-spacing: 0.1em;
+      text-transform: uppercase; color: #fff;
+      position: relative; padding-bottom: 2px;
     }
-
-    /* Theme Toggle */
-    .theme-toggle {
-      font-family: var(--mono);
-      font-size: 10px;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--fg);
-      background: none;
-      border: 1px solid var(--border);
-      padding: 6px 14px;
-      transition: border-color 0.3s, color 0.3s, background 0.3s;
+    .nav-links a::after {
+      content: ''; position: absolute;
+      bottom: 0; left: 0; right: 0; height: 1px;
+      background: currentColor; transform: scaleX(0);
+      transform-origin: right; transition: transform 0.4s var(--ease);
     }
+    .nav-links a:hover::after { transform: scaleX(1); transform-origin: left; }
 
-    .theme-toggle:hover {
-      border-color: var(--fg);
+    .nav-cta {
+      font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;
+      color: var(--bg); background: #fff; border: none;
+      padding: 8px 20px; mix-blend-mode: difference; transition: opacity 0.3s;
     }
+    .nav-cta:hover { opacity: 0.8; }
 
-    /* Hamburger */
     .nav-hamburger {
-      display: none;
-      flex-direction: column;
-      gap: 5px;
-      background: none;
-      border: none;
-      padding: 4px;
+      display: none; flex-direction: column; gap: 5px;
+      background: none; border: none; padding: 4px;
     }
+    .nav-hamburger span { width: 20px; height: 1.5px; background: #fff; }
 
-    .nav-hamburger span {
-      width: 20px;
-      height: 1.5px;
-      background: var(--fg);
-      transition: transform 0.3s, opacity 0.3s;
-    }
-
-    /* Mobile menu */
     .mobile-menu {
+      position: fixed; inset: 0; z-index: 99;
+      background: var(--bg); display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 40px;
+      opacity: 0; pointer-events: none; transition: opacity 0.4s;
+    }
+    .mobile-menu.open { opacity: 1; pointer-events: all; }
+    .mobile-menu a { font-size: 24px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; }
+
+    /* ══════ CAROUSEL VIEWPORT ══════ */
+    .carousel-viewport {
       position: fixed;
       inset: 0;
-      z-index: 99;
-      background: var(--bg);
+      overflow: hidden;
+    }
+
+    /* ══════ SLIDE ══════ */
+    .slide {
+      position: absolute;
+      inset: 0;
       display: flex;
-      flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 40px;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.4s;
+      will-change: transform;
     }
 
-    .mobile-menu.open { opacity: 1; pointer-events: all; }
-
-    .mobile-menu a {
-      font-size: 24px;
-      font-weight: 600;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-    }
-
-    /* ══════════════════════════════════════════════════════════════
-       WORK PAGE HEADER
-       ══════════════════════════════════════════════════════════════ */
-    #work-header {
-      padding: 160px 48px 80px;
+    /* ── Image ── */
+    .slide-image-wrap {
       position: relative;
+      width: 58vw;
+      max-width: 1000px;
+      aspect-ratio: 16 / 10;
+      border-radius: 20px;
+      overflow: hidden;
       z-index: 2;
+      will-change: transform, opacity;
     }
 
-    .work-title {
-      font-size: clamp(48px, 8vw, 96px);
+    .slide-image-wrap img {
+      width: 100%; height: 100%;
+      object-fit: cover; display: block;
+      transition: transform 6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    .slide:hover .slide-image-wrap img {
+      transform: scale(1.04);
+    }
+
+    /* ── Title (masked) ── */
+    .slide-title-wrap {
+      position: absolute;
+      bottom: 8vh;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 3;
+      overflow: hidden;
+      height: clamp(64px, 13vw, 200px);
+      pointer-events: none;
+    }
+
+    .slide-title {
+      font-size: clamp(72px, 12vw, 180px);
       font-weight: 700;
       letter-spacing: -0.04em;
-      line-height: 0.95;
-      margin-bottom: 20px;
-      opacity: 0;
+      line-height: 0.9;
+      color: var(--fg);
+      white-space: nowrap;
+      text-transform: uppercase;
+      mix-blend-mode: difference;
+      will-change: transform, opacity;
     }
 
-    .work-subtitle {
-      font-size: 14px;
-      color: var(--grey);
-      letter-spacing: 0.1em;
-      opacity: 0;
-    }
-
-    /* ══════════════════════════════════════════════════════════════
-       PROJECTS SECTION
-       ══════════════════════════════════════════════════════════════ */
-    #work {
-      padding: 80px 48px 120px;
-      position: relative;
-      z-index: 2;
-    }
-
-    .projects-header {
+    /* ── Details Strip ── */
+    .slide-details {
+      position: absolute;
+      bottom: 3.5vh;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 58vw;
+      max-width: 1000px;
       display: flex;
       justify-content: space-between;
       align-items: baseline;
-      border-bottom: 1px solid var(--border);
-      padding-bottom: 16px;
-      margin-bottom: 80px;
+      z-index: 5;
+      will-change: opacity;
     }
 
-    .projects-count {
-      font-size: 11px;
-      color: var(--grey);
-      letter-spacing: 0.1em;
+    .slide-detail-group { display: flex; gap: 32px; }
+    .slide-detail { display: flex; flex-direction: column; gap: 4px; }
+
+    .slide-detail-label {
+      font-size: 9px; letter-spacing: 0.2em;
+      text-transform: uppercase; color: rgba(255,255,255,0.35);
+    }
+    .slide-detail-value {
+      font-size: 12px; letter-spacing: 0.05em;
+      color: rgba(255,255,255,0.7);
     }
 
-    /* 12-Column Dynamic Grid */
-    .projects-grid {
-      display: grid;
-      grid-template-columns: repeat(12, 1fr);
-      gap: 32px;
-      row-gap: 100px;
+    /* ══════ COUNTER (left) ══════ */
+    .counter {
+      position: fixed;
+      left: 48px;
+      bottom: 48px;
+      z-index: 50;
+      display: flex;
+      align-items: center;
+      gap: 16px;
     }
 
-    .project-card {
-      position: relative;
-      cursor: none;
-      display: block;
-      opacity: 0;
+    .counter-text {
+      font-size: 13px;
+      font-weight: 400;
+      letter-spacing: 0.08em;
+      color: var(--fg);
+      font-variant-numeric: tabular-nums;
     }
 
-    /* Card Type A: Full-width 16:10 (columns 1-12) */
-    .project-card:nth-child(4n+1) { grid-column: 1 / 13; }
-    .project-card:nth-child(4n+1) .img-placeholder { aspect-ratio: 16 / 10; }
-
-    /* Card Type B: Right narrow 1:1 (columns 7-12) */
-    .project-card:nth-child(4n+2) { grid-column: 7 / 13; }
-    .project-card:nth-child(4n+2) .img-placeholder { aspect-ratio: 1 / 1; }
-
-    /* Card Type C: Left wide 6:7 (columns 1-6) */
-    .project-card:nth-child(4n+3) { grid-column: 1 / 7; }
-    .project-card:nth-child(4n+3) .img-placeholder { aspect-ratio: 6 / 7; }
-
-    /* Card Type D: Right wide 6:7 (columns 7-12) */
-    .project-card:nth-child(4n+4) { grid-column: 7 / 13; }
-    .project-card:nth-child(4n+4) .img-placeholder { aspect-ratio: 6 / 7; }
-
-    .project-img-wrap {
+    .counter-line {
+      width: 48px;
+      height: 1px;
+      background: rgba(255,255,255,0.2);
       position: relative;
       overflow: hidden;
-      margin-bottom: 20px;
     }
 
-    .project-img-wrap img {
-      width: 100%;
-      height: auto;
-      display: block;
-      object-fit: cover;
-      filter: blur(16px);
-      opacity: 0;
-      transition: filter 1.1s ease-out, opacity 1.1s ease-out;
+    .counter-line-fill {
+      position: absolute;
+      top: 0; left: 0;
+      height: 100%;
+      background: var(--fg);
+      width: 0%;
+      transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    .project-img-wrap img.loaded {
-      filter: blur(0);
-      opacity: 1;
-    }
-
-    .project-card:hover .project-img-wrap img {
-      transform: scale(1.03);
-    }
-
-    .project-meta {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-    }
-
-    .project-client {
-      font-size: 10px;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--grey);
-      margin-bottom: 6px;
-    }
-
-    .project-name {
-      font-size: clamp(20px, 3vw, 32px);
-      font-weight: 600;
-      letter-spacing: -0.02em;
-      line-height: 1.2;
-      animation: glow 3s ease-in-out infinite;
-    }
-
-    .project-num {
-      font-size: 11px;
-      color: var(--grey-light);
-      letter-spacing: 0.05em;
-    }
-
-    .project-tags {
-      display: flex;
-      gap: 8px;
-      margin-top: 12px;
-    }
-
-    .tag {
-      font-size: 10px;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--grey);
-      border: 1px solid var(--border);
-      padding: 4px 10px;
-    }
-
-    /* ══════════════════════════════════════════════════════════════
-       PROJECT DETAIL OVERLAY
-       ══════════════════════════════════════════════════════════════ */
-    .project-overlay {
+    /* ══════ INDICATORS (right — small lines) ══════ */
+    .indicators {
       position: fixed;
-      inset: 0;
-      z-index: 200;
-      background: var(--bg);
-      color: var(--fg);
-      overflow-y: auto;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.5s var(--ease);
-    }
-
-    .project-overlay.open {
-      opacity: 1;
-      pointer-events: all;
-    }
-
-    .po-close {
-      position: fixed;
-      top: 28px; right: 48px;
-      z-index: 201;
-      font-family: var(--mono);
-      font-size: 11px;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      background: none;
-      border: 1px solid var(--border);
-      color: var(--fg);
-      padding: 8px 16px;
-      transition: border-color 0.2s;
-    }
-
-    .po-close:hover { border-color: var(--fg); }
-
-    .po-hero-img {
-      width: 100%;
-      height: 60vh;
-      background: #e8e6e0;
+      right: 48px;
+      top: 50%;
+      transform: translateY(-50%);
       display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--grey);
-      font-size: 11px;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
+      flex-direction: column;
+      gap: 12px;
+      z-index: 50;
     }
 
-    html.dark .po-hero-img { background: #1a1a1a; }
-
-    .po-content {
-      max-width: 900px;
-      margin: 0 auto;
-      padding: 80px 48px 120px;
-    }
-
-    .po-client {
-      font-size: 11px;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--grey);
-      margin-bottom: 16px;
-    }
-
-    .po-title {
-      font-size: clamp(32px, 5vw, 56px);
-      font-weight: 700;
-      letter-spacing: -0.03em;
-      line-height: 1.1;
-      margin-bottom: 40px;
-    }
-
-    .po-meta {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 32px;
-      padding: 32px 0;
-      border-top: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
-      margin-bottom: 48px;
-    }
-
-    .po-meta-label {
-      font-size: 10px;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--grey);
-      margin-bottom: 8px;
-    }
-
-    .po-meta-value {
-      font-size: 16px;
-      font-weight: 600;
-    }
-
-    .po-body {
-      font-size: 14px;
-      line-height: 2;
-      color: var(--grey-dark);
-      margin-bottom: 48px;
-    }
-
-    /* ══════════════════════════════════════════════════════════════
-       FOOTER
-       ══════════════════════════════════════════════════════════════ */
-    footer {
-      padding: 32px 48px;
-      border-top: 1px solid var(--border);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      position: relative;
-      z-index: 2;
-    }
-
-    .footer-copy {
-      font-size: 11px;
-      color: var(--grey);
-      letter-spacing: 0.05em;
-    }
-
-    .back-top {
-      font-size: 10px;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--grey);
-      background: none;
+    .indicator {
+      width: 20px;
+      height: 2px;
+      background: rgba(255,255,255,0.2);
       border: none;
-      transition: color 0.3s;
+      padding: 0;
+      cursor: none;
+      transition: background 0.5s, width 0.5s var(--ease-out);
     }
 
-    .back-top:hover { color: var(--fg); }
-
-    /* ══════════════════════════════════════════════════════════════
-       ANIMATION KEYFRAMES
-       ══════════════════════════════════════════════════════════════ */
-    @keyframes glow {
-      0%, 100% {
-        text-shadow: 0 0 10px rgba(10, 10, 10, 0.3),
-                     0 0 20px rgba(10, 10, 10, 0.15);
-      }
-      50% {
-        text-shadow: 0 0 20px rgba(10, 10, 10, 0.5),
-                     0 0 40px rgba(10, 10, 10, 0.25);
-      }
+    .indicator.active {
+      background: var(--fg);
+      width: 32px;
     }
 
-    /* ══════════════════════════════════════════════════════════════
-       RESPONSIVE — TABLET
-       ══════════════════════════════════════════════════════════════ */
+    /* ══════ SCROLL CUE ══════ */
+    .scroll-cue {
+      position: fixed;
+      bottom: 48px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      z-index: 50;
+      opacity: 0;
+    }
+    .scroll-cue span {
+      font-size: 9px; letter-spacing: 0.25em;
+      text-transform: uppercase; color: rgba(255,255,255,0.25);
+    }
+    .scroll-cue .scroll-arrow {
+      width: 1px; height: 20px;
+      background: rgba(255,255,255,0.15);
+      position: relative; overflow: hidden;
+    }
+    .scroll-cue .scroll-arrow::after {
+      content: ''; position: absolute; top: -100%; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(255,255,255,0.5);
+      animation: scrollPulse 2s infinite 2.2s;
+    }
+    @keyframes cueFadeIn { to { opacity: 1; } }
+    @keyframes scrollPulse {
+      0% { top: -100%; } 50% { top: 100%; } 100% { top: 100%; }
+    }
+
+    /* ══════ RESPONSIVE — TABLET ══════ */
     @media (max-width: 991px) {
       nav { padding: 24px 32px; }
-      #work-header { padding: 120px 32px 60px; }
-      #work { padding: 60px 32px; }
-      footer { padding: 24px 32px; }
-
-      .projects-grid {
-        grid-template-columns: repeat(12, 1fr);
-        row-gap: 60px;
-      }
-
-      .project-card:nth-child(4n+1),
-      .project-card:nth-child(4n+2),
-      .project-card:nth-child(4n+3),
-      .project-card:nth-child(4n+4) {
-        grid-column: 1 / 13;
-      }
+      .counter { left: 32px; bottom: 32px; }
+      .indicators { right: 32px; }
+      .slide-image-wrap, .slide-details { width: 72vw; }
+      .slide-title { font-size: clamp(56px, 10vw, 120px); }
+      .slide-title-wrap { height: clamp(52px, 11vw, 140px); }
     }
 
-    /* ══════════════════════════════════════════════════════════════
-       RESPONSIVE — MOBILE
-       ══════════════════════════════════════════════════════════════ */
+    /* ══════ RESPONSIVE — MOBILE ══════ */
     @media (max-width: 767px) {
-      .nav-links { display: none; }
-      .nav-hamburger { display: flex; }
       nav { padding: 20px 24px; }
-
-      #work-header { padding: 100px 24px 48px; }
-      #work { padding: 48px 24px; }
-      footer { padding: 20px 24px; flex-direction: column; gap: 12px; }
-
-      .projects-grid {
-        grid-template-columns: 1fr;
-        row-gap: 48px;
+      .nav-center { position: static; transform: none; }
+      .nav-links, .nav-cta { display: none; }
+      .nav-hamburger { display: flex; }
+      .counter { left: 24px; bottom: 24px; }
+      .counter-line { width: 32px; }
+      .indicators { right: 20px; gap: 10px; }
+      .indicator { width: 14px; }
+      .indicator.active { width: 24px; }
+      .slide-image-wrap { width: 85vw; border-radius: 14px; }
+      .slide-details {
+        width: 85vw; flex-direction: column; gap: 12px; bottom: 3vh;
       }
-
-      .po-close { top: 20px; right: 24px; }
-      .po-content { padding: 48px 24px 80px; }
-      .po-meta { grid-template-columns: 1fr; gap: 20px; }
-
+      .slide-detail-group { gap: 20px; }
+      .slide-title { font-size: clamp(40px, 14vw, 80px); }
+      .slide-title-wrap { height: clamp(38px, 15vw, 90px); bottom: 14vh; }
+      .scroll-cue { display: none; }
       .cursor, .cursor-label { display: none; }
       body { cursor: auto; }
       button, a { cursor: pointer; }
     }
 
-    /* ══════════════════════════════════════════════════════════════
-       REDUCED MOTION
-       ══════════════════════════════════════════════════════════════ */
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after {
         animation-duration: 0.01ms !important;
         transition-duration: 0.01ms !important;
       }
-      html { scroll-behavior: smooth; }
     }
   </style>
 </head>
 
 <body>
 
-<!-- PAGE TRANSITION OVERLAY -->
-<div class="pt-overlay" id="ptOverlay">
-  <div class="pt-col"></div>
-  <div class="pt-col"></div>
-  <div class="pt-col"></div>
-  <div class="pt-col"></div>
-  <div class="pt-col"></div>
-  <div class="pt-col"></div>
-  <div class="pt-col"></div>
-  <div class="pt-col"></div>
-</div>
+<!-- PAGE VEIL -->
+<div class="page-veil" id="pageVeil"></div>
 
-<!-- SCROLL PROGRESS -->
-<div class="scroll-progress" id="scrollProgress"></div>
-
-<!-- CUSTOM CURSOR -->
+<!-- CURSOR -->
 <div class="cursor" id="cursor"></div>
 <div class="cursor-label" id="cursorLabel"></div>
 
-<!-- NAVIGATION -->
+<!-- NAV -->
 <nav id="nav">
   <a href="index.html" class="nav-logo">Ferhatidjamel</a>
-  <div class="nav-right">
+  <div class="nav-center">
     <ul class="nav-links">
-      <li><a href="#work">Work</a></li>
+      <li><a href="work.html">Work</a></li>
+      <li><a href="lab.html">Lab</a></li>
       <li><a href="index.html#about">About</a></li>
-      <li><a href="index.html#experience">Experience</a></li>
-      <li><a href="index.html#contact">Contact</a></li>
     </ul>
-    <button class="theme-toggle" id="themeToggle">Dark</button>
+  </div>
+  <div class="nav-right">
+    <a href="index.html#contact" class="nav-cta">Get in Touch</a>
     <button class="nav-hamburger" id="hamburger" aria-label="Menu">
       <span></span><span></span><span></span>
     </button>
@@ -668,413 +398,465 @@
 
 <!-- MOBILE MENU -->
 <div class="mobile-menu" id="mobileMenu">
-  <a href="#work" class="mobile-link">Work</a>
+  <a href="work.html" class="mobile-link">Work</a>
+  <a href="lab.html" class="mobile-link">Lab</a>
   <a href="index.html#about" class="mobile-link">About</a>
-  <a href="index.html#experience" class="mobile-link">Experience</a>
-  <a href="index.html#contact" class="mobile-link">Contact</a>
+  <a href="index.html#contact" class="mobile-link">Get in Touch</a>
 </div>
 
-<!-- ════════════ WORK HEADER ════════════ -->
-<section id="work-header">
-  <h1 class="work-title">Featured Work</h1>
-  <p class="work-subtitle">Exploring design through bold typography, intentional systems, and user-centered approaches.</p>
-</section>
-
-<!-- ════════════ PROJECTS ════════════ -->
-<section id="work">
-  <div class="projects-header">
-    <div style="font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--grey); display: flex; align-items: center; gap: 12px;"><span style="width:6px;height:6px;border-radius:50%;background:currentColor;"></span>All Projects</div>
-    <div class="projects-count">04 Projects</div>
-  </div>
-
-  <div class="projects-grid">
-    <!-- Project 1: Mintra Learning Platform -->
-    <a class="project-card" data-cursor="View" data-project="0">
-      <div class="project-img-wrap">
-        <img src="images/mintra-learning.jpg" alt="Mintra Learning Platform">
-      </div>
-      <div class="project-meta">
-        <div>
-          <div class="project-client">Mintra Platform</div>
-          <div class="project-name">Learning Platform — Vibrant UI System</div>
-          <div class="project-tags">
-            <span class="tag">UI Design</span>
-            <span class="tag">Color System</span>
-            <span class="tag">Interaction</span>
-          </div>
-        </div>
-        <div class="project-num">01</div>
-      </div>
-    </a>
-
-    <!-- Project 2: Apple Watch Face -->
-    <a class="project-card" data-cursor="View" data-project="1">
-      <div class="project-img-wrap">
-        <img src="images/watch-face-design.jpg" alt="Apple Watch Face Design">
-      </div>
-      <div class="project-meta">
-        <div>
-          <div class="project-client">Personal Project</div>
-          <div class="project-name">Minimal Watch Face — Typographic System</div>
-          <div class="project-tags">
-            <span class="tag">Wearable Design</span>
-            <span class="tag">Typography</span>
-            <span class="tag">Minimalism</span>
-          </div>
-        </div>
-        <div class="project-num">02</div>
-      </div>
-    </a>
-
-    <!-- Project 3: Taga Posters -->
-    <a class="project-card" data-cursor="View" data-project="2">
-      <div class="project-img-wrap">
-        <img src="images/taga-poster-design.jpg" alt="Taga Poster Design">
-      </div>
-      <div class="project-meta">
-        <div>
-          <div class="project-client">Taga Movement</div>
-          <div class="project-name">Taga — Drift Poster Campaign</div>
-          <div class="project-tags">
-            <span class="tag">Poster Design</span>
-            <span class="tag">Typography</span>
-            <span class="tag">Editorial</span>
-          </div>
-        </div>
-        <div class="project-num">03</div>
-      </div>
-    </a>
-
-    <!-- Project 4: NXT Academy Branding -->
-    <a class="project-card" data-cursor="View" data-project="3">
-      <div class="project-img-wrap">
-        <img src="images/nxt-academy-billboard.jpg" alt="NXT Academy Billboard">
-      </div>
-      <div class="project-meta">
-        <div>
-          <div class="project-client">NXT Youth Academy</div>
-          <div class="project-name">NXT — Billboard & Signage System</div>
-          <div class="project-tags">
-            <span class="tag">Branding</span>
-            <span class="tag">Environmental Design</span>
-            <span class="tag">Advertising</span>
-          </div>
-        </div>
-        <div class="project-num">04</div>
-      </div>
-    </a>
-  </div>
-</section>
-
-<!-- ════════════ PROJECT DETAIL OVERLAY ════════════ -->
-<div class="project-overlay" id="projectOverlay">
-  <button class="po-close" id="poClose">Close</button>
-  <div class="po-hero-img" id="poHeroImg">Project Hero Image</div>
-  <div class="po-content">
-    <div class="po-client" id="poClient"></div>
-    <h2 class="po-title" id="poTitle"></h2>
-    <div class="po-meta">
-      <div><div class="po-meta-label">Role</div><div class="po-meta-value" id="poRole"></div></div>
-      <div><div class="po-meta-label">Year</div><div class="po-meta-value" id="poYear"></div></div>
-      <div><div class="po-meta-label">Scope</div><div class="po-meta-value" id="poScope"></div></div>
-    </div>
-    <div class="po-body" id="poBody"></div>
-  </div>
+<!-- COUNTER (left) -->
+<div class="counter" id="counter">
+  <span class="counter-text" id="counterText">00.01</span>
+  <div class="counter-line"><div class="counter-line-fill" id="counterFill"></div></div>
 </div>
 
-<!-- ════════════ FOOTER ════════════ -->
-<footer id="footer">
-  <div class="footer-copy">&copy; 2026 Ferhati Djamel. All rights reserved.</div>
-  <button class="back-top" id="backTop">Back to Top ↑</button>
-</footer>
+<!-- INDICATORS (right — lines) -->
+<div class="indicators" id="indicators"></div>
 
-<!-- ══════════════════════════════════════════════════════════════
-     SCRIPTS
-     ══════════════════════════════════════════════════════════════ -->
-<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.18/dist/lenis.min.js"></script>
+<!-- SCROLL CUE -->
+<div class="scroll-cue" id="scrollCue">
+  <span>Scroll</span>
+  <div class="scroll-arrow"></div>
+</div>
+
+<!-- CAROUSEL -->
+<div class="carousel-viewport" id="viewport"></div>
+
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/gsap.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/ScrollTrigger.min.js"></script>
 <script>
 (function() {
   'use strict';
 
   /* ─── PROJECT DATA ─── */
-  var projects = [
+  var PROJECTS = [
     {
-      client: 'Mintra Platform',
-      title: 'Learning Platform UI System — Vibrant & Bold',
-      role: 'UI Designer',
-      year: '2024',
-      scope: 'Interface Design, Color System, Component Design',
-      body: 'Designed a vibrant and playful learning platform UI system that brings energy to education. The project emphasizes bold color combinations, smooth interactions, and accessibility. Each interface element was carefully crafted to balance visual excitement with usability, making learning feel engaging and motivating for students of all ages.'
+      name: 'HUMANOID',
+      img: 'images/Humaniod.png',
+      client: 'HUMANOID',
+      type: 'Web Design',
+      role: 'Art Direction — Design',
+      date: '2024'
     },
     {
-      client: 'Personal Project',
-      title: 'Minimal Apple Watch Face — Typography First',
-      role: 'Designer',
-      year: '2020',
-      scope: 'Wearable Design, Typography, Minimalism',
-      body: 'Created a minimalist watch face design that prioritizes typography and clean geometry. This project explores how constraints of a small screen can lead to bold, deliberate design decisions. The design uses a refined typeface system and stark contrast to maximize readability while maintaining visual elegance and timelessness.'
+      name: 'GOONS',
+      img: 'images/Goons.png',
+      client: 'GOONS',
+      type: 'Web Design',
+      role: 'Art Direction — UX',
+      date: '2025'
     },
     {
-      client: 'Taga Movement',
-      title: 'Drift Poster Campaign — Editorial Design',
-      role: 'Designer',
-      year: '2021',
-      scope: 'Poster Design, Typography, Layout System',
-      body: 'Designed a poster campaign for Taga, celebrating drift culture as a style of movement. The work combines dramatic imagery with bold typography and a structured grid system. Black and white photography paired with strategic typography creates a strong visual narrative that captures the essence of motion and control.'
-    },
-    {
-      client: 'NXT Youth Academy',
-      title: 'Environmental Branding — Billboard System',
-      role: 'Designer',
-      year: '2025',
-      scope: 'Branding, Signage, Identity System',
-      body: 'Designed a comprehensive branding system for NXT Youth Academy featuring bold billboard signage and environmental graphics. The work uses a strong geometric logotype and layered typographic approach to create impactful street-level presence. The design system scales from large billboards to smaller applications while maintaining visual consistency and impact.'
+      name: 'FIND',
+      img: 'images/FIND.png',
+      client: 'FIND',
+      type: 'Web Redesign',
+      role: 'Art Direction',
+      date: '2025'
     }
   ];
 
-  /* ─── PAGE TRANSITION ─── */
-  var ptCols = document.querySelectorAll('.pt-col');
-  var stagger = 0.06;
+  var TOTAL = PROJECTS.length;
+  var viewport = document.getElementById('viewport');
+  var indicatorsEl = document.getElementById('indicators');
+  var counterText = document.getElementById('counterText');
+  var counterFill = document.getElementById('counterFill');
+  var scrollCue = document.getElementById('scrollCue');
 
-  function ptRevealIn(onComplete) {
-    gsap.set(ptCols, { scaleX: 0, transformOrigin: 'left' });
-    gsap.to(ptCols, {
-      scaleX: 1, duration: 0.7, stagger: stagger,
-      ease: 'expo.inOut', onComplete: onComplete
-    });
+  var currentIndex = 0;
+  var isAnimating = false;
+  var wheelAccum = 0;
+  var wheelTimer = null;
+  var WHEEL_THRESHOLD = 60;
+  var indicators = [];
+
+  /* ─── BUILD INDICATORS ─── */
+  for (var i = 0; i < TOTAL; i++) {
+    var line = document.createElement('button');
+    line.className = 'indicator' + (i === 0 ? ' active' : '');
+    line.setAttribute('aria-label', 'Project ' + (i + 1));
+    line.dataset.index = i;
+    indicatorsEl.appendChild(line);
+    indicators.push(line);
   }
 
-  function ptRevealOut() {
-    gsap.to(ptCols, {
-      scaleX: 0, duration: 0.55, stagger: stagger,
-      ease: 'expo.inOut', transformOrigin: 'right'
-    });
-  }
-
-  /* ─── INIT AFTER LOAD ─── */
-  window.addEventListener('load', function() {
-    setTimeout(function() {
-      ptRevealOut();
-      initPage();
-    }, 300);
+  indicatorsEl.addEventListener('click', function(e) {
+    var btn = e.target.closest('.indicator');
+    if (!btn || isAnimating) return;
+    var idx = parseInt(btn.dataset.index);
+    if (idx === currentIndex) return;
+    goToSlide(idx, idx > currentIndex ? 1 : -1);
   });
 
-  function initPage() {
+  /* ─── CREATE SLIDE DOM ─── */
+  function createSlideEl(proj) {
+    var div = document.createElement('div');
+    div.className = 'slide';
+    div.innerHTML =
+      '<div class="slide-image-wrap">' +
+        '<img src="' + proj.img + '" alt="' + proj.name + ' Project">' +
+      '</div>' +
+      '<div class="slide-title-wrap">' +
+        '<div class="slide-title">' + proj.name + '</div>' +
+      '</div>' +
+      '<div class="slide-details">' +
+        '<div class="slide-detail-group">' +
+          '<div class="slide-detail">' +
+            '<span class="slide-detail-label">Client</span>' +
+            '<span class="slide-detail-value">' + proj.client + '</span>' +
+          '</div>' +
+          '<div class="slide-detail">' +
+            '<span class="slide-detail-label">Type</span>' +
+            '<span class="slide-detail-value">' + proj.type + '</span>' +
+          '</div>' +
+        '</div>' +
+        '<div class="slide-detail-group">' +
+          '<div class="slide-detail">' +
+            '<span class="slide-detail-label">Role</span>' +
+            '<span class="slide-detail-value">' + proj.role + '</span>' +
+          '</div>' +
+          '<div class="slide-detail">' +
+            '<span class="slide-detail-label">Date</span>' +
+            '<span class="slide-detail-value">' + proj.date + '</span>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+    return div;
+  }
 
-    /* ─── LENIS SMOOTH SCROLL ─── */
-    var lenis = new Lenis({
-      duration: 1.2,
-      easing: function(t) { return Math.min(1, 1.001 - Math.pow(2, -10 * t)); },
-      smoothWheel: true,
-      wheelMultiplier: 1,
-      touchMultiplier: 2,
-    });
+  /* ─── MOUNT INITIAL SLIDE ─── */
+  var currentSlide = createSlideEl(PROJECTS[0]);
+  viewport.appendChild(currentSlide);
 
-    function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
-    requestAnimationFrame(raf);
+  function updateCounter(idx) {
+    counterText.textContent = '00.0' + (idx + 1);
+    counterFill.style.width = ((idx + 1) / TOTAL * 100) + '%';
+  }
 
-    lenis.on('scroll', ScrollTrigger.update);
-    gsap.ticker.add(function(time) { lenis.raf(time * 1000); });
-    gsap.ticker.lagSmoothing(0);
-
-    /* ─── SCROLL PROGRESS ─── */
-    var scrollProgress = document.getElementById('scrollProgress');
-    lenis.on('scroll', function() {
-      var h = document.documentElement.scrollHeight - window.innerHeight;
-      scrollProgress.style.width = (h > 0 ? (window.scrollY / h) * 100 : 0) + '%';
-    });
-
-    /* ─── NAV HIDE ON SCROLL ─── */
-    var nav = document.getElementById('nav');
-    var lastScroll = 0;
-    lenis.on('scroll', function() {
-      var current = window.scrollY;
-      if (current > lastScroll && current > 100) nav.classList.add('hidden');
-      else nav.classList.remove('hidden');
-      lastScroll = current;
-    });
-
-    /* ─── HEADER ANIMATIONS ─── */
-    gsap.to('.work-title', { opacity: 1, y: 0, duration: 1, ease: 'expo.out', delay: 0.3 });
-    gsap.to('.work-subtitle', { opacity: 1, y: 0, duration: 1, ease: 'expo.out', delay: 0.5 });
-
-    /* ─── PROJECT CARD ANIMATIONS ─── */
-    document.querySelectorAll('.project-card').forEach(function(card, i) {
-      gsap.to(card, {
-        opacity: 1,
-        duration: 0.8,
-        ease: 'power2.out',
-        delay: 0.6 + (i * 0.15)
-      });
-    });
-
-    /* ─── IMAGE BLUR-LOAD EFFECT ─── */
-    document.querySelectorAll('.project-img-wrap img').forEach(function(img) {
-      if (!img.complete) {
-        img.addEventListener('load', function() {
-          img.classList.add('loaded');
-        });
-      } else {
-        img.classList.add('loaded');
-      }
-    });
-
-    /* ─── ELASTIC HOVER ON PROJECT CARDS ─── */
-    document.querySelectorAll('.project-card').forEach(function(card) {
-      card.addEventListener('mouseenter', function() {
-        gsap.to(card, {
-          scale: 1.02,
-          duration: 0.6,
-          ease: 'elastic.out(1.2, 0.4)',
-          overwrite: 'auto'
-        });
-      });
-      card.addEventListener('mouseleave', function() {
-        gsap.to(card, {
-          scale: 1,
-          duration: 0.6,
-          ease: 'elastic.out(1.2, 0.4)',
-          overwrite: 'auto'
-        });
-      });
-    });
-
-    /* ─── CUSTOM CURSOR ─── */
-    var cursor = document.getElementById('cursor');
-    var cursorLabel = document.getElementById('cursorLabel');
-    var cx = { current: 0, target: 0 };
-    var cy = { current: 0, target: 0 };
-
-    if (window.matchMedia('(pointer: fine)').matches) {
-      document.addEventListener('mousemove', function(e) {
-        cx.target = e.clientX;
-        cy.target = e.clientY;
-      });
-
-      function cursorLoop() {
-        cx.current += (cx.target - cx.current) * 0.15;
-        cy.current += (cy.target - cy.current) * 0.15;
-        cursor.style.left = cx.current + 'px';
-        cursor.style.top = cy.current + 'px';
-        cursorLabel.style.left = cx.current + 'px';
-        cursorLabel.style.top = (cy.current - 30) + 'px';
-        requestAnimationFrame(cursorLoop);
-      }
-      cursorLoop();
-
-      document.querySelectorAll('[data-cursor]').forEach(function(el) {
-        el.addEventListener('mouseenter', function() {
-          cursorLabel.textContent = el.getAttribute('data-cursor');
-          gsap.to(cursorLabel, { opacity: 1, duration: 0.3 });
-          gsap.to(cursor, { scale: 2, duration: 0.3 });
-        });
-        el.addEventListener('mouseleave', function() {
-          gsap.to(cursorLabel, { opacity: 0, duration: 0.3 });
-          gsap.to(cursor, { scale: 1, duration: 0.3 });
-        });
-      });
-
-      document.querySelectorAll('a:not([data-cursor]), button:not([data-cursor])').forEach(function(el) {
-        el.addEventListener('mouseenter', function() { gsap.to(cursor, { scale: 1.8, duration: 0.3 }); });
-        el.addEventListener('mouseleave', function() { gsap.to(cursor, { scale: 1, duration: 0.3 }); });
-      });
-    }
-
-    /* ─── PROJECT OVERLAY ─── */
-    var overlay = document.getElementById('projectOverlay');
-    var poClose = document.getElementById('poClose');
-
-    document.querySelectorAll('[data-project]').forEach(function(card) {
-      card.addEventListener('click', function(e) {
-        e.preventDefault();
-        var idx = parseInt(card.getAttribute('data-project'));
-        var p = projects[idx];
-        if (!p) return;
-
-        document.getElementById('poClient').textContent = p.client;
-        document.getElementById('poTitle').textContent = p.title;
-        document.getElementById('poRole').textContent = p.role;
-        document.getElementById('poYear').textContent = p.year;
-        document.getElementById('poScope').textContent = p.scope;
-        document.getElementById('poBody').textContent = p.body;
-
-        ptRevealIn(function() {
-          overlay.classList.add('open');
-          overlay.scrollTop = 0;
-          lenis.stop();
-          ptRevealOut();
-        });
-      });
-    });
-
-    poClose.addEventListener('click', function() {
-      ptRevealIn(function() {
-        overlay.classList.remove('open');
-        lenis.start();
-        ptRevealOut();
-      });
-    });
-
-    /* ─── THEME TOGGLE ─── */
-    var themeToggle = document.getElementById('themeToggle');
-    var isDark = false;
-
-    if (localStorage.getItem('theme') === 'dark') {
-      document.documentElement.classList.add('dark');
-      themeToggle.textContent = 'Light';
-      isDark = true;
-    }
-
-    themeToggle.addEventListener('click', function() {
-      ptRevealIn(function() {
-        isDark = !isDark;
-        document.documentElement.classList.toggle('dark', isDark);
-        themeToggle.textContent = isDark ? 'Light' : 'Dark';
-        localStorage.setItem('theme', isDark ? 'dark' : 'light');
-        ptRevealOut();
-      });
-    });
-
-    /* ─── BACK TO TOP ─── */
-    document.getElementById('backTop').addEventListener('click', function() {
-      lenis.scrollTo(0);
-    });
-
-    /* ─── MOBILE MENU ─── */
-    var hamburger = document.getElementById('hamburger');
-    var mobileMenu = document.getElementById('mobileMenu');
-    hamburger.addEventListener('click', function() {
-      hamburger.classList.toggle('open');
-      mobileMenu.classList.toggle('open');
-    });
-
-    document.querySelectorAll('.mobile-link').forEach(function(link) {
-      link.addEventListener('click', function() {
-        hamburger.classList.remove('open');
-        mobileMenu.classList.remove('open');
-      });
-    });
-
-    /* ─── NAV SMOOTH SCROLL ─── */
-    document.querySelectorAll('a[href^="#"]').forEach(function(a) {
-      a.addEventListener('click', function(e) {
-        var target = document.querySelector(a.getAttribute('href'));
-        if (target) {
-          e.preventDefault();
-          lenis.scrollTo(target, { offset: -80 });
-        }
-      });
-    });
-
-    /* ─── RESIZE HANDLER ─── */
-    var resizeTimer;
-    window.addEventListener('resize', function() {
-      clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(function() { ScrollTrigger.refresh(); }, 250);
+  function updateIndicators(idx) {
+    indicators.forEach(function(ind, i) {
+      ind.classList.toggle('active', i === idx);
     });
   }
+
+  /* ─── SLIDE TRANSITION ─── */
+  function goToSlide(nextIdx, direction) {
+    if (isAnimating) return;
+    isAnimating = true;
+
+    // Hide scroll cue on first interaction
+    if (scrollCue.style.opacity !== '0') {
+      gsap.to(scrollCue, { opacity: 0, duration: 0.3 });
+    }
+
+    var nextProj = PROJECTS[nextIdx];
+    var nextSlide = createSlideEl(nextProj);
+
+    // Position next slide off-screen
+    var imgNext = nextSlide.querySelector('.slide-image-wrap');
+    var titleNext = nextSlide.querySelector('.slide-title');
+    var detailsNext = nextSlide.querySelector('.slide-details');
+
+    // Offset: direction=1 means scrolling down (next comes from below)
+    gsap.set(nextSlide, { yPercent: direction * 100 });
+    gsap.set(imgNext, { scale: 0.88, opacity: 0 });
+    gsap.set(titleNext, { y: direction * 80, opacity: 0 });
+    gsap.set(detailsNext, { opacity: 0, y: direction * 20 });
+
+    viewport.appendChild(nextSlide);
+
+    // Current slide elements
+    var imgCurr = currentSlide.querySelector('.slide-image-wrap');
+    var titleCurr = currentSlide.querySelector('.slide-title');
+    var detailsCurr = currentSlide.querySelector('.slide-details');
+
+    var dur = 1.1;
+    var ease = 'power3.inOut';
+
+    var tl = gsap.timeline({
+      onComplete: function() {
+        viewport.removeChild(currentSlide);
+        currentSlide = nextSlide;
+        currentIndex = nextIdx;
+        isAnimating = false;
+      }
+    });
+
+    // ── Current slide OUT ──
+    tl.to(currentSlide, {
+      yPercent: direction * -100,
+      duration: dur,
+      ease: ease
+    }, 0);
+
+    // Title slides in the scroll direction and fades
+    tl.to(titleCurr, {
+      y: direction * -120,
+      opacity: 0,
+      duration: dur * 0.7,
+      ease: 'power2.in'
+    }, 0);
+
+    tl.to(imgCurr, {
+      scaleY: 0.55,
+      scaleX: 0.9,
+      opacity: 0,
+      borderRadius: '32px',
+      duration: dur * 0.9,
+      ease: 'power2.in'
+    }, 0);
+
+    tl.to(detailsCurr, {
+      opacity: 0,
+      duration: dur * 0.4,
+      ease: 'power2.in'
+    }, 0);
+
+    // ── Next slide IN ──
+    tl.to(nextSlide, {
+      yPercent: 0,
+      duration: dur,
+      ease: ease
+    }, 0);
+
+    tl.to(imgNext, {
+      scale: 1,
+      opacity: 1,
+      duration: dur * 0.9,
+      ease: 'power2.out'
+    }, dur * 0.25);
+
+    // Title reveal — slides up into the mask and fades in
+    tl.to(titleNext, {
+      y: 0,
+      opacity: 1,
+      duration: dur * 0.8,
+      ease: 'power2.out'
+    }, dur * 0.35);
+
+    tl.to(detailsNext, {
+      opacity: 1,
+      y: 0,
+      duration: dur * 0.6,
+      ease: 'power2.out'
+    }, dur * 0.55);
+
+    // Update UI
+    updateCounter(nextIdx);
+    updateIndicators(nextIdx);
+  }
+
+  /* ─── WRAP INDEX (infinite) ─── */
+  function wrapIndex(idx) {
+    return ((idx % TOTAL) + TOTAL) % TOTAL;
+  }
+
+  /* ─── WHEEL HANDLER (accumulate + snap) ─── */
+  function onWheel(e) {
+    e.preventDefault();
+    if (isAnimating) return;
+
+    wheelAccum += e.deltaY;
+
+    clearTimeout(wheelTimer);
+    wheelTimer = setTimeout(function() { wheelAccum = 0; }, 200);
+
+    if (Math.abs(wheelAccum) >= WHEEL_THRESHOLD) {
+      var dir = wheelAccum > 0 ? 1 : -1;
+      wheelAccum = 0;
+      goToSlide(wrapIndex(currentIndex + dir), dir);
+    }
+  }
+
+  viewport.addEventListener('wheel', onWheel, { passive: false });
+
+  /* ─── TOUCH HANDLING ─── */
+  var touchStartY = 0;
+  var touchDelta = 0;
+
+  viewport.addEventListener('touchstart', function(e) {
+    touchStartY = e.touches[0].clientY;
+    touchDelta = 0;
+  }, { passive: true });
+
+  viewport.addEventListener('touchmove', function(e) {
+    touchDelta = touchStartY - e.touches[0].clientY;
+  }, { passive: true });
+
+  viewport.addEventListener('touchend', function() {
+    if (isAnimating) return;
+    if (Math.abs(touchDelta) > 50) {
+      var dir = touchDelta > 0 ? 1 : -1;
+      goToSlide(wrapIndex(currentIndex + dir), dir);
+    }
+  });
+
+  /* ─── KEYBOARD ─── */
+  document.addEventListener('keydown', function(e) {
+    if (isAnimating) return;
+    if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
+      e.preventDefault();
+      goToSlide(wrapIndex(currentIndex + 1), 1);
+    }
+    if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+      e.preventDefault();
+      goToSlide(wrapIndex(currentIndex - 1), -1);
+    }
+  });
+
+  /* ─── PAGE VEIL TRANSITION ─── */
+  var veil = document.getElementById('pageVeil');
+
+  function navigateWithTransition(href) {
+    sessionStorage.setItem('pt-from-other', '1');
+    gsap.to(veil, {
+      opacity: 1,
+      duration: 0.5,
+      ease: 'power2.inOut',
+      onComplete: function() {
+        window.location.href = href;
+      }
+    });
+  }
+
+  /* ─── CINEMATIC ENTRANCE ─── */
+  function cinematicEntrance() {
+    var img = currentSlide.querySelector('.slide-image-wrap');
+    var title = currentSlide.querySelector('.slide-title');
+    var details = currentSlide.querySelector('.slide-details');
+    var counterEl = document.getElementById('counter');
+    var indicatorsElm = document.getElementById('indicators');
+    var navEl = document.getElementById('nav');
+    var cueEl = document.getElementById('scrollCue');
+
+    /* hide everything before reveal */
+    gsap.set([img, title, details, counterEl, indicatorsElm, cueEl], { opacity: 0 });
+    gsap.set(navEl, { opacity: 0, y: -20 });
+    gsap.set(img, { scale: 0.88, y: 40 });
+    gsap.set(title, { y: 80 });
+    gsap.set(details, { y: 20 });
+    gsap.set(counterEl, { x: -15 });
+    gsap.set(indicatorsElm, { x: 15 });
+
+    var master = gsap.timeline();
+
+    /* phase 1: veil fades out */
+    master.to(veil, {
+      opacity: 0, duration: 0.6, ease: 'power2.out'
+    }, 0);
+
+    /* phase 2: nav slides in */
+    master.to(navEl, {
+      opacity: 1, y: 0, duration: 0.8, ease: 'expo.out'
+    }, 0.15);
+
+    /* phase 3: image rises from depth */
+    master.to(img, {
+      opacity: 1, scale: 1, y: 0,
+      duration: 1.2, ease: 'expo.out'
+    }, 0.2);
+
+    /* phase 4: title slides up through mask */
+    master.to(title, {
+      opacity: 1, y: 0,
+      duration: 1, ease: 'expo.out'
+    }, 0.4);
+
+    /* phase 5: details fade in */
+    master.to(details, {
+      opacity: 1, y: 0,
+      duration: 0.8, ease: 'expo.out'
+    }, 0.6);
+
+    /* phase 6: counter + indicators */
+    master.to(counterEl, {
+      opacity: 1, x: 0,
+      duration: 0.7, ease: 'expo.out'
+    }, 0.55);
+
+    master.to(indicatorsElm, {
+      opacity: 1, x: 0,
+      duration: 0.7, ease: 'expo.out'
+    }, 0.55);
+
+    /* phase 7: scroll cue */
+    master.to(cueEl, {
+      opacity: 1, duration: 0.6, ease: 'power2.out'
+    }, 1.4);
+  }
+
+  /* ─── INIT ─── */
+  window.addEventListener('load', function() {
+    updateCounter(0);
+    updateIndicators(0);
+    setTimeout(cinematicEntrance, 100);
+  });
+
+  /* ─── CUSTOM CURSOR ─── */
+  var cursor = document.getElementById('cursor');
+  var cursorLabel = document.getElementById('cursorLabel');
+  var cx = { current: 0, target: 0 };
+  var cy = { current: 0, target: 0 };
+
+  if (window.matchMedia('(pointer: fine)').matches) {
+    document.addEventListener('mousemove', function(e) {
+      cx.target = e.clientX;
+      cy.target = e.clientY;
+    });
+
+    (function cursorLoop() {
+      cx.current += (cx.target - cx.current) * 0.15;
+      cy.current += (cy.target - cy.current) * 0.15;
+      cursor.style.left = cx.current + 'px';
+      cursor.style.top = cy.current + 'px';
+      cursorLabel.style.left = cx.current + 'px';
+      cursorLabel.style.top = (cy.current - 30) + 'px';
+      requestAnimationFrame(cursorLoop);
+    })();
+
+    document.addEventListener('mouseover', function(e) {
+      var imgWrap = e.target.closest('.slide-image-wrap');
+      if (imgWrap) {
+        cursorLabel.textContent = 'View';
+        gsap.to(cursorLabel, { opacity: 1, duration: 0.3 });
+        gsap.to(cursor, { scale: 2, duration: 0.3 });
+      }
+    });
+
+    document.addEventListener('mouseout', function(e) {
+      var imgWrap = e.target.closest('.slide-image-wrap');
+      if (imgWrap) {
+        gsap.to(cursorLabel, { opacity: 0, duration: 0.3 });
+        gsap.to(cursor, { scale: 1, duration: 0.3 });
+      }
+    });
+
+    document.querySelectorAll('a, button').forEach(function(el) {
+      el.addEventListener('mouseenter', function() { gsap.to(cursor, { scale: 1.8, duration: 0.3 }); });
+      el.addEventListener('mouseleave', function() { gsap.to(cursor, { scale: 1, duration: 0.3 }); });
+    });
+  }
+
+  /* ─── NAVIGATION WITH TRANSITION ─── */
+  document.querySelectorAll('a[href^="index.html"], a[href="lab.html"]').forEach(function(link) {
+    link.addEventListener('click', function(e) {
+      e.preventDefault();
+      navigateWithTransition(link.getAttribute('href'));
+    });
+  });
+
+  /* ─── MOBILE MENU ─── */
+  var hamburger = document.getElementById('hamburger');
+  var mobileMenu = document.getElementById('mobileMenu');
+  hamburger.addEventListener('click', function() {
+    hamburger.classList.toggle('open');
+    mobileMenu.classList.toggle('open');
+  });
+  document.querySelectorAll('.mobile-link').forEach(function(link) {
+    link.addEventListener('click', function() {
+      hamburger.classList.remove('open');
+      mobileMenu.classList.remove('open');
+    });
+  });
 
 })();
 </script>
