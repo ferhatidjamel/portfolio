@@ -978,8 +978,9 @@ nav.hidden { transform: translateY(-100%); }
 }
 
 .brands-strip {
-  border-top: 1px solid var(--border);
-  border-bottom: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.40);
+  border-top: 1px solid rgba(255,255,255,0.15);
+  border-bottom: 1px solid rgba(255,255,255,0.15);
   overflow: hidden;
   position: relative;
 }
@@ -988,6 +989,7 @@ nav.hidden { transform: translateY(-100%); }
   display: flex;
   align-items: center;
   width: max-content;
+  will-change: transform;
 }
 
 .brand-item {
@@ -996,20 +998,20 @@ nav.hidden { transform: translateY(-100%); }
   font-weight: 700;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  color: var(--grey);
+  color: rgba(255,255,255,0.55);
   padding: 36px 64px;
   white-space: nowrap;
   transition: color 0.3s;
 }
 
 .brand-item:hover {
-  color: var(--fg);
+  color: rgba(255,255,255,0.95);
 }
 
 .brand-sep {
   width: 1px;
   height: 100px;
-  background: var(--border);
+  background: rgba(255,255,255,0.2);
   transform: skewX(-12deg);
   flex-shrink: 0;
 }
@@ -1731,7 +1733,15 @@ footer {
 <section class="brands-section">
   <div class="brands-heading">Brands &amp; creative teams<br>I've collaborated with:</div>
   <div class="brands-strip">
-    <div class="brands-track">
+    <div class="brands-track" id="brandsTrack">
+      <span class="brand-item">Daylindo</span>
+      <span class="brand-sep"></span>
+      <span class="brand-item">Orange</span>
+      <span class="brand-sep"></span>
+      <span class="brand-item">Supplay</span>
+      <span class="brand-sep"></span>
+      <span class="brand-item">Thales</span>
+      <span class="brand-sep"></span>
       <span class="brand-item">Daylindo</span>
       <span class="brand-sep"></span>
       <span class="brand-item">Orange</span>
@@ -2192,6 +2202,18 @@ footer {
       requestAnimationFrame(animateMarquee);
     }
     animateMarquee();
+
+    /* ─── BRANDS MARQUEE ─── */
+    var brandsTrack = document.getElementById('brandsTrack');
+    var brandsX = 0;
+    var brandsWidth = brandsTrack.scrollWidth / 3;
+    function animateBrands() {
+      brandsX -= 0.6;
+      if (Math.abs(brandsX) >= brandsWidth) brandsX = 0;
+      brandsTrack.style.transform = 'translateX(' + brandsX + 'px)';
+      requestAnimationFrame(animateBrands);
+    }
+    animateBrands();
 
     /* ─── CUSTOM CURSOR ─── */
     var cursor = document.getElementById('cursor');
