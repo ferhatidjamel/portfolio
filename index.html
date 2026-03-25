@@ -212,17 +212,45 @@ nav.hidden { transform: translateY(-100%); }
 }
 
 .nav-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   font-family: var(--mono);
   font-size: 10px;
   letter-spacing: 0.15em;
   text-transform: uppercase;
-  color: var(--bg);
-  background: var(--fg);
-  border: none;
+  color: var(--fg);
+  background: none;
+  border: 1px solid var(--fg);
   padding: 8px 20px;
-  transition: opacity 0.3s;
+  position: relative;
+  overflow: hidden;
+  transition: color 0.4s, transform 0.3s var(--ease-out);
+  will-change: transform;
 }
-.nav-cta:hover { opacity: 0.8; }
+.nav-cta::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--fg);
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.5s var(--ease);
+  z-index: -1;
+}
+.nav-cta:hover::before {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+.nav-cta:hover {
+  color: var(--bg);
+}
+.nav-cta .btn-arrow {
+  transition: transform 0.3s;
+}
+.nav-cta:hover .btn-arrow {
+  transform: translateX(4px);
+}
 
 /* Hamburger */
 .nav-hamburger {
@@ -1491,7 +1519,7 @@ footer {
     </ul>
   </div>
   <div class="nav-right">
-    <a href="#contact" class="nav-cta">Get in Touch</a>
+    <a href="#contact" class="nav-cta" data-magnetic>Get in Touch <span class="btn-arrow">→</span></a>
     <button class="nav-hamburger" id="hamburger" aria-label="Menu">
       <span></span><span></span><span></span>
     </button>
@@ -1549,7 +1577,6 @@ footer {
 <section id="work" class="work-section">
   <div class="work-header">
     <h2 class="work-heading">Selected Work</h2>
-    <a href="work.html" class="work-view-all">View All Projects <span>→</span></a>
   </div>
   <div class="work-grid" id="workGrid">
     <a href="work.html" class="work-card" data-index="0">
