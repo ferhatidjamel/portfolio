@@ -993,24 +993,27 @@ nav.hidden { transform: translateY(-100%); }
 }
 
 .brand-item {
-  font-family: var(--mono);
-  font-size: clamp(15px, 1.6vw, 22px);
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-  color: rgba(255,255,255,0.55);
-  padding: 36px 64px;
+  display: flex;
+  align-items: center;
+  padding: 48px 100px;
   white-space: nowrap;
-  transition: color 0.3s;
 }
 
-.brand-item:hover {
-  color: rgba(255,255,255,0.95);
+.brand-item img {
+  height: 36px;
+  width: auto;
+  filter: brightness(0) invert(1) opacity(0.55);
+  display: block;
+  transition: filter 0.3s;
+}
+
+.brand-item:hover img {
+  filter: brightness(0) invert(1) opacity(1);
 }
 
 .brand-sep {
   width: 1px;
-  height: 100px;
+  height: 140px;
   background: rgba(255,255,255,0.2);
   transform: skewX(-12deg);
   flex-shrink: 0;
@@ -1734,29 +1737,29 @@ footer {
   <div class="brands-heading">Brands &amp; creative teams<br>I've collaborated with:</div>
   <div class="brands-strip">
     <div class="brands-track" id="brandsTrack">
-      <span class="brand-item">Daylindo</span>
+      <span class="brand-item"><img src="images/logo-daylindo.png" alt="Daylindo"></span>
       <span class="brand-sep"></span>
-      <span class="brand-item">Orange</span>
+      <span class="brand-item"><img src="images/logo-orange.svg" alt="Orange"></span>
       <span class="brand-sep"></span>
-      <span class="brand-item">Supplay</span>
+      <span class="brand-item"><img src="images/logo-supplay.svg" alt="Supplay"></span>
       <span class="brand-sep"></span>
-      <span class="brand-item">Thales</span>
+      <span class="brand-item"><img src="images/logo-thales.svg" alt="Thales"></span>
       <span class="brand-sep"></span>
-      <span class="brand-item">Daylindo</span>
+      <span class="brand-item"><img src="images/logo-daylindo.png" alt="Daylindo"></span>
       <span class="brand-sep"></span>
-      <span class="brand-item">Orange</span>
+      <span class="brand-item"><img src="images/logo-orange.svg" alt="Orange"></span>
       <span class="brand-sep"></span>
-      <span class="brand-item">Supplay</span>
+      <span class="brand-item"><img src="images/logo-supplay.svg" alt="Supplay"></span>
       <span class="brand-sep"></span>
-      <span class="brand-item">Thales</span>
+      <span class="brand-item"><img src="images/logo-thales.svg" alt="Thales"></span>
       <span class="brand-sep"></span>
-      <span class="brand-item">Daylindo</span>
+      <span class="brand-item"><img src="images/logo-daylindo.png" alt="Daylindo"></span>
       <span class="brand-sep"></span>
-      <span class="brand-item">Orange</span>
+      <span class="brand-item"><img src="images/logo-orange.svg" alt="Orange"></span>
       <span class="brand-sep"></span>
-      <span class="brand-item">Supplay</span>
+      <span class="brand-item"><img src="images/logo-supplay.svg" alt="Supplay"></span>
       <span class="brand-sep"></span>
-      <span class="brand-item">Thales</span>
+      <span class="brand-item"><img src="images/logo-thales.svg" alt="Thales"></span>
     </div>
   </div>
 </section>
