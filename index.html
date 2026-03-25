@@ -305,6 +305,14 @@ nav.hidden { transform: translateY(-100%); }
 
 .hero__last {
   margin-bottom: 32px;
+  display: inline-flex !important;
+}
+
+.skew-letter {
+  display: inline-block;
+  will-change: transform;
+  transition: transform 0.15s cubic-bezier(0.23, 1, 0.32, 1);
+  transform-origin: bottom center;
 }
 
 .hero__descriptor {
@@ -841,6 +849,87 @@ nav.hidden { transform: translateY(-100%); }
   border-color: var(--fg);
   background: var(--fg);
   color: var(--bg);
+}
+
+/* ─── Big "VIEW ALL" CTA ─── */
+.show-all-cta {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 12px;
+  margin: 80px auto 0;
+  text-decoration: none;
+  color: var(--fg);
+  position: relative;
+  cursor: pointer;
+  padding: 40px 0;
+  width: fit-content;
+}
+
+.show-all-text {
+  font-family: var(--mono);
+  font-weight: 900;
+  font-size: clamp(48px, 8vw, 100px);
+  text-transform: uppercase;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  display: inline-flex;
+  gap: 0.2em;
+}
+
+.show-all-word {
+  display: inline-block;
+  transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1),
+              color 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.show-all-skewable {
+  transform-origin: bottom left;
+}
+
+.show-all-cta:hover .show-all-skewable {
+  transform: skewX(-14deg);
+  font-style: italic;
+}
+
+.show-all-cta:hover .show-all-text {
+  color: var(--fg);
+}
+
+.show-all-count {
+  font-family: var(--mono);
+  font-size: clamp(14px, 2vw, 20px);
+  font-weight: 700;
+  vertical-align: super;
+  border: 1.5px solid var(--fg);
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.5s cubic-bezier(0.23, 1, 0.32, 1),
+              color 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.show-all-cta:hover .show-all-count {
+  color: var(--fg);
+  border-color: var(--fg);
+}
+
+.show-all-line {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+  height: 2px;
+  background: var(--fg);
+  transition: background 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.show-all-cta:hover .show-all-line {
+  background: var(--fg);
 }
 
 /* info strip below image — visible on hover */
@@ -1422,7 +1511,7 @@ footer {
 <section class="hero" id="hero">
   <div class="hero__content">
     <span class="hero__first">FERHATI</span>
-    <span class="hero__last">DJAMEL</span>
+    <span class="hero__last" id="heroLast"><span class="skew-letter">D</span><span class="skew-letter">J</span><span class="skew-letter">A</span><span class="skew-letter">M</span><span class="skew-letter">E</span><span class="skew-letter">L</span></span>
     <p class="hero__descriptor">
       UI/UX Designer — Algiers, Algeria<span class="hero__cursor">_</span>
     </p>
@@ -1546,6 +1635,15 @@ footer {
       </div>
     </a>
   </div>
+
+  <!-- Big "View All" CTA -->
+  <a href="work.html" class="show-all-cta" id="showAllCta">
+    <span class="show-all-text">
+      <span class="show-all-word">VIEW</span> <span class="show-all-word show-all-skewable">ALL</span>
+    </span>
+    <span class="show-all-count">3</span>
+    <span class="show-all-line"></span>
+  </a>
 </section>
 
 <!-- ════════════ ABOUT ════════════ -->
@@ -1825,6 +1923,59 @@ footer {
           duration: 0.5,
         }, '>+0.20');
     }
+
+    /* ─── DJAMEL MOUSE-TRACKING SKEW ─── */
+    (function() {
+      var letters = document.querySelectorAll('#heroLast .skew-letter');
+      var hero = document.getElementById('hero');
+      var maxSkew = 20;       // max skew degrees
+      var radius = 200;       // influence radius in px around each letter
+      var currentSkews = [];
+      for (var i = 0; i < letters.length; i++) currentSkews[i] = 0;
+
+      function getLetterCenters() {
+        var centers = [];
+        for (var i = 0; i < letters.length; i++) {
+          var rect = letters[i].getBoundingClientRect();
+          centers.push({ x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 });
+        }
+        return centers;
+      }
+
+      hero.addEventListener('mousemove', function(e) {
+        var mx = e.clientX;
+        var my = e.clientY;
+        var centers = getLetterCenters();
+
+        for (var i = 0; i < letters.length; i++) {
+          var dx = mx - centers[i].x;
+          var dy = my - centers[i].y;
+          var dist = Math.sqrt(dx * dx + dy * dy);
+          var influence = Math.max(0, 1 - dist / radius);
+          // skew direction based on horizontal offset from letter center
+          var direction = dx > 0 ? 1 : -1;
+          var targetSkew = direction * influence * influence * maxSkew;
+
+          gsap.to(letters[i], {
+            skewX: targetSkew,
+            duration: 0.4,
+            ease: 'power2.out',
+            overwrite: 'auto',
+          });
+        }
+      });
+
+      hero.addEventListener('mouseleave', function() {
+        for (var i = 0; i < letters.length; i++) {
+          gsap.to(letters[i], {
+            skewX: 0,
+            duration: 0.8,
+            ease: 'elastic.out(1, 0.5)',
+            overwrite: 'auto',
+          });
+        }
+      });
+    })();
 
     /* ─── HERO CTA SMOOTH SCROLL ─── */
     document.querySelectorAll('.hero__cta[href^="#"]').forEach(function(link) {
