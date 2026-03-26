@@ -1,0 +1,165 @@
+{
+  "meta": {
+    "title": "Palm Garden — Spa & Resort · El Oued, Algeria",
+    "description": "Discover Palm Garden, a luxury resort & spa in the heart of the Sahara, in the City of 1000 Domes — El Oued, Algeria."
+  },
+  "nav": {
+    "accommodation": "Accommodation",
+    "spa": "Spa",
+    "restaurant": "Restaurant",
+    "gallery": "Gallery",
+    "reservation": "Reservation",
+    "book": "Book Now",
+    "close": "Close"
+  },
+  "hero": {
+    "tagline": "An oasis in the heart of the Sahara",
+    "subtitle": "Luxury resort & spa in El Oued — The City of 1000 Domes",
+    "cta": "Book now"
+  },
+  "about": {
+    "title": "Welcome to Palm Garden",
+    "text": "Nestled in the heart of Oued Souf, the legendary City of 1000 Domes, Palm Garden is a luxury haven where Algerian tradition meets contemporary comfort. Surrounded by majestic palm groves and bathed in the golden light of the Sahara, our resort offers a unique experience blending traditional architecture, refined cuisine, and absolute wellness.",
+    "stat1": "6 Chalets",
+    "stat2": "Pool",
+    "stat3": "Spa & Wellness"
+  },
+  "accommodation": {
+    "title": "Accommodation",
+    "subtitle": "Unique spaces between tradition and modernity",
+    "chalets": {
+      "name": "Chalets",
+      "description": "Pyramid-shaped glamping chalets, a unique stay under the Saharan stars with all modern comforts.",
+      "tags": "Pool,Breakfast,Air conditioning,Wi-Fi"
+    },
+    "domes": {
+      "name": "Domes",
+      "description": "Iconic geodesic dome rooms with traditional interiors, inspired by the local architecture of Oued Souf.",
+      "tags": "Garden view,Breakfast,Air conditioning,Traditional décor"
+    },
+    "salon": {
+      "name": "Traditional Salon",
+      "description": "Algerian-style lounge space for your private events, weddings, and receptions in an authentic setting.",
+      "tags": "Events,100+ capacity,Catering,Decoration"
+    },
+    "learnMore": "Learn more"
+  },
+  "spa": {
+    "title": "Spa & Wellness",
+    "subtitle": "A sanctuary of serenity in the heart of the desert",
+    "massage": {
+      "name": "Massage",
+      "description": "Relaxing and therapeutic massages inspired by ancestral traditions."
+    },
+    "hammam": {
+      "name": "Hammam",
+      "description": "Traditional steam bath for a complete purification of body and mind."
+    },
+    "pool": {
+      "name": "Relaxation Pool",
+      "description": "Heated pool surrounded by palm trees for absolute relaxation."
+    },
+    "beauty": {
+      "name": "Beauty Treatments",
+      "description": "Beauty treatments with natural Saharan products."
+    },
+    "cta": "Book a treatment"
+  },
+  "restaurant": {
+    "title": "Restaurant & Café",
+    "subtitle": "Authentic flavors under golden domes",
+    "text": "Under golden domes adorned with sparkling chandeliers, our restaurant invites you on a culinary journey through Algerian cuisine. Every evening, enjoy a refined dinner in an intimate atmosphere of velvet and gold. In the morning, a generous breakfast buffet awaits you. Our traditional café corner is the perfect place to savor mint tea or Turkish coffee.",
+    "dinner": "Dinner every evening",
+    "breakfast": "Breakfast buffet",
+    "cafe": "Traditional café"
+  },
+  "gallery": {
+    "title": "Gallery",
+    "subtitle": "Discover Palm Garden in images"
+  },
+  "booking": {
+    "title": "Reservation",
+    "subtitle": "Plan your stay or event",
+    "step1": "Booking type",
+    "step2": "Dates",
+    "step3": "Services",
+    "step4": "Contact details",
+    "step5": "Summary",
+    "types": {
+      "chalet": "Chalet stay",
+      "wedding": "Wedding",
+      "venue": "Full venue hire",
+      "conference": "Conference / Corporate event",
+      "family": "Family event",
+      "photoshoot": "Photo shoot"
+    },
+    "typeIcons": {
+      "chalet": "🌙",
+      "wedding": "💍",
+      "venue": "🏢",
+      "conference": "🎓",
+      "family": "🎉",
+      "photoshoot": "📸"
+    },
+    "dateRange": "Select your dates",
+    "checkIn": "Check-in",
+    "checkOut": "Check-out",
+    "selectDate": "Select a date",
+    "selectTime": "Select a time slot",
+    "timeSlots": "08:00,09:00,10:00,11:00,12:00,13:00,14:00,15:00,16:00,17:00,18:00,19:00,20:00",
+    "guests": "Number of guests",
+    "breakfast": "Breakfast (paid)",
+    "catering": "Dinner / Catering",
+    "cateringType": "Catering type",
+    "buffet": "Buffet",
+    "plated": "Plated service",
+    "drinksOnly": "Drinks only",
+    "poolAccess": "Pool access",
+    "halfDay": "Half day",
+    "fullDay": "Full day",
+    "waitstaff": "Waitstaff",
+    "waitstaffCount": "Number of waitstaff",
+    "kidsActivities": "Kids activities",
+    "kidsCount": "Number of kids",
+    "decoration": "Decoration",
+    "avEquipment": "AV equipment",
+    "shootingZones": "Shooting zones",
+    "zones": {
+      "garden": "Garden",
+      "domes": "Domes",
+      "salon": "Salon",
+      "pool": "Pool"
+    },
+    "fullName": "Full name",
+    "phone": "Phone",
+    "email": "Email",
+    "whatsapp": "WhatsApp (optional)",
+    "message": "Message (optional)",
+    "langPref": "Preferred language",
+    "summary": "Your request summary",
+    "submit": "Submit request",
+    "next": "Next",
+    "prev": "Previous",
+    "success": "Request sent successfully!",
+    "successMsg": "Thank you for your request. Our team will contact you within 24 hours to confirm your reservation.",
+    "whatsappLink": "Contact via WhatsApp",
+    "newBooking": "New request"
+  },
+  "reviews": {
+    "title": "What our guests say",
+    "subtitle": "Unforgettable experiences"
+  },
+  "contact": {
+    "title": "Contact",
+    "subtitle": "We're here for you",
+    "address": "Tghzout, Guemar, El Oued 39000, Algeria",
+    "phone": "+213 XX XX XX XX",
+    "email": "contact@palmgarden.dz",
+    "whatsapp": "Contact via WhatsApp"
+  },
+  "footer": {
+    "tagline": "A luxury haven in the heart of the Sahara",
+    "credit": "Website by QuadAngles",
+    "rights": "© 2025 Palm Garden. All rights reserved."
+  }
+}

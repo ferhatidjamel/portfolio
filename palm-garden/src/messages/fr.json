@@ -1,0 +1,165 @@
+{
+  "meta": {
+    "title": "Palm Garden — Spa & Resort · El Oued, Algérie",
+    "description": "Découvrez Palm Garden, un resort & spa de luxe au cœur du Sahara, dans la ville aux 1000 dômes — El Oued, Algérie."
+  },
+  "nav": {
+    "accommodation": "Hébergement",
+    "spa": "Spa",
+    "restaurant": "Restaurant",
+    "gallery": "Galerie",
+    "reservation": "Réservation",
+    "book": "Réserver",
+    "close": "Fermer"
+  },
+  "hero": {
+    "tagline": "Une oasis au cœur du Sahara",
+    "subtitle": "Resort & spa de luxe à El Oued — La ville aux 1000 dômes",
+    "cta": "Réserver maintenant"
+  },
+  "about": {
+    "title": "Bienvenue à Palm Garden",
+    "text": "Niché au cœur d'Oued Souf, la légendaire Ville aux 1000 Dômes, Palm Garden est un havre de luxe où la tradition algérienne rencontre le confort contemporain. Entouré de palmeraies majestueuses et baigné par la lumière dorée du Sahara, notre resort offre une expérience unique mêlant architecture traditionnelle, gastronomie raffinée et bien-être absolu.",
+    "stat1": "6 Chalets",
+    "stat2": "Piscine",
+    "stat3": "Spa & Bien-être"
+  },
+  "accommodation": {
+    "title": "Hébergement",
+    "subtitle": "Des espaces uniques entre tradition et modernité",
+    "chalets": {
+      "name": "Chalets",
+      "description": "Chalets glamping en forme de pyramide, un séjour unique sous les étoiles du Sahara avec tout le confort moderne.",
+      "tags": "Piscine,Petit-déjeuner,Climatisation,Wi-Fi"
+    },
+    "domes": {
+      "name": "Dômes",
+      "description": "Chambres dômes géodésiques emblématiques avec intérieurs traditionnels, inspirées de l'architecture locale d'Oued Souf.",
+      "tags": "Vue jardin,Petit-déjeuner,Climatisation,Décor traditionnel"
+    },
+    "salon": {
+      "name": "Salon Traditionnel",
+      "description": "Espace lounge de style algérien pour vos événements privés, mariages et réceptions dans un cadre authentique.",
+      "tags": "Événements,Capacité 100+,Restauration,Décoration"
+    },
+    "learnMore": "En savoir plus"
+  },
+  "spa": {
+    "title": "Spa & Bien-être",
+    "subtitle": "Un sanctuaire de sérénité au cœur du désert",
+    "massage": {
+      "name": "Massage",
+      "description": "Massages relaxants et thérapeutiques inspirés des traditions ancestrales."
+    },
+    "hammam": {
+      "name": "Hammam",
+      "description": "Bain de vapeur traditionnel pour une purification complète du corps et de l'esprit."
+    },
+    "pool": {
+      "name": "Piscine de Relaxation",
+      "description": "Bassin chauffé entouré de palmiers pour une détente absolue."
+    },
+    "beauty": {
+      "name": "Soins Beauté",
+      "description": "Traitements de beauté avec des produits naturels du Sahara."
+    },
+    "cta": "Réserver un soin"
+  },
+  "restaurant": {
+    "title": "Restaurant & Café",
+    "subtitle": "Saveurs authentiques sous les dômes dorés",
+    "text": "Sous les dômes dorés ornés de lustres étincelants, notre restaurant vous invite à un voyage culinaire au cœur de la gastronomie algérienne. Chaque soir, savourez un dîner raffiné dans une ambiance feutrée de velours et d'or. Le matin, un petit-déjeuner buffet généreux vous attend. Notre coin café traditionnel est l'endroit idéal pour déguster un thé à la menthe ou un café turc.",
+    "dinner": "Dîner tous les soirs",
+    "breakfast": "Petit-déjeuner buffet",
+    "cafe": "Café traditionnel"
+  },
+  "gallery": {
+    "title": "Galerie",
+    "subtitle": "Découvrez Palm Garden en images"
+  },
+  "booking": {
+    "title": "Réservation",
+    "subtitle": "Planifiez votre séjour ou événement",
+    "step1": "Type de réservation",
+    "step2": "Dates",
+    "step3": "Services",
+    "step4": "Coordonnées",
+    "step5": "Récapitulatif",
+    "types": {
+      "chalet": "Séjour en chalet",
+      "wedding": "Mariage",
+      "venue": "Location complète",
+      "conference": "Conférence / Événement corporate",
+      "family": "Événement familial",
+      "photoshoot": "Shooting photo"
+    },
+    "typeIcons": {
+      "chalet": "🌙",
+      "wedding": "💍",
+      "venue": "🏢",
+      "conference": "🎓",
+      "family": "🎉",
+      "photoshoot": "📸"
+    },
+    "dateRange": "Sélectionnez vos dates",
+    "checkIn": "Arrivée",
+    "checkOut": "Départ",
+    "selectDate": "Sélectionnez une date",
+    "selectTime": "Sélectionnez un créneau",
+    "timeSlots": "08:00,09:00,10:00,11:00,12:00,13:00,14:00,15:00,16:00,17:00,18:00,19:00,20:00",
+    "guests": "Nombre d'invités",
+    "breakfast": "Petit-déjeuner (payant)",
+    "catering": "Dîner / Restauration",
+    "cateringType": "Type de restauration",
+    "buffet": "Buffet",
+    "plated": "À l'assiette",
+    "drinksOnly": "Boissons seulement",
+    "poolAccess": "Accès piscine",
+    "halfDay": "Demi-journée",
+    "fullDay": "Journée complète",
+    "waitstaff": "Personnel de service",
+    "waitstaffCount": "Nombre de serveurs",
+    "kidsActivities": "Activités enfants",
+    "kidsCount": "Nombre d'enfants",
+    "decoration": "Décoration",
+    "avEquipment": "Équipement audiovisuel",
+    "shootingZones": "Zones de shooting",
+    "zones": {
+      "garden": "Jardin",
+      "domes": "Dômes",
+      "salon": "Salon",
+      "pool": "Piscine"
+    },
+    "fullName": "Nom complet",
+    "phone": "Téléphone",
+    "email": "Email",
+    "whatsapp": "WhatsApp (optionnel)",
+    "message": "Message (optionnel)",
+    "langPref": "Langue préférée",
+    "summary": "Récapitulatif de votre demande",
+    "submit": "Envoyer la demande",
+    "next": "Suivant",
+    "prev": "Précédent",
+    "success": "Demande envoyée avec succès !",
+    "successMsg": "Merci pour votre demande. Notre équipe vous contactera dans les 24 heures pour confirmer votre réservation.",
+    "whatsappLink": "Contacter via WhatsApp",
+    "newBooking": "Nouvelle demande"
+  },
+  "reviews": {
+    "title": "Ce que disent nos hôtes",
+    "subtitle": "Des expériences inoubliables"
+  },
+  "contact": {
+    "title": "Contact",
+    "subtitle": "Nous sommes à votre écoute",
+    "address": "Tghzout, Guemar, El Oued 39000, Algérie",
+    "phone": "+213 XX XX XX XX",
+    "email": "contact@palmgarden.dz",
+    "whatsapp": "Contacter via WhatsApp"
+  },
+  "footer": {
+    "tagline": "Un havre de luxe au cœur du Sahara",
+    "credit": "Site réalisé par QuadAngles",
+    "rights": "© 2025 Palm Garden. Tous droits réservés."
+  }
+}
