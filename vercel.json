@@ -1,6 +1,0 @@
-{
-  "buildCommand": "cd palm-garden && npm install && npm run build",
-  "outputDirectory": "palm-garden/.next",
-  "installCommand": "cd palm-garden && npm install",
-  "framework": "nextjs"
-}
