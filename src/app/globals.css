@@ -1,0 +1,122 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-desert-night: #0D0A06;
+  --color-gold: #C8973A;
+  --color-gold-muted: #8B6914;
+  --color-palm-green: #2D5016;
+  --color-cream: #FAF6EE;
+  --color-cream-dim: #FAF6EE80;
+
+  --font-heading: "Cormorant Garamond", "Playfair Display", Georgia, serif;
+  --font-body: "Inter", "DM Sans", system-ui, sans-serif;
+  --font-arabic: "Noto Naskh Arabic", "Cairo", sans-serif;
+}
+
+@font-face {
+  font-family: "Cormorant Garamond";
+  font-style: normal;
+  font-weight: 300 700;
+  font-display: swap;
+  src: url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&display=swap");
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: #0D0A06;
+  color: #FAF6EE;
+  font-family: var(--font-body);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+}
+
+[dir="rtl"] body,
+[dir="rtl"] h1,
+[dir="rtl"] h2,
+[dir="rtl"] h3,
+[dir="rtl"] h4,
+[dir="rtl"] h5,
+[dir="rtl"] h6,
+[dir="rtl"] p,
+[dir="rtl"] span,
+[dir="rtl"] div {
+  font-family: var(--font-arabic);
+}
+
+[dir="rtl"] h1,
+[dir="rtl"] h2,
+[dir="rtl"] h3,
+[dir="rtl"] h4,
+[dir="rtl"] h5,
+[dir="rtl"] h6 {
+  font-family: var(--font-arabic);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0D0A06;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #8B6914;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #C8973A;
+}
+
+/* Lightbox overlay */
+.lightbox-overlay {
+  backdrop-filter: blur(10px);
+}
+
+/* Calendar styles */
+.rdp {
+  --rdp-accent-color: #C8973A !important;
+  --rdp-background-color: #C8973A20 !important;
+}
+
+/* Smooth section transitions */
+section {
+  position: relative;
+}
+
+/* Gold gradient text */
+.gold-gradient-text {
+  background: linear-gradient(135deg, #C8973A, #E8C068, #C8973A);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Ken Burns animation */
+@keyframes kenburns {
+  0% {
+    transform: scale(1) translate(0, 0);
+  }
+  50% {
+    transform: scale(1.1) translate(-1%, -1%);
+  }
+  100% {
+    transform: scale(1) translate(0, 0);
+  }
+}
+
+.ken-burns {
+  animation: kenburns 20s ease-in-out infinite;
+}
+
+/* Booking wizard step indicator */
+.step-active {
+  background: linear-gradient(135deg, #C8973A, #E8C068);
+}
