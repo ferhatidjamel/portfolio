@@ -1,8 +1,11 @@
 "use client";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useTranslations } from "next-intl";
-import { motion, AnimatePresence } from "framer-motion";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { X, ChevronLeft, ChevronRight } from "lucide-react";
+
+gsap.registerPlugin(ScrollTrigger);
 
 const images = [
   "https://images.unsplash.com/photo-1509023464722-18d996393ca8?w=600&q=80",
@@ -19,15 +22,34 @@ const images = [
   "https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=600&q=80",
 ];
 
+// Grid layout: define span behavior per image index
+const gridSpans: Record<number, string> = {
+  0: "md:col-span-2",          // Row 1: span 2 cols
+  4: "md:row-span-2",          // Row 2: span 2 rows
+  11: "md:col-span-2",         // Row 3: span 2 cols (last row)
+};
+
+const gridAspects: Record<number, string> = {
+  0: "aspect-[16/9]",
+  4: "aspect-[9/16] md:aspect-auto md:h-full",
+  11: "aspect-[16/9]",
+};
+
 export default function Gallery() {
   const t = useTranslations("gallery");
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+  const sectionRef = useRef<HTMLElement>(null);
+  const headerRef = useRef<HTMLDivElement>(null);
+  const imageRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const lightboxImageRef = useRef<HTMLImageElement>(null);
 
   const openLightbox = (index: number) => setLightboxIndex(index);
   const closeLightbox = useCallback(() => setLightboxIndex(null), []);
 
   const goNext = useCallback(() => {
-    setLightboxIndex((prev) => (prev !== null ? (prev + 1) % images.length : null));
+    setLightboxIndex((prev) =>
+      prev !== null ? (prev + 1) % images.length : null
+    );
   }, []);
 
   const goPrev = useCallback(() => {
@@ -36,6 +58,7 @@ export default function Gallery() {
     );
   }, []);
 
+  // Keyboard navigation
   useEffect(() => {
     if (lightboxIndex === null) return;
 
@@ -46,93 +69,176 @@ export default function Gallery() {
     };
 
     document.addEventListener("keydown", handleKeyDown);
-    return () => document.removeEventListener("keydown", handleKeyDown);
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = "";
+    };
   }, [lightboxIndex, closeLightbox, goNext, goPrev]);
 
+  // GSAP lightbox open animation
+  useEffect(() => {
+    if (lightboxIndex !== null && lightboxImageRef.current) {
+      gsap.fromTo(
+        lightboxImageRef.current,
+        { scale: 0.8, opacity: 0 },
+        { scale: 1, opacity: 1, duration: 0.5, ease: "power3.out" }
+      );
+    }
+  }, [lightboxIndex]);
+
+  // GSAP scroll animations
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      // Header animation
+      if (headerRef.current) {
+        gsap.fromTo(
+          headerRef.current,
+          { y: 60, opacity: 0 },
+          {
+            y: 0,
+            opacity: 1,
+            duration: 1,
+            ease: "power3.out",
+            scrollTrigger: {
+              trigger: headerRef.current,
+              start: "top 85%",
+            },
+          }
+        );
+      }
+
+      // Image reveal animations
+      imageRefs.current.forEach((el, i) => {
+        if (!el) return;
+        gsap.fromTo(
+          el,
+          { clipPath: "inset(100% 0 0 0)" },
+          {
+            clipPath: "inset(0% 0 0 0)",
+            duration: 0.9,
+            ease: "power3.out",
+            delay: i * 0.1,
+            scrollTrigger: {
+              trigger: el,
+              start: "top 80%",
+            },
+          }
+        );
+      });
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
+
   return (
-    <section id="galerie" className="bg-desert-night py-24">
+    <section
+      id="galerie"
+      ref={sectionRef}
+      className="bg-[#131008] py-32"
+    >
       <div className="max-w-7xl mx-auto px-6">
         {/* Header */}
-        <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold text-cream mb-4">
+        <div ref={headerRef} className="text-center mb-20">
+          <span className="inline-block text-xs tracking-[0.3em] uppercase text-gold mb-4">
+            GALERIE
+          </span>
+          <h2 className="text-4xl md:text-6xl lg:text-7xl text-cream font-[family-name:var(--font-heading)]">
             {t("title")}
           </h2>
-          <p className="text-gold text-lg">{t("subtitle")}</p>
+          <div className="mx-auto mt-6 h-px w-24 bg-gold/60" />
         </div>
 
-        {/* Masonry Grid */}
-        <div className="columns-1 sm:columns-2 lg:columns-3 gap-4">
-          {images.map((src, index) => (
-            <div
-              key={index}
-              className="mb-4 break-inside-avoid cursor-pointer group relative overflow-hidden rounded-lg"
-              onClick={() => openLightbox(index)}
-            >
-              <img
-                src={src}
-                alt=""
-                className="w-full rounded-lg transition-transform duration-300 group-hover:scale-105"
-              />
-              <div className="absolute inset-0 bg-gold/0 group-hover:bg-gold/20 transition-colors duration-300 rounded-lg" />
-            </div>
-          ))}
+        {/* Structured CSS Grid */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 auto-rows-[200px] md:auto-rows-[260px]">
+          {images.map((src, index) => {
+            const spanClass = gridSpans[index] || "";
+            const aspectClass = gridAspects[index] || "aspect-square md:aspect-auto";
+
+            return (
+              <div
+                key={index}
+                ref={(el) => {
+                  imageRefs.current[index] = el;
+                }}
+                className={`
+                  relative overflow-hidden rounded-lg cursor-pointer group
+                  ${spanClass}
+                  ${index === 4 ? "" : ""}
+                `}
+                style={{ clipPath: "inset(100% 0 0 0)" }}
+                onClick={() => openLightbox(index)}
+              >
+                <img
+                  src={src}
+                  alt=""
+                  loading="lazy"
+                  className="object-cover w-full h-full transition-transform duration-700 ease-out group-hover:scale-105"
+                />
+                {/* Gold gradient overlay on hover */}
+                <div className="absolute inset-0 bg-gradient-to-t from-amber-700/0 via-transparent to-transparent opacity-0 group-hover:from-amber-700/30 group-hover:opacity-100 transition-all duration-700 pointer-events-none" />
+              </div>
+            );
+          })}
         </div>
       </div>
 
       {/* Lightbox */}
-      <AnimatePresence>
-        {lightboxIndex !== null && (
-          <motion.div
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+      {lightboxIndex !== null && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-xl"
+          onClick={closeLightbox}
+        >
+          {/* Close button */}
+          <button
+            className="absolute top-6 right-6 text-cream/70 hover:text-gold transition-colors duration-300 z-10"
             onClick={closeLightbox}
+            aria-label="Close"
           >
-            {/* Close button */}
-            <button
-              className="absolute top-6 right-6 text-cream hover:text-gold transition-colors z-10"
-              onClick={closeLightbox}
-            >
-              <X size={32} />
-            </button>
+            <X size={32} strokeWidth={1.5} />
+          </button>
 
-            {/* Previous arrow */}
-            <button
-              className="absolute left-4 md:left-8 text-cream hover:text-gold transition-colors z-10"
-              onClick={(e) => {
-                e.stopPropagation();
-                goPrev();
-              }}
-            >
-              <ChevronLeft size={40} />
-            </button>
+          {/* Previous arrow */}
+          <button
+            className="absolute left-6 md:left-12 text-cream/50 hover:text-gold transition-colors duration-300 z-10"
+            onClick={(e) => {
+              e.stopPropagation();
+              goPrev();
+            }}
+            aria-label="Previous image"
+          >
+            <ChevronLeft size={48} strokeWidth={1} />
+          </button>
 
-            {/* Image */}
-            <motion.img
-              key={lightboxIndex}
-              src={images[lightboxIndex]}
-              alt=""
-              className="max-h-[85vh] max-w-[90vw] object-contain rounded-lg"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={(e) => e.stopPropagation()}
-            />
+          {/* Image */}
+          <img
+            ref={lightboxImageRef}
+            key={lightboxIndex}
+            src={images[lightboxIndex].replace("w=600", "w=1200")}
+            alt=""
+            className="max-h-[85vh] max-w-5xl w-[90vw] object-contain rounded-lg select-none"
+            onClick={(e) => e.stopPropagation()}
+          />
 
-            {/* Next arrow */}
-            <button
-              className="absolute right-4 md:right-8 text-cream hover:text-gold transition-colors z-10"
-              onClick={(e) => {
-                e.stopPropagation();
-                goNext();
-              }}
-            >
-              <ChevronRight size={40} />
-            </button>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          {/* Next arrow */}
+          <button
+            className="absolute right-6 md:right-12 text-cream/50 hover:text-gold transition-colors duration-300 z-10"
+            onClick={(e) => {
+              e.stopPropagation();
+              goNext();
+            }}
+            aria-label="Next image"
+          >
+            <ChevronRight size={48} strokeWidth={1} />
+          </button>
+
+          {/* Image counter */}
+          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 text-cream/40 text-sm tracking-widest">
+            {lightboxIndex + 1} / {images.length}
+          </div>
+        </div>
+      )}
     </section>
   );
 }

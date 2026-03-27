@@ -1,12 +1,11 @@
 "use client";
 import { useTranslations } from "next-intl";
-import { motion } from "framer-motion";
-import { Star } from "lucide-react";
+import { useEffect, useRef } from "react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { Star, Quote } from "lucide-react";
 
-const fadeIn = {
-  hidden: { opacity: 0, y: 40 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" as const } },
-};
+gsap.registerPlugin(ScrollTrigger);
 
 const reviews = [
   {
@@ -48,51 +47,108 @@ const reviews = [
 
 export default function Reviews() {
   const t = useTranslations("reviews");
+  const sectionRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      // Header
+      gsap.from(".reviews-header", {
+        y: 60,
+        opacity: 0,
+        duration: 1,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: ".reviews-header",
+          start: "top 85%",
+          toggleActions: "play none none none",
+        },
+      });
+
+      // Cards stagger from right
+      gsap.from(".review-card", {
+        x: 100,
+        opacity: 0,
+        duration: 0.9,
+        stagger: 0.12,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: ".reviews-track",
+          start: "top 80%",
+          toggleActions: "play none none none",
+        },
+      });
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
 
   return (
-    <section id="reviews" className="bg-desert-night py-24">
-      <div className="max-w-7xl mx-auto px-6">
-        <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.3 }}
-          variants={fadeIn}
-        >
-          <h2 className="font-[family-name:var(--font-heading)] text-gold text-3xl md:text-4xl lg:text-5xl mb-4 text-center">
+    <section
+      ref={sectionRef}
+      id="reviews"
+      className="relative py-32 md:py-40 overflow-hidden"
+      style={{
+        background:
+          "linear-gradient(180deg, #0D0A06 0%, #15120C 30%, #15120C 70%, #0D0A06 100%)",
+      }}
+    >
+      <div className="noise-overlay absolute inset-0 pointer-events-none" />
+
+      <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-12">
+        {/* Header */}
+        <div className="reviews-header text-center mb-16">
+          <h2 className="font-[family-name:var(--font-heading)] text-cream text-4xl md:text-5xl lg:text-6xl mb-5">
             {t("title")}
           </h2>
-          <p className="text-cream text-base md:text-lg text-center mb-12">
+          <p className="text-sand-light/60 text-lg md:text-xl max-w-xl mx-auto">
             {t("subtitle")}
           </p>
+        </div>
 
-          <div className="flex gap-6 overflow-x-auto snap-x pb-4">
-            {reviews.map((review) => (
-              <div
-                key={review.name}
-                className="min-w-[300px] flex-shrink-0 snap-start rounded-xl border border-gold bg-desert-night p-6 flex flex-col gap-4"
-              >
-                <div className="flex gap-1">
-                  {Array.from({ length: review.stars }).map((_, i) => (
-                    <Star
-                      key={i}
-                      className="text-gold fill-gold"
-                      size={18}
-                    />
-                  ))}
-                </div>
+        {/* Horizontal scrolling cards */}
+        <div className="reviews-track flex gap-6 md:gap-8 overflow-x-auto pb-6 snap-x snap-mandatory scrollbar-hide"
+          style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+        >
+          {reviews.map((review) => (
+            <div
+              key={review.name}
+              className="review-card group min-w-[320px] md:min-w-[380px] flex-shrink-0 snap-start rounded-2xl border border-gold/15 bg-[#1A150D]/80 backdrop-blur-sm p-8 md:p-10 flex flex-col gap-5 hover:border-gold/40 transition-all duration-500"
+            >
+              {/* Quote icon */}
+              <Quote
+                className="text-gold/30 group-hover:text-gold/50 transition-colors duration-500"
+                size={32}
+                strokeWidth={1}
+              />
 
-                <p className="text-cream italic leading-relaxed">
-                  &ldquo;{review.quote}&rdquo;
-                </p>
-
-                <div className="mt-auto">
-                  <p className="text-gold font-semibold">{review.name}</p>
-                  <p className="text-cream/60 text-sm">{review.occasion}</p>
-                </div>
+              {/* Stars */}
+              <div className="flex gap-1">
+                {Array.from({ length: review.stars }).map((_, i) => (
+                  <Star
+                    key={i}
+                    className="text-gold fill-gold"
+                    size={16}
+                  />
+                ))}
               </div>
-            ))}
-          </div>
-        </motion.div>
+
+              {/* Quote text */}
+              <p className="text-cream/80 text-base md:text-lg leading-relaxed italic flex-1">
+                &ldquo;{review.quote}&rdquo;
+              </p>
+
+              {/* Author */}
+              <div className="pt-4 border-t border-gold/10">
+                <p className="text-cream font-semibold text-base">
+                  {review.name}
+                </p>
+                <p className="text-cream/40 text-sm mt-1">
+                  {review.occasion}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   );

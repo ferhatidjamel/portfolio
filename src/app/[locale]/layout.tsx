@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { getMessages, getTranslations, setRequestLocale } from "next-intl/server";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { routing } from "@/i18n/routing";
+import SmoothScroll from "@/components/SmoothScroll";
 import "../globals.css";
 
 type Props = {
@@ -59,7 +60,9 @@ export default async function LocaleLayout({ children, params }: Props) {
       </head>
       <body className="min-h-screen bg-desert-night text-cream overflow-x-hidden">
         <NextIntlClientProvider messages={messages}>
-          {children}
+          <SmoothScroll>
+            {children}
+          </SmoothScroll>
         </NextIntlClientProvider>
       </body>
     </html>
