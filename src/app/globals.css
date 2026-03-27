@@ -52,8 +52,21 @@ body {
   color: var(--color-text-primary);
   font-family: var(--font-body);
   overflow-x: hidden;
-  transition: background-color 0.8s ease, color 0.8s ease;
+  transition: background-color 0.6s ease, color 0.6s ease;
   cursor: none;
+}
+
+/* Global 600ms transition for day/night on all themed elements */
+html.night-mode *,
+html:not(.night-mode) * {
+  transition-property: background-color, color, border-color, box-shadow;
+  transition-duration: 0.6s;
+  transition-timing-function: ease;
+}
+
+/* Hero image crossfade duration */
+.duration-800 {
+  transition-duration: 800ms;
 }
 
 h1, h2, h3, h4, h5, h6 {

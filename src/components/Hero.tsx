@@ -1,6 +1,6 @@
 "use client";
 import { useTranslations } from "next-intl";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -9,13 +9,24 @@ gsap.registerPlugin(ScrollTrigger);
 export default function Hero() {
   const t = useTranslations("hero");
   const sectionRef = useRef<HTMLElement>(null);
+  const [isNight, setIsNight] = useState(false);
+
+  // Listen for day/night toggle changes
+  useEffect(() => {
+    const check = () => {
+      setIsNight(document.documentElement.classList.contains("night-mode"));
+    };
+    check();
+    window.addEventListener("theme-change", check);
+    return () => window.removeEventListener("theme-change", check);
+  }, []);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({ delay: 0.5 });
 
-      // Image Ken Burns — slow subtle zoom
-      gsap.to(".hero-img", {
+      // Image Ken Burns — slow subtle zoom (targets both images)
+      gsap.to(".hero-img-day, .hero-img-night", {
         scale: 1.08,
         duration: 20,
         ease: "none",
@@ -90,7 +101,7 @@ export default function Hero() {
       );
 
       // Parallax on scroll
-      gsap.to(".hero-img", {
+      gsap.to(".hero-images-wrap", {
         yPercent: 20,
         ease: "none",
         scrollTrigger: {
@@ -110,53 +121,98 @@ export default function Hero() {
       ref={sectionRef}
       className="relative h-screen min-h-[600px] flex items-center justify-center overflow-hidden"
     >
-      {/* Full-bleed image — NO dark overlay, let it breathe */}
-      <div className="absolute inset-0">
+      {/* Two image layers for day/night crossfade */}
+      <div className="hero-images-wrap absolute inset-0">
+        {/* Day image */}
         <img
           src="/images/hero-palm-garden.jpg"
           alt="Palm Garden — white domes, palm trees, green gardens"
-          className="hero-img h-full w-full object-cover scale-100"
+          className="hero-img-day absolute inset-0 h-full w-full object-cover scale-100 transition-opacity duration-800 ease-in-out"
+          style={{ opacity: isNight ? 0 : 1 }}
         />
-        {/* Very subtle gradient at bottom only for text readability */}
-        <div className="absolute bottom-0 left-0 right-0 h-1/2 bg-gradient-to-t from-black/20 to-transparent" />
+        {/* Night image */}
+        <img
+          src="/images/hero-palm-garden-night.webp"
+          alt="Palm Garden at night — warm amber lighting, glowing domes"
+          className="hero-img-night absolute inset-0 h-full w-full object-cover scale-100 transition-opacity duration-800 ease-in-out"
+          style={{ opacity: isNight ? 1 : 0 }}
+        />
       </div>
+
+      {/* Gradient overlay for text readability */}
+      <div
+        className="absolute inset-0 z-[1] transition-opacity duration-800"
+        style={{
+          background: isNight
+            ? "linear-gradient(to bottom, rgba(0,0,0,0.25) 0%, rgba(0,0,0,0.55) 40%, rgba(0,0,0,0.65) 60%, rgba(0,0,0,0.30) 100%)"
+            : "linear-gradient(to bottom, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.45) 40%, rgba(0,0,0,0.55) 60%, rgba(0,0,0,0.20) 100%)",
+        }}
+      />
 
       {/* Floating particles */}
       <div className="particle particle-1" style={{ top: "20%", left: "15%" }} />
       <div className="particle particle-2" style={{ top: "35%", right: "20%" }} />
       <div className="particle particle-3" style={{ top: "60%", left: "70%" }} />
 
-      {/* Content */}
-      <div className="relative z-10 text-center px-6 max-w-5xl mx-auto">
-        <p className="hero-tagline eyebrow text-white/90 mb-6">
+      {/* Content — positioned slightly lower (55-60% from top) */}
+      <div className="relative z-10 text-center px-6 max-w-5xl mx-auto mt-[10vh]">
+        {/* Eyebrow tagline with subtle backdrop */}
+        <p
+          className="hero-tagline eyebrow mb-6"
+          style={{
+            color: "#C8973A",
+            letterSpacing: "0.25em",
+            textShadow: "0 1px 8px rgba(0,0,0,0.6)",
+          }}
+        >
           {t("tagline")}
         </p>
 
-        <h1 className="hero-headline heading-hero text-white mb-8">
+        {/* Main headline */}
+        <h1
+          className="hero-headline heading-hero mb-8"
+          style={{
+            color: "#FFFFFF",
+            letterSpacing: "0.02em",
+            textShadow: "0 2px 40px rgba(0,0,0,0.5)",
+          }}
+        >
           Palm Garden
         </h1>
 
+        {/* Animated gold line */}
         <div className="hero-gold-line gold-line w-20 mx-auto mb-8 origin-center" />
 
-        <p className="hero-subtitle text-white/80 text-lg md:text-xl font-light tracking-wide max-w-2xl mx-auto mb-10">
+        {/* Subtitle */}
+        <p
+          className="hero-subtitle text-lg md:text-xl max-w-2xl mx-auto mb-10"
+          style={{
+            color: "#FFFFFF",
+            fontWeight: 300,
+            letterSpacing: "0.03em",
+            textShadow: "0 1px 12px rgba(0,0,0,0.5)",
+          }}
+        >
           {t("subtitle")}
         </p>
 
+        {/* CTA — minimal outline */}
         <a
           href="#reservation"
           className="hero-cta inline-block rounded-full border border-white/50 px-10 py-4 text-white text-sm uppercase tracking-[0.2em] font-light hover:bg-white/10 transition-all duration-500"
+          style={{ textShadow: "0 1px 6px rgba(0,0,0,0.3)" }}
         >
           {t("cta")}
         </a>
       </div>
 
       {/* Scroll indicator */}
-      <div className="hero-scroll absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3">
-        <span className="text-white/50 text-[10px] uppercase tracking-[0.3em]">Scroll</span>
+      <div className="hero-scroll absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 z-10">
+        <span className="text-white/70 text-[10px] uppercase tracking-[0.3em]">Scroll</span>
         <div className="scroll-indicator-line" />
       </div>
 
-      {/* WhatsApp floating button — gold, not green */}
+      {/* WhatsApp floating button — gold */}
       <a
         href="https://wa.me/213XXXXXXXXX"
         target="_blank"
