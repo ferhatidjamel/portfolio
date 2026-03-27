@@ -113,8 +113,8 @@ export default function Hero() {
       {/* Full-bleed image — NO dark overlay, let it breathe */}
       <div className="absolute inset-0">
         <img
-          src="https://images.unsplash.com/photo-1539650116574-8efeb43e2750?w=1920&q=85"
-          alt=""
+          src="/images/hero-palm-garden.jpg"
+          alt="Palm Garden — white domes, palm trees, green gardens"
           className="hero-img h-full w-full object-cover scale-100"
         />
         {/* Very subtle gradient at bottom only for text readability */}
