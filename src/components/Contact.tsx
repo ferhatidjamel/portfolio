@@ -1,7 +1,11 @@
 "use client";
 import { useTranslations } from "next-intl";
-import { motion } from "framer-motion";
+import { useEffect, useRef } from "react";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { MapPin, Phone, Mail, MessageCircle } from "lucide-react";
+
+gsap.registerPlugin(ScrollTrigger);
 
 function FacebookIcon({ size = 24 }: { size?: number }) {
   return (
@@ -19,104 +23,101 @@ function InstagramIcon({ size = 24 }: { size?: number }) {
   );
 }
 
-const fadeInUp = {
-  hidden: { opacity: 0, y: 40 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" as const } },
-};
-
 export default function Contact() {
   const t = useTranslations("contact");
+  const sectionRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      gsap.from(".contact-header", {
+        y: 50,
+        opacity: 0,
+        duration: 1,
+        ease: "power3.out",
+        scrollTrigger: { trigger: ".contact-header", start: "top 85%" },
+      });
+
+      gsap.from(".contact-item", {
+        y: 30,
+        opacity: 0,
+        duration: 0.8,
+        stagger: 0.1,
+        ease: "power3.out",
+        scrollTrigger: { trigger: ".contact-info", start: "top 80%" },
+      });
+
+      gsap.from(".contact-map", {
+        clipPath: "inset(0 100% 0 0)",
+        duration: 1.4,
+        ease: "power4.inOut",
+        scrollTrigger: { trigger: ".contact-map", start: "top 75%" },
+      });
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
 
   return (
-    <section id="contact" className="bg-desert-night py-24">
-      <div className="max-w-7xl mx-auto px-6">
-        {/* Header */}
-        <motion.div
-          className="text-center mb-16"
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.3 }}
-          variants={fadeInUp}
-        >
-          <h2 className="font-[family-name:var(--font-heading)] text-gold text-3xl md:text-4xl lg:text-5xl mb-4">
-            {t("title")}
-          </h2>
-          <p className="text-cream/70 text-base md:text-lg max-w-2xl mx-auto">
-            {t("subtitle")}
-          </p>
-        </motion.div>
+    <section
+      ref={sectionRef}
+      id="contact"
+      className="relative py-32 md:py-40 overflow-hidden"
+      style={{ backgroundColor: "#1A1208" }}
+    >
+      <div className="noise-overlay absolute inset-0 pointer-events-none" />
 
-        {/* Two-column layout */}
-        <motion.div
-          className="flex flex-col lg:flex-row gap-12 lg:gap-16"
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.2 }}
-          variants={fadeInUp}
-        >
-          {/* Left: Contact info */}
-          <div className="w-full lg:w-1/2 space-y-6">
-            {/* Address */}
-            <div className="flex items-start gap-4">
+      <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-12">
+        <div className="contact-header text-center mb-16">
+          <p className="eyebrow mb-4">{t("subtitle")}</p>
+          <h2 className="heading-section text-white">{t("title")}</h2>
+        </div>
+
+        <div className="flex flex-col lg:flex-row gap-12 lg:gap-16">
+          {/* Contact info */}
+          <div className="contact-info w-full lg:w-1/2 space-y-6">
+            <div className="contact-item flex items-start gap-4">
               <MapPin className="text-gold shrink-0 mt-1" size={24} strokeWidth={1.5} />
-              <span className="text-cream text-base leading-relaxed">
-                {t("address")}
-              </span>
+              <span className="text-white/80 text-base leading-relaxed">{t("address")}</span>
             </div>
-
-            {/* Phone */}
-            <div className="flex items-start gap-4">
+            <div className="contact-item flex items-start gap-4">
               <Phone className="text-gold shrink-0 mt-1" size={24} strokeWidth={1.5} />
-              <span className="text-cream text-base leading-relaxed">
-                {t("phone")}
-              </span>
+              <span className="text-white/80 text-base leading-relaxed">{t("phone")}</span>
             </div>
-
-            {/* Email */}
-            <div className="flex items-start gap-4">
+            <div className="contact-item flex items-start gap-4">
               <Mail className="text-gold shrink-0 mt-1" size={24} strokeWidth={1.5} />
-              <span className="text-cream text-base leading-relaxed">
-                {t("email")}
-              </span>
+              <span className="text-white/80 text-base leading-relaxed">{t("email")}</span>
             </div>
 
-            {/* WhatsApp */}
             <a
               href="https://wa.me/213XXXXXXXXX"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-3 bg-green-600 hover:bg-green-700 transition-colors duration-300 text-white px-6 py-3 rounded-lg text-sm font-semibold uppercase tracking-wider"
+              className="contact-item inline-flex items-center gap-3 bg-gold hover:bg-gold-light transition-colors duration-300 text-white px-6 py-3 rounded-full text-sm font-semibold uppercase tracking-wider"
             >
               <MessageCircle size={20} strokeWidth={1.5} />
               {t("whatsapp")}
             </a>
 
-            {/* Social icons */}
-            <div className="flex items-center gap-4 pt-4">
-              <a
-                href="#"
-                aria-label="Facebook"
-                className="text-cream/60 hover:text-gold transition-colors duration-300"
-              >
+            <div className="contact-item flex items-center gap-4 pt-4">
+              <a href="#" aria-label="Facebook" className="text-white/40 hover:text-gold transition-colors duration-300">
                 <FacebookIcon size={24} />
               </a>
-              <a
-                href="#"
-                aria-label="Instagram"
-                className="text-cream/60 hover:text-gold transition-colors duration-300"
-              >
+              <a href="#" aria-label="Instagram" className="text-white/40 hover:text-gold transition-colors duration-300">
                 <InstagramIcon size={24} />
               </a>
             </div>
           </div>
 
-          {/* Right: Google Maps embed */}
+          {/* Map */}
           <div className="w-full lg:w-1/2">
-            <div className="aspect-video rounded-2xl border-2 border-gold/40 overflow-hidden">
+            <div
+              className="contact-map aspect-video rounded-2xl border border-gold/20 overflow-hidden"
+              style={{ clipPath: "inset(0 0% 0 0)" }}
+            >
               <iframe
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d26889.24!2d6.85!3d33.35!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzPCsDIxJzAwLjAiTiA2wrA1MScwMC4wIkU!5e0!3m2!1sfr!2sdz!4v1"
                 className="w-full h-full"
-                style={{ border: 0 }}
+                style={{ border: 0, filter: "invert(0.9) hue-rotate(180deg) saturate(0.3)" }}
                 allowFullScreen
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
@@ -124,7 +125,7 @@ export default function Contact() {
               />
             </div>
           </div>
-        </motion.div>
+        </div>
       </div>
     </section>
   );

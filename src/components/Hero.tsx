@@ -1,128 +1,103 @@
 "use client";
-import { useEffect, useRef } from "react";
 import { useTranslations } from "next-intl";
+import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
 export default function Hero() {
-  const t = useTranslations();
-
+  const t = useTranslations("hero");
   const sectionRef = useRef<HTMLElement>(null);
-  const imageRef = useRef<HTMLImageElement>(null);
-  const locationRef = useRef<HTMLSpanElement>(null);
-  const taglineRef = useRef<HTMLHeadingElement>(null);
-  const lineRef = useRef<HTMLDivElement>(null);
-  const subtitleRef = useRef<HTMLParagraphElement>(null);
-  const ctaRef = useRef<HTMLAnchorElement>(null);
-  const whatsappRef = useRef<HTMLAnchorElement>(null);
-  const scrollIndicatorRef = useRef<HTMLDivElement>(null);
-  const contentRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
+      const tl = gsap.timeline({ delay: 0.5 });
 
-      // 1. Image scale from 1.2 to 1.0
-      tl.fromTo(
-        imageRef.current,
-        { scale: 1.2 },
-        { scale: 1.0, duration: 2, ease: "power2.out" }
-      );
-
-      // 2. Location text fades in + slides up
-      tl.fromTo(
-        locationRef.current,
-        { opacity: 0, y: 30 },
-        { opacity: 1, y: 0, duration: 0.8 },
-        0.5
-      );
-
-      // 3. Tagline words slide up staggered
-      const wordContainers = taglineRef.current?.querySelectorAll(".word-inner");
-      if (wordContainers) {
-        tl.fromTo(
-          wordContainers,
-          { y: "110%" },
-          { y: "0%", duration: 1, stagger: 0.1, ease: "power4.out" },
-          0.8
-        );
-      }
-
-      // 4. Gold line draws in
-      tl.fromTo(
-        lineRef.current,
-        { scaleX: 0 },
-        { scaleX: 1, duration: 0.8, ease: "power2.inOut" },
-        1.6
-      );
-
-      // 5. Subtitle fades in
-      tl.fromTo(
-        subtitleRef.current,
-        { opacity: 0, y: 15 },
-        { opacity: 1, y: 0, duration: 0.8 },
-        1.8
-      );
-
-      // 6. CTA fades in + slides up
-      tl.fromTo(
-        ctaRef.current,
-        { opacity: 0, y: 20 },
-        { opacity: 1, y: 0, duration: 0.8 },
-        2.0
-      );
-
-      // WhatsApp button appears after 2s delay
-      gsap.fromTo(
-        whatsappRef.current,
-        { opacity: 0, scale: 0.5 },
-        { opacity: 1, scale: 1, duration: 0.5, delay: 2, ease: "back.out(1.7)" }
-      );
-
-      // Scroll indicator bounce
-      const scrollLine = scrollIndicatorRef.current?.querySelector(".scroll-line");
-      if (scrollLine) {
-        gsap.to(scrollLine, {
-          y: 8,
-          duration: 1,
-          repeat: -1,
-          yoyo: true,
-          ease: "power1.inOut",
-        });
-      }
-
-      // ScrollTrigger: fade out scroll indicator on scroll
-      ScrollTrigger.create({
-        trigger: sectionRef.current,
-        start: "top top",
-        end: "20% top",
-        onUpdate: (self) => {
-          if (scrollIndicatorRef.current) {
-            gsap.set(scrollIndicatorRef.current, {
-              opacity: 1 - self.progress * 3,
-            });
-          }
-        },
+      // Image Ken Burns — slow subtle zoom
+      gsap.to(".hero-img", {
+        scale: 1.08,
+        duration: 20,
+        ease: "none",
+        repeat: -1,
+        yoyo: true,
       });
 
-      // ScrollTrigger: parallax depth effect
-      ScrollTrigger.create({
-        trigger: sectionRef.current,
-        start: "top top",
-        end: "bottom top",
-        scrub: true,
-        onUpdate: (self) => {
-          const progress = self.progress;
-          // Image moves slower (parallax)
-          if (imageRef.current) {
-            gsap.set(imageRef.current, { y: progress * 150 });
-          }
-          // Content moves faster
-          if (contentRef.current) {
-            gsap.set(contentRef.current, { y: progress * -250 });
-          }
+      // Tagline
+      tl.from(".hero-tagline", {
+        y: 30,
+        opacity: 0,
+        duration: 1,
+        ease: "power3.out",
+      });
+
+      // Headline
+      tl.from(
+        ".hero-headline",
+        {
+          y: 60,
+          opacity: 0,
+          duration: 1.2,
+          ease: "power3.out",
+        },
+        "-=0.5"
+      );
+
+      // Gold line animates width
+      tl.from(
+        ".hero-gold-line",
+        {
+          scaleX: 0,
+          duration: 1,
+          ease: "power2.inOut",
+        },
+        "-=0.6"
+      );
+
+      // Subtitle
+      tl.from(
+        ".hero-subtitle",
+        {
+          y: 20,
+          opacity: 0,
+          duration: 0.8,
+          ease: "power3.out",
+        },
+        "-=0.5"
+      );
+
+      // CTA button
+      tl.from(
+        ".hero-cta",
+        {
+          y: 20,
+          opacity: 0,
+          duration: 0.8,
+          ease: "power3.out",
+        },
+        "-=0.4"
+      );
+
+      // Scroll indicator
+      tl.from(
+        ".hero-scroll",
+        {
+          opacity: 0,
+          duration: 0.6,
+          ease: "power2.out",
+        },
+        "-=0.2"
+      );
+
+      // Parallax on scroll
+      gsap.to(".hero-img", {
+        yPercent: 20,
+        ease: "none",
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top top",
+          end: "bottom top",
+          scrub: 1,
         },
       });
     }, sectionRef);
@@ -130,137 +105,66 @@ export default function Hero() {
     return () => ctx.revert();
   }, []);
 
-  // Split tagline into words
-  const tagline = t("hero.tagline");
-  const words = tagline.split(" ");
-
   return (
     <section
       ref={sectionRef}
-      className="relative h-screen w-full overflow-hidden"
+      className="relative h-screen min-h-[600px] flex items-center justify-center overflow-hidden"
     >
-      {/* Background image */}
-      <img
-        ref={imageRef}
-        src="https://images.unsplash.com/photo-1509023464722-18d996393ca8?w=1920&q=80"
-        alt="Saharan desert oasis landscape"
-        className="absolute inset-0 h-full w-full object-cover will-change-transform"
-      />
-
-      {/* Warm gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-b from-[#0D0A06]/70 via-[#0D0A06]/30 to-[#1A150D]" />
-
-      {/* Noise texture overlay */}
-      <div className="noise-overlay absolute inset-0" />
-
-      {/* Centered content */}
-      <div
-        ref={contentRef}
-        className="relative z-10 flex h-full flex-col items-center justify-center px-4 text-center will-change-transform"
-      >
-        {/* Location */}
-        <span
-          ref={locationRef}
-          className="mb-6 block text-xs font-light uppercase tracking-[0.3em] opacity-0"
-          style={{ color: "#C8973A" }}
-        >
-          El Oued &middot; Algeria
-        </span>
-
-        {/* Tagline — split text reveal */}
-        <h1
-          ref={taglineRef}
-          className="display-text font-[family-name:var(--font-heading)] mb-6 max-w-5xl text-5xl leading-[1.1] sm:text-6xl md:text-7xl lg:text-8xl"
-        >
-          {words.map((word, i) => (
-            <span
-              key={i}
-              className="inline-block overflow-hidden align-bottom"
-            >
-              <span className="word-inner inline-block translate-y-full text-[#F5F0E8]">
-                {word}
-              </span>
-              {i < words.length - 1 && (
-                <span className="inline-block w-[0.3em]" />
-              )}
-            </span>
-          ))}
-        </h1>
-
-        {/* Gold line */}
-        <div
-          ref={lineRef}
-          className="mb-6 h-[1px] w-20 origin-center scale-x-0"
-          style={{ backgroundColor: "#C8973A" }}
+      {/* Full-bleed image — NO dark overlay, let it breathe */}
+      <div className="absolute inset-0">
+        <img
+          src="https://images.unsplash.com/photo-1539650116574-8efeb43e2750?w=1920&q=85"
+          alt=""
+          className="hero-img h-full w-full object-cover scale-100"
         />
+        {/* Very subtle gradient at bottom only for text readability */}
+        <div className="absolute bottom-0 left-0 right-0 h-1/2 bg-gradient-to-t from-black/20 to-transparent" />
+      </div>
 
-        {/* Subtitle */}
-        <p
-          ref={subtitleRef}
-          className="mb-10 max-w-xl text-base font-light leading-relaxed opacity-0 sm:text-lg"
-          style={{ color: "rgba(245, 240, 232, 0.7)" }}
-        >
-          {t("hero.subtitle")}
+      {/* Floating particles */}
+      <div className="particle particle-1" style={{ top: "20%", left: "15%" }} />
+      <div className="particle particle-2" style={{ top: "35%", right: "20%" }} />
+      <div className="particle particle-3" style={{ top: "60%", left: "70%" }} />
+
+      {/* Content */}
+      <div className="relative z-10 text-center px-6 max-w-5xl mx-auto">
+        <p className="hero-tagline eyebrow text-white/90 mb-6">
+          {t("tagline")}
         </p>
 
-        {/* CTA Button */}
+        <h1 className="hero-headline heading-hero text-white mb-8">
+          Palm Garden
+        </h1>
+
+        <div className="hero-gold-line gold-line w-20 mx-auto mb-8 origin-center" />
+
+        <p className="hero-subtitle text-white/80 text-lg md:text-xl font-light tracking-wide max-w-2xl mx-auto mb-10">
+          {t("subtitle")}
+        </p>
+
         <a
-          ref={ctaRef}
           href="#reservation"
-          className="group relative inline-block overflow-hidden border px-10 py-4 text-xs font-light uppercase tracking-[0.25em] opacity-0 transition-colors duration-500"
-          style={{
-            borderColor: "#C8973A",
-            color: "#C8973A",
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = "#C8973A";
-            e.currentTarget.style.color = "#0D0A06";
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.backgroundColor = "transparent";
-            e.currentTarget.style.color = "#C8973A";
-          }}
+          className="hero-cta inline-block rounded-full border border-white/50 px-10 py-4 text-white text-sm uppercase tracking-[0.2em] font-light hover:bg-white/10 transition-all duration-500"
         >
-          {t("hero.cta")}
+          {t("cta")}
         </a>
       </div>
 
       {/* Scroll indicator */}
-      <div
-        ref={scrollIndicatorRef}
-        className="absolute bottom-8 left-1/2 z-10 flex -translate-x-1/2 flex-col items-center gap-3"
-      >
-        <span
-          className="text-[10px] font-light uppercase tracking-[0.2em]"
-          style={{
-            color: "rgba(245, 240, 232, 0.5)",
-            writingMode: "vertical-lr",
-          }}
-        >
-          Scroll
-        </span>
-        <div
-          className="scroll-line h-8 w-[1px]"
-          style={{ backgroundColor: "rgba(200, 151, 58, 0.5)" }}
-        />
+      <div className="hero-scroll absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3">
+        <span className="text-white/50 text-[10px] uppercase tracking-[0.3em]">Scroll</span>
+        <div className="scroll-indicator-line" />
       </div>
 
-      {/* Floating WhatsApp button */}
+      {/* WhatsApp floating button — gold, not green */}
       <a
-        ref={whatsappRef}
         href="https://wa.me/213XXXXXXXXX"
         target="_blank"
         rel="noopener noreferrer"
-        className="fixed bottom-6 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full opacity-0 shadow-lg transition-transform duration-300 hover:scale-110"
-        style={{ backgroundColor: "#25D366" }}
-        aria-label="Contact us on WhatsApp"
+        className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full bg-gold flex items-center justify-center shadow-lg hover:scale-110 transition-transform duration-300"
+        aria-label="WhatsApp"
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          fill="white"
-          className="h-7 w-7"
-        >
+        <svg viewBox="0 0 24 24" className="w-7 h-7 text-white" fill="currentColor">
           <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
         </svg>
       </a>

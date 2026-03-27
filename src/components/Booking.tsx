@@ -9,7 +9,6 @@ import {
   ChevronRight,
   ChevronLeft,
   Calendar,
-  Users,
   Send,
 } from "lucide-react";
 import "react-day-picker/style.css";
@@ -91,64 +90,35 @@ export default function Booking() {
     (d: string) => new Date(d)
   );
 
-  const steps = [
-    t("step1"),
-    t("step2"),
-    t("step3"),
-    t("step4"),
-    t("step5"),
-  ];
+  const steps = [t("step1"), t("step2"), t("step3"), t("step4"), t("step5")];
 
   const update = (partial: Partial<BookingData>) =>
     setData((prev) => ({ ...prev, ...partial }));
 
-  const goNext = () => {
-    setDirection(1);
-    setStep((s) => Math.min(s + 1, 5));
-  };
-
-  const goPrev = () => {
-    setDirection(-1);
-    setStep((s) => Math.max(s - 1, 1));
-  };
+  const goNext = () => { setDirection(1); setStep((s) => Math.min(s + 1, 5)); };
+  const goPrev = () => { setDirection(-1); setStep((s) => Math.max(s - 1, 1)); };
 
   const canProceed = () => {
     switch (step) {
-      case 1:
-        return data.type !== "";
+      case 1: return data.type !== "";
       case 2:
         if (data.type === "chalet") return !!data.checkIn && !!data.checkOut;
         return !!data.date;
-      case 3:
-        return true;
+      case 3: return true;
       case 4:
-        return (
-          data.fullName.trim() !== "" &&
-          data.phone.trim() !== "" &&
-          data.email.trim() !== ""
-        );
-      default:
-        return true;
+        return data.fullName.trim() !== "" && data.phone.trim() !== "" && data.email.trim() !== "";
+      default: return true;
     }
   };
 
-  const handleSubmit = () => {
-    setSubmitted(true);
-  };
-
-  const resetBooking = () => {
-    setData(initialBookingData);
-    setStep(1);
-    setDirection(1);
-    setSubmitted(false);
-  };
+  const handleSubmit = () => setSubmitted(true);
+  const resetBooking = () => { setData(initialBookingData); setStep(1); setDirection(1); setSubmitted(false); };
 
   const buildWhatsAppText = () => {
     let text = `Booking Request:\nType: ${data.type}\n`;
     if (data.type === "chalet") {
       if (data.checkIn) text += `Check-in: ${format(data.checkIn, "PPP")}\n`;
-      if (data.checkOut)
-        text += `Check-out: ${format(data.checkOut, "PPP")}\n`;
+      if (data.checkOut) text += `Check-out: ${format(data.checkOut, "PPP")}\n`;
     } else {
       if (data.date) text += `Date: ${format(data.date, "PPP")}\n`;
       if (data.time) text += `Time: ${data.time}\n`;
@@ -157,14 +127,11 @@ export default function Booking() {
     if (data.breakfast) text += `Breakfast: Yes\n`;
     if (data.catering) text += `Catering: ${data.cateringType}\n`;
     if (data.poolAccess) text += `Pool Access: ${data.poolDuration}\n`;
-    if (data.waitstaff)
-      text += `Waitstaff: ${data.waitstaffCount} person(s)\n`;
-    if (data.kidsActivities)
-      text += `Kids Activities: ${data.kidsCount} kid(s)\n`;
+    if (data.waitstaff) text += `Waitstaff: ${data.waitstaffCount} person(s)\n`;
+    if (data.kidsActivities) text += `Kids Activities: ${data.kidsCount} kid(s)\n`;
     if (data.decoration) text += `Decoration: Yes\n`;
     if (data.avEquipment) text += `AV Equipment: Yes\n`;
-    if (data.shootingZones.length > 0)
-      text += `Shooting Zones: ${data.shootingZones.join(", ")}\n`;
+    if (data.shootingZones.length > 0) text += `Shooting Zones: ${data.shootingZones.join(", ")}\n`;
     text += `\nName: ${data.fullName}\nPhone: ${data.phone}\nEmail: ${data.email}`;
     if (data.whatsapp) text += `\nWhatsApp: ${data.whatsapp}`;
     if (data.message) text += `\nMessage: ${data.message}`;
@@ -172,208 +139,52 @@ export default function Booking() {
   };
 
   const slideVariants = {
-    enter: (dir: number) => ({
-      x: dir > 0 ? 300 : -300,
-      opacity: 0,
-    }),
-    center: {
-      x: 0,
-      opacity: 1,
-    },
-    exit: (dir: number) => ({
-      x: dir > 0 ? -300 : 300,
-      opacity: 0,
-    }),
+    enter: (dir: number) => ({ x: dir > 0 ? 300 : -300, opacity: 0 }),
+    center: { x: 0, opacity: 1 },
+    exit: (dir: number) => ({ x: dir > 0 ? -300 : 300, opacity: 0 }),
   };
 
   const typeIconMap: Record<string, string> = {
-    chalet: "\u{1F319}",
-    wedding: "\u{1F48D}",
-    venue: "\u{1F3E2}",
-    conference: "\u{1F393}",
-    family: "\u{1F389}",
-    photoshoot: "\u{1F4F8}",
+    chalet: "\u{1F319}", wedding: "\u{1F48D}", venue: "\u{1F3E2}",
+    conference: "\u{1F393}", family: "\u{1F389}", photoshoot: "\u{1F4F8}",
   };
   const timeSlots = t("timeSlots").split(",");
 
-  // ---------- STEP RENDERERS ----------
+  const inputClasses =
+    "booking-input w-full bg-white border-b-2 border-sand-dark/40 focus:border-gold text-text-primary px-1 py-3 outline-none transition-colors placeholder:text-text-light";
 
-  const renderStep1 = () => (
-    <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-      {BOOKING_TYPES.map((type, i) => (
-        <button
-          key={type}
-          onClick={() => update({ type })}
-          className={`flex flex-col items-center justify-center gap-3 p-6 rounded-xl border-2 transition-all duration-200 cursor-pointer ${
-            data.type === type
-              ? "border-gold bg-gold/10"
-              : "border-cream/20 hover:border-cream/40"
-          }`}
-        >
-          <span className="text-4xl">{typeIconMap[type]}</span>
-          <span className="text-cream font-medium">
-            {t(`types.${type}`)}
-          </span>
-        </button>
-      ))}
-    </div>
-  );
-
-  const renderStep2 = () => {
-    if (data.type === "chalet") {
-      return (
-        <div className="flex flex-col items-center gap-6">
-          <div
-            className="rounded-xl p-4"
-            style={{
-              background: "#1a1510",
-              // @ts-expect-error CSS custom properties
-              "--rdp-accent-color": "var(--color-gold, #c8a96e)",
-              "--rdp-accent-background": "rgba(200,169,110,0.15)",
-            }}
-          >
-            <DayPicker
-              mode="range"
-              selected={
-                data.checkIn
-                  ? { from: data.checkIn, to: data.checkOut }
-                  : undefined
-              }
-              onSelect={(range) => {
-                update({
-                  checkIn: range?.from ?? undefined,
-                  checkOut: range?.to ?? undefined,
-                });
-              }}
-              disabled={blockedDates}
-              className="text-cream"
-            />
-          </div>
-          {data.checkIn && (
-            <div className="text-cream/80 flex items-center gap-2">
-              <Calendar className="w-4 h-4 text-gold" />
-              <span>
-                {format(data.checkIn, "PPP")}
-                {data.checkOut && ` — ${format(data.checkOut, "PPP")}`}
-              </span>
-            </div>
-          )}
-        </div>
-      );
-    }
-
-    return (
-      <div className="flex flex-col items-center gap-6">
-        <div
-          className="rounded-xl p-4"
-          style={{
-            background: "#1a1510",
-            // @ts-expect-error CSS custom properties
-            "--rdp-accent-color": "var(--color-gold, #c8a96e)",
-            "--rdp-accent-background": "rgba(200,169,110,0.15)",
-          }}
-        >
-          <DayPicker
-            mode="single"
-            selected={data.date}
-            onSelect={(day) => update({ date: day ?? undefined })}
-            disabled={blockedDates}
-            className="text-cream"
-          />
-        </div>
-        {data.date && (
-          <div className="text-cream/80 flex items-center gap-2">
-            <Calendar className="w-4 h-4 text-gold" />
-            <span>{format(data.date, "PPP")}</span>
-          </div>
-        )}
-        <div className="flex flex-wrap gap-2 justify-center">
-          {timeSlots.map((slot) => (
-            <button
-              key={slot}
-              onClick={() => update({ time: slot.trim() })}
-              className={`px-4 py-2 rounded-lg border transition-all cursor-pointer ${
-                data.time === slot.trim()
-                  ? "border-gold bg-gold/10 text-gold"
-                  : "border-cream/20 text-cream/60 hover:border-cream/40"
-              }`}
-            >
-              {slot.trim()}
-            </button>
-          ))}
-        </div>
-      </div>
-    );
-  };
-
-  const renderCheckbox = (
-    label: string,
-    checked: boolean,
-    onChange: (v: boolean) => void
-  ) => (
+  const renderCheckbox = (label: string, checked: boolean, onChange: (v: boolean) => void) => (
     <label className="flex items-center gap-3 cursor-pointer group">
-      <div
-        className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-all ${
-          checked ? "bg-gold border-gold" : "border-cream/30 group-hover:border-cream/50"
-        }`}
-      >
-        {checked && <Check className="w-3 h-3 text-desert-night" />}
+      <div className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-all ${checked ? "bg-gold border-gold" : "border-sand-dark/50 group-hover:border-gold/50"}`}>
+        {checked && <Check className="w-3 h-3 text-white" />}
       </div>
-      <span className="text-cream">{label}</span>
-      <input
-        type="checkbox"
-        checked={checked}
-        onChange={(e) => onChange(e.target.checked)}
-        className="sr-only"
-      />
+      <span style={{ color: "var(--color-text-primary)" }}>{label}</span>
+      <input type="checkbox" checked={checked} onChange={(e) => onChange(e.target.checked)} className="sr-only" />
     </label>
   );
 
-  const renderNumberInput = (
-    label: string,
-    value: number,
-    onChange: (v: number) => void,
-    min = 1
-  ) => (
+  const renderNumberInput = (label: string, value: number, onChange: (v: number) => void, min = 1) => (
     <div className="flex items-center gap-3">
-      <span className="text-cream/80 text-sm">{label}</span>
+      <span className="text-sm" style={{ color: "var(--color-text-muted)" }}>{label}</span>
       <input
         type="number"
         min={min}
         value={value}
         onChange={(e) => onChange(Math.max(min, parseInt(e.target.value) || min))}
-        className="w-20 bg-[#1a1510] border border-cream/20 focus:border-gold text-cream rounded-lg px-3 py-2 text-center outline-none transition-colors"
+        className="booking-input w-20 bg-white border-b-2 border-sand-dark/40 focus:border-gold text-text-primary px-3 py-2 text-center outline-none transition-colors"
       />
     </div>
   );
 
-  const renderRadio = (
-    name: string,
-    options: { value: string; label: string }[],
-    selected: string,
-    onChange: (v: string) => void
-  ) => (
+  const renderRadio = (name: string, options: { value: string; label: string }[], selected: string, onChange: (v: string) => void) => (
     <div className="flex gap-4 ml-8">
       {options.map((opt) => (
         <label key={opt.value} className="flex items-center gap-2 cursor-pointer">
-          <div
-            className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${
-              selected === opt.value ? "border-gold" : "border-cream/30"
-            }`}
-          >
-            {selected === opt.value && (
-              <div className="w-2 h-2 rounded-full bg-gold" />
-            )}
+          <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${selected === opt.value ? "border-gold" : "border-sand-dark/50"}`}>
+            {selected === opt.value && <div className="w-2 h-2 rounded-full bg-gold" />}
           </div>
-          <span className="text-cream/80 text-sm">{opt.label}</span>
-          <input
-            type="radio"
-            name={name}
-            value={opt.value}
-            checked={selected === opt.value}
-            onChange={() => onChange(opt.value)}
-            className="sr-only"
-          />
+          <span className="text-sm" style={{ color: "var(--color-text-muted)" }}>{opt.label}</span>
+          <input type="radio" name={name} value={opt.value} checked={selected === opt.value} onChange={() => onChange(opt.value)} className="sr-only" />
         </label>
       ))}
     </div>
@@ -385,11 +196,7 @@ export default function Booking() {
         <button
           key={ct}
           onClick={() => update({ cateringType: ct })}
-          className={`px-3 py-1.5 rounded-lg border text-sm transition-all cursor-pointer ${
-            data.cateringType === ct
-              ? "border-gold bg-gold/10 text-gold"
-              : "border-cream/20 text-cream/60 hover:border-cream/40"
-          }`}
+          className={`px-3 py-1.5 rounded-lg border text-sm transition-all cursor-pointer ${data.cateringType === ct ? "border-gold bg-gold/10 text-gold" : "border-sand-dark/30 text-text-muted hover:border-gold/40"}`}
         >
           {t(ct)}
         </button>
@@ -397,234 +204,141 @@ export default function Booking() {
     </div>
   );
 
+  const renderStep1 = () => (
+    <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+      {BOOKING_TYPES.map((type) => (
+        <button
+          key={type}
+          onClick={() => update({ type })}
+          className={`booking-card flex flex-col items-center justify-center gap-3 p-6 rounded-2xl border-2 transition-all duration-200 cursor-pointer bg-white ${data.type === type ? "border-gold shadow-lg" : "border-sand-dark/20 hover:border-gold/40"}`}
+          style={{ boxShadow: data.type === type ? "var(--shadow-card-hover)" : "var(--shadow-card)" }}
+        >
+          <span className="text-4xl">{typeIconMap[type]}</span>
+          <span className="font-medium" style={{ color: "var(--color-text-primary)" }}>{t(`types.${type}`)}</span>
+        </button>
+      ))}
+    </div>
+  );
+
+  const renderStep2 = () => {
+    if (data.type === "chalet") {
+      return (
+        <div className="flex flex-col items-center gap-6">
+          <div className="booking-card rounded-2xl p-4 bg-white" style={{ boxShadow: "var(--shadow-card)" }}>
+            <DayPicker
+              mode="range"
+              selected={data.checkIn ? { from: data.checkIn, to: data.checkOut } : undefined}
+              onSelect={(range) => update({ checkIn: range?.from ?? undefined, checkOut: range?.to ?? undefined })}
+              disabled={blockedDates}
+            />
+          </div>
+          {data.checkIn && (
+            <div className="flex items-center gap-2" style={{ color: "var(--color-text-muted)" }}>
+              <Calendar className="w-4 h-4 text-gold" />
+              <span>{format(data.checkIn, "PPP")}{data.checkOut && ` — ${format(data.checkOut, "PPP")}`}</span>
+            </div>
+          )}
+        </div>
+      );
+    }
+    return (
+      <div className="flex flex-col items-center gap-6">
+        <div className="booking-card rounded-2xl p-4 bg-white" style={{ boxShadow: "var(--shadow-card)" }}>
+          <DayPicker mode="single" selected={data.date} onSelect={(day) => update({ date: day ?? undefined })} disabled={blockedDates} />
+        </div>
+        {data.date && (
+          <div className="flex items-center gap-2" style={{ color: "var(--color-text-muted)" }}>
+            <Calendar className="w-4 h-4 text-gold" />
+            <span>{format(data.date, "PPP")}</span>
+          </div>
+        )}
+        <div className="flex flex-wrap gap-2 justify-center">
+          {timeSlots.map((slot) => (
+            <button
+              key={slot}
+              onClick={() => update({ time: slot.trim() })}
+              className={`px-4 py-2 rounded-lg border transition-all cursor-pointer ${data.time === slot.trim() ? "border-gold bg-gold/10 text-gold" : "border-sand-dark/30 text-text-muted hover:border-gold/40"}`}
+            >
+              {slot.trim()}
+            </button>
+          ))}
+        </div>
+      </div>
+    );
+  };
+
   const renderStep3 = () => {
     const typ = data.type;
-
     return (
       <div className="space-y-5">
-        {renderNumberInput(t("guests"), data.guests, (v) =>
-          update({ guests: v })
-        )}
-
+        {renderNumberInput(t("guests"), data.guests, (v) => update({ guests: v }))}
         {typ === "chalet" && (
           <>
-            {renderCheckbox(t("breakfast"), data.breakfast, (v) =>
-              update({ breakfast: v })
-            )}
-            {renderCheckbox(t("poolAccess"), data.poolAccess, (v) =>
-              update({ poolAccess: v })
-            )}
-            {data.poolAccess &&
-              renderRadio(
-                "poolDuration",
-                [
-                  { value: "halfDay", label: t("halfDay") },
-                  { value: "fullDay", label: t("fullDay") },
-                ],
-                data.poolDuration,
-                (v) => update({ poolDuration: v })
-              )}
+            {renderCheckbox(t("breakfast"), data.breakfast, (v) => update({ breakfast: v }))}
+            {renderCheckbox(t("poolAccess"), data.poolAccess, (v) => update({ poolAccess: v }))}
+            {data.poolAccess && renderRadio("poolDuration", [{ value: "halfDay", label: t("halfDay") }, { value: "fullDay", label: t("fullDay") }], data.poolDuration, (v) => update({ poolDuration: v }))}
           </>
         )}
-
         {typ === "wedding" && (
           <>
-            {renderCheckbox(t("catering"), data.catering, (v) =>
-              update({ catering: v })
-            )}
+            {renderCheckbox(t("catering"), data.catering, (v) => update({ catering: v }))}
             {data.catering && renderCateringSelector()}
-            {renderCheckbox(t("decoration"), data.decoration, (v) =>
-              update({ decoration: v })
-            )}
-            {renderCheckbox(t("waitstaff"), data.waitstaff, (v) =>
-              update({ waitstaff: v })
-            )}
-            {data.waitstaff &&
-              <div className="ml-8">
-                {renderNumberInput(
-                  t("waitstaffCount"),
-                  data.waitstaffCount,
-                  (v) => update({ waitstaffCount: v })
-                )}
-              </div>
-            }
-            {renderCheckbox(t("poolAccess"), data.poolAccess, (v) =>
-              update({ poolAccess: v })
-            )}
-            {data.poolAccess &&
-              renderRadio(
-                "poolDuration",
-                [
-                  { value: "halfDay", label: t("halfDay") },
-                  { value: "fullDay", label: t("fullDay") },
-                ],
-                data.poolDuration,
-                (v) => update({ poolDuration: v })
-              )}
-            {renderCheckbox(t("kidsActivities"), data.kidsActivities, (v) =>
-              update({ kidsActivities: v })
-            )}
-            {data.kidsActivities &&
-              <div className="ml-8">
-                {renderNumberInput(t("kidsCount"), data.kidsCount, (v) =>
-                  update({ kidsCount: v })
-                )}
-              </div>
-            }
+            {renderCheckbox(t("decoration"), data.decoration, (v) => update({ decoration: v }))}
+            {renderCheckbox(t("waitstaff"), data.waitstaff, (v) => update({ waitstaff: v }))}
+            {data.waitstaff && <div className="ml-8">{renderNumberInput(t("waitstaffCount"), data.waitstaffCount, (v) => update({ waitstaffCount: v }))}</div>}
+            {renderCheckbox(t("poolAccess"), data.poolAccess, (v) => update({ poolAccess: v }))}
+            {data.poolAccess && renderRadio("poolDuration", [{ value: "halfDay", label: t("halfDay") }, { value: "fullDay", label: t("fullDay") }], data.poolDuration, (v) => update({ poolDuration: v }))}
+            {renderCheckbox(t("kidsActivities"), data.kidsActivities, (v) => update({ kidsActivities: v }))}
+            {data.kidsActivities && <div className="ml-8">{renderNumberInput(t("kidsCount"), data.kidsCount, (v) => update({ kidsCount: v }))}</div>}
           </>
         )}
-
         {typ === "venue" && (
           <>
-            {renderCheckbox(t("catering"), data.catering, (v) =>
-              update({ catering: v })
-            )}
+            {renderCheckbox(t("catering"), data.catering, (v) => update({ catering: v }))}
             {data.catering && renderCateringSelector()}
-            {renderCheckbox(t("waitstaff"), data.waitstaff, (v) =>
-              update({ waitstaff: v })
-            )}
-            {data.waitstaff &&
-              <div className="ml-8">
-                {renderNumberInput(
-                  t("waitstaffCount"),
-                  data.waitstaffCount,
-                  (v) => update({ waitstaffCount: v })
-                )}
-              </div>
-            }
-            {renderCheckbox(t("avEquipment"), data.avEquipment, (v) =>
-              update({ avEquipment: v })
-            )}
-            {renderCheckbox(t("poolAccess"), data.poolAccess, (v) =>
-              update({ poolAccess: v })
-            )}
-            {data.poolAccess &&
-              renderRadio(
-                "poolDuration",
-                [
-                  { value: "halfDay", label: t("halfDay") },
-                  { value: "fullDay", label: t("fullDay") },
-                ],
-                data.poolDuration,
-                (v) => update({ poolDuration: v })
-              )}
+            {renderCheckbox(t("waitstaff"), data.waitstaff, (v) => update({ waitstaff: v }))}
+            {data.waitstaff && <div className="ml-8">{renderNumberInput(t("waitstaffCount"), data.waitstaffCount, (v) => update({ waitstaffCount: v }))}</div>}
+            {renderCheckbox(t("avEquipment"), data.avEquipment, (v) => update({ avEquipment: v }))}
+            {renderCheckbox(t("poolAccess"), data.poolAccess, (v) => update({ poolAccess: v }))}
+            {data.poolAccess && renderRadio("poolDuration", [{ value: "halfDay", label: t("halfDay") }, { value: "fullDay", label: t("fullDay") }], data.poolDuration, (v) => update({ poolDuration: v }))}
           </>
         )}
-
         {typ === "conference" && (
           <>
-            {renderCheckbox(t("catering"), data.catering, (v) =>
-              update({ catering: v })
-            )}
+            {renderCheckbox(t("catering"), data.catering, (v) => update({ catering: v }))}
             {data.catering && renderCateringSelector()}
-            {renderCheckbox(t("avEquipment"), data.avEquipment, (v) =>
-              update({ avEquipment: v })
-            )}
-            {renderCheckbox(t("waitstaff"), data.waitstaff, (v) =>
-              update({ waitstaff: v })
-            )}
-            {data.waitstaff &&
-              <div className="ml-8">
-                {renderNumberInput(
-                  t("waitstaffCount"),
-                  data.waitstaffCount,
-                  (v) => update({ waitstaffCount: v })
-                )}
-              </div>
-            }
+            {renderCheckbox(t("avEquipment"), data.avEquipment, (v) => update({ avEquipment: v }))}
+            {renderCheckbox(t("waitstaff"), data.waitstaff, (v) => update({ waitstaff: v }))}
+            {data.waitstaff && <div className="ml-8">{renderNumberInput(t("waitstaffCount"), data.waitstaffCount, (v) => update({ waitstaffCount: v }))}</div>}
           </>
         )}
-
         {typ === "family" && (
           <>
-            {renderCheckbox(t("catering"), data.catering, (v) =>
-              update({ catering: v })
-            )}
+            {renderCheckbox(t("catering"), data.catering, (v) => update({ catering: v }))}
             {data.catering && renderCateringSelector()}
-            {renderCheckbox(t("decoration"), data.decoration, (v) =>
-              update({ decoration: v })
-            )}
-            {renderCheckbox(t("poolAccess"), data.poolAccess, (v) =>
-              update({ poolAccess: v })
-            )}
-            {data.poolAccess &&
-              renderRadio(
-                "poolDuration",
-                [
-                  { value: "halfDay", label: t("halfDay") },
-                  { value: "fullDay", label: t("fullDay") },
-                ],
-                data.poolDuration,
-                (v) => update({ poolDuration: v })
-              )}
-            {renderCheckbox(t("kidsActivities"), data.kidsActivities, (v) =>
-              update({ kidsActivities: v })
-            )}
-            {data.kidsActivities &&
-              <div className="ml-8">
-                {renderNumberInput(t("kidsCount"), data.kidsCount, (v) =>
-                  update({ kidsCount: v })
-                )}
-              </div>
-            }
-            {renderCheckbox(t("waitstaff"), data.waitstaff, (v) =>
-              update({ waitstaff: v })
-            )}
-            {data.waitstaff &&
-              <div className="ml-8">
-                {renderNumberInput(
-                  t("waitstaffCount"),
-                  data.waitstaffCount,
-                  (v) => update({ waitstaffCount: v })
-                )}
-              </div>
-            }
+            {renderCheckbox(t("decoration"), data.decoration, (v) => update({ decoration: v }))}
+            {renderCheckbox(t("poolAccess"), data.poolAccess, (v) => update({ poolAccess: v }))}
+            {data.poolAccess && renderRadio("poolDuration", [{ value: "halfDay", label: t("halfDay") }, { value: "fullDay", label: t("fullDay") }], data.poolDuration, (v) => update({ poolDuration: v }))}
+            {renderCheckbox(t("kidsActivities"), data.kidsActivities, (v) => update({ kidsActivities: v }))}
+            {data.kidsActivities && <div className="ml-8">{renderNumberInput(t("kidsCount"), data.kidsCount, (v) => update({ kidsCount: v }))}</div>}
+            {renderCheckbox(t("waitstaff"), data.waitstaff, (v) => update({ waitstaff: v }))}
+            {data.waitstaff && <div className="ml-8">{renderNumberInput(t("waitstaffCount"), data.waitstaffCount, (v) => update({ waitstaffCount: v }))}</div>}
           </>
         )}
-
         {typ === "photoshoot" && (
           <div className="space-y-3">
-            <span className="text-cream font-medium">
-              {t("shootingZones")}
-            </span>
+            <span className="font-medium" style={{ color: "var(--color-text-primary)" }}>{t("shootingZones")}</span>
             <div className="grid grid-cols-2 gap-3">
               {ZONE_KEYS.map((zone) => (
-                <label
-                  key={zone}
-                  className="flex items-center gap-3 cursor-pointer group"
-                >
-                  <div
-                    className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-all ${
-                      data.shootingZones.includes(zone)
-                        ? "bg-gold border-gold"
-                        : "border-cream/30 group-hover:border-cream/50"
-                    }`}
-                  >
-                    {data.shootingZones.includes(zone) && (
-                      <Check className="w-3 h-3 text-desert-night" />
-                    )}
+                <label key={zone} className="flex items-center gap-3 cursor-pointer group">
+                  <div className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-all ${data.shootingZones.includes(zone) ? "bg-gold border-gold" : "border-sand-dark/50 group-hover:border-gold/50"}`}>
+                    {data.shootingZones.includes(zone) && <Check className="w-3 h-3 text-white" />}
                   </div>
-                  <span className="text-cream">
-                    {t(`zones.${zone}`)}
-                  </span>
-                  <input
-                    type="checkbox"
-                    checked={data.shootingZones.includes(zone)}
-                    onChange={(e) => {
-                      if (e.target.checked) {
-                        update({
-                          shootingZones: [...data.shootingZones, zone],
-                        });
-                      } else {
-                        update({
-                          shootingZones: data.shootingZones.filter(
-                            (z) => z !== zone
-                          ),
-                        });
-                      }
-                    }}
-                    className="sr-only"
-                  />
+                  <span style={{ color: "var(--color-text-primary)" }}>{t(`zones.${zone}`)}</span>
+                  <input type="checkbox" checked={data.shootingZones.includes(zone)} onChange={(e) => {
+                    if (e.target.checked) update({ shootingZones: [...data.shootingZones, zone] });
+                    else update({ shootingZones: data.shootingZones.filter((z) => z !== zone) });
+                  }} className="sr-only" />
                 </label>
               ))}
             </div>
@@ -634,75 +348,31 @@ export default function Booking() {
     );
   };
 
-  const inputClasses =
-    "w-full bg-[#1a1510] border border-cream/20 focus:border-gold text-cream rounded-lg px-4 py-3 outline-none transition-colors placeholder:text-cream/30";
-
   const renderStep4 = () => (
-    <div className="space-y-4">
+    <div className="space-y-6">
       <div>
-        <label className="block text-cream/70 text-sm mb-1">
-          {t("fullName")} *
-        </label>
-        <input
-          type="text"
-          value={data.fullName}
-          onChange={(e) => update({ fullName: e.target.value })}
-          className={inputClasses}
-        />
+        <label className="block text-sm mb-1" style={{ color: "var(--color-text-muted)" }}>{t("fullName")} *</label>
+        <input type="text" value={data.fullName} onChange={(e) => update({ fullName: e.target.value })} className={inputClasses} />
       </div>
       <div>
-        <label className="block text-cream/70 text-sm mb-1">
-          {t("phone")} *
-        </label>
-        <input
-          type="tel"
-          value={data.phone}
-          onChange={(e) => update({ phone: e.target.value })}
-          className={inputClasses}
-        />
+        <label className="block text-sm mb-1" style={{ color: "var(--color-text-muted)" }}>{t("phone")} *</label>
+        <input type="tel" value={data.phone} onChange={(e) => update({ phone: e.target.value })} className={inputClasses} />
       </div>
       <div>
-        <label className="block text-cream/70 text-sm mb-1">
-          {t("email")} *
-        </label>
-        <input
-          type="email"
-          value={data.email}
-          onChange={(e) => update({ email: e.target.value })}
-          className={inputClasses}
-        />
+        <label className="block text-sm mb-1" style={{ color: "var(--color-text-muted)" }}>{t("email")} *</label>
+        <input type="email" value={data.email} onChange={(e) => update({ email: e.target.value })} className={inputClasses} />
       </div>
       <div>
-        <label className="block text-cream/70 text-sm mb-1">
-          {t("whatsapp")}
-        </label>
-        <input
-          type="tel"
-          value={data.whatsapp}
-          onChange={(e) => update({ whatsapp: e.target.value })}
-          className={inputClasses}
-        />
+        <label className="block text-sm mb-1" style={{ color: "var(--color-text-muted)" }}>{t("whatsapp")}</label>
+        <input type="tel" value={data.whatsapp} onChange={(e) => update({ whatsapp: e.target.value })} className={inputClasses} />
       </div>
       <div>
-        <label className="block text-cream/70 text-sm mb-1">
-          {t("message")}
-        </label>
-        <textarea
-          value={data.message}
-          onChange={(e) => update({ message: e.target.value })}
-          rows={4}
-          className={inputClasses}
-        />
+        <label className="block text-sm mb-1" style={{ color: "var(--color-text-muted)" }}>{t("message")}</label>
+        <textarea value={data.message} onChange={(e) => update({ message: e.target.value })} rows={4} className={inputClasses} />
       </div>
       <div>
-        <label className="block text-cream/70 text-sm mb-1">
-          {t("langPref")}
-        </label>
-        <select
-          value={data.langPref}
-          onChange={(e) => update({ langPref: e.target.value })}
-          className={inputClasses}
-        >
+        <label className="block text-sm mb-1" style={{ color: "var(--color-text-muted)" }}>{t("langPref")}</label>
+        <select value={data.langPref} onChange={(e) => update({ langPref: e.target.value })} className={inputClasses}>
           <option value="Français">Français</option>
           <option value="العربية">العربية</option>
           <option value="English">English</option>
@@ -713,219 +383,106 @@ export default function Booking() {
 
   const renderStep5 = () => (
     <div className="space-y-6">
-      <h3 className="text-xl font-[family-name:var(--font-heading)] text-gold">
-        {t("summary")}
-      </h3>
-      <div className="space-y-3 bg-[#1a1510] rounded-xl p-6">
-        <div className="flex justify-between border-b border-cream/10 pb-2">
-          <span className="text-cream/60">{t("step1")}</span>
-          <span className="text-cream">{t(`types.${data.type}`)}</span>
+      <h3 className="text-xl font-[family-name:var(--font-heading)] text-gold">{t("summary")}</h3>
+      <div className="booking-card space-y-3 bg-white rounded-2xl p-6" style={{ boxShadow: "var(--shadow-card)" }}>
+        <div className="flex justify-between border-b border-sand-dark/20 pb-2">
+          <span style={{ color: "var(--color-text-muted)" }}>{t("step1")}</span>
+          <span style={{ color: "var(--color-text-primary)" }}>{t(`types.${data.type}`)}</span>
         </div>
-
-        <div className="flex justify-between border-b border-cream/10 pb-2">
-          <span className="text-cream/60">{t("step2")}</span>
-          <span className="text-cream">
-            {data.type === "chalet" ? (
-              <>
-                {data.checkIn && format(data.checkIn, "PPP")}
-                {data.checkOut && ` — ${format(data.checkOut, "PPP")}`}
-              </>
-            ) : (
-              <>
-                {data.date && format(data.date, "PPP")}
-                {data.time && ` @ ${data.time}`}
-              </>
-            )}
+        <div className="flex justify-between border-b border-sand-dark/20 pb-2">
+          <span style={{ color: "var(--color-text-muted)" }}>{t("step2")}</span>
+          <span style={{ color: "var(--color-text-primary)" }}>
+            {data.type === "chalet" ? (<>{data.checkIn && format(data.checkIn, "PPP")}{data.checkOut && ` — ${format(data.checkOut, "PPP")}`}</>) : (<>{data.date && format(data.date, "PPP")}{data.time && ` @ ${data.time}`}</>)}
           </span>
         </div>
-
-        <div className="border-b border-cream/10 pb-2">
-          <span className="text-cream/60 block mb-1">{t("step3")}</span>
-          <ul className="space-y-1 text-cream text-sm">
-            <li>
-              {t("guests")}: {data.guests}
-            </li>
+        <div className="border-b border-sand-dark/20 pb-2">
+          <span className="block mb-1" style={{ color: "var(--color-text-muted)" }}>{t("step3")}</span>
+          <ul className="space-y-1 text-sm" style={{ color: "var(--color-text-primary)" }}>
+            <li>{t("guests")}: {data.guests}</li>
             {data.breakfast && <li>{t("breakfast")}</li>}
-            {data.catering && (
-              <li>
-                {t("catering")}: {t(data.cateringType)}
-              </li>
-            )}
-            {data.poolAccess && (
-              <li>
-                {t("poolAccess")}: {t(data.poolDuration)}
-              </li>
-            )}
-            {data.waitstaff && (
-              <li>
-                {t("waitstaff")}: {data.waitstaffCount}
-              </li>
-            )}
-            {data.kidsActivities && (
-              <li>
-                {t("kidsActivities")}: {data.kidsCount}
-              </li>
-            )}
+            {data.catering && <li>{t("catering")}: {t(data.cateringType)}</li>}
+            {data.poolAccess && <li>{t("poolAccess")}: {t(data.poolDuration)}</li>}
+            {data.waitstaff && <li>{t("waitstaff")}: {data.waitstaffCount}</li>}
+            {data.kidsActivities && <li>{t("kidsActivities")}: {data.kidsCount}</li>}
             {data.decoration && <li>{t("decoration")}</li>}
             {data.avEquipment && <li>{t("avEquipment")}</li>}
-            {data.shootingZones.length > 0 && (
-              <li>
-                {t("shootingZones")}:{" "}
-                {data.shootingZones
-                  .map((z) => t(`zones.${z}`))
-                  .join(", ")}
-              </li>
-            )}
+            {data.shootingZones.length > 0 && <li>{t("shootingZones")}: {data.shootingZones.map((z) => t(`zones.${z}`)).join(", ")}</li>}
           </ul>
         </div>
-
         <div className="space-y-1">
-          <span className="text-cream/60 block mb-1">{t("step4")}</span>
-          <p className="text-cream text-sm">{data.fullName}</p>
-          <p className="text-cream text-sm">{data.phone}</p>
-          <p className="text-cream text-sm">{data.email}</p>
-          {data.whatsapp && (
-            <p className="text-cream text-sm">WhatsApp: {data.whatsapp}</p>
-          )}
-          {data.message && (
-            <p className="text-cream/70 text-sm italic">{data.message}</p>
-          )}
-          <p className="text-cream text-sm">{data.langPref}</p>
+          <span className="block mb-1" style={{ color: "var(--color-text-muted)" }}>{t("step4")}</span>
+          <p className="text-sm" style={{ color: "var(--color-text-primary)" }}>{data.fullName}</p>
+          <p className="text-sm" style={{ color: "var(--color-text-primary)" }}>{data.phone}</p>
+          <p className="text-sm" style={{ color: "var(--color-text-primary)" }}>{data.email}</p>
+          {data.whatsapp && <p className="text-sm" style={{ color: "var(--color-text-primary)" }}>WhatsApp: {data.whatsapp}</p>}
+          {data.message && <p className="text-sm italic" style={{ color: "var(--color-text-muted)" }}>{data.message}</p>}
+          <p className="text-sm" style={{ color: "var(--color-text-primary)" }}>{data.langPref}</p>
         </div>
       </div>
-
       <div className="flex justify-center">
-        <button
-          onClick={handleSubmit}
-          className="bg-gold text-desert-night rounded-full px-8 py-4 font-semibold flex items-center gap-2 hover:opacity-90 transition-opacity cursor-pointer"
-        >
-          <Send className="w-5 h-5" />
-          {t("submit")}
+        <button onClick={handleSubmit} className="bg-gold text-white rounded-full px-8 py-4 font-semibold flex items-center gap-2 hover:opacity-90 transition-opacity cursor-pointer">
+          <Send className="w-5 h-5" /> {t("submit")}
         </button>
       </div>
     </div>
   );
 
   const renderSuccess = () => (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.9 }}
-      animate={{ opacity: 1, scale: 1 }}
-      className="flex flex-col items-center gap-6 py-12 text-center"
-    >
+    <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="flex flex-col items-center gap-6 py-12 text-center">
       <div className="w-20 h-20 rounded-full bg-gold/20 flex items-center justify-center">
         <Check className="w-10 h-10 text-gold" />
       </div>
-      <h3 className="text-2xl font-[family-name:var(--font-heading)] text-gold">
-        {t("success")}
-      </h3>
-      <p className="text-cream/70 max-w-md">{t("successMsg")}</p>
+      <h3 className="text-2xl font-[family-name:var(--font-heading)] text-gold">{t("success")}</h3>
+      <p className="max-w-md" style={{ color: "var(--color-text-muted)" }}>{t("successMsg")}</p>
       <div className="flex gap-4 flex-wrap justify-center">
-        <a
-          href={`https://wa.me/213XXXXXXXXX?text=${buildWhatsAppText()}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="bg-green-600 text-white rounded-full px-6 py-3 font-semibold hover:bg-green-700 transition-colors"
-        >
+        <a href={`https://wa.me/213XXXXXXXXX?text=${buildWhatsAppText()}`} target="_blank" rel="noopener noreferrer" className="bg-gold text-white rounded-full px-6 py-3 font-semibold hover:opacity-90 transition-opacity">
           {t("whatsappLink")}
         </a>
-        <button
-          onClick={resetBooking}
-          className="border-2 border-gold text-gold rounded-full px-6 py-3 font-semibold hover:bg-gold/10 transition-colors cursor-pointer"
-        >
+        <button onClick={resetBooking} className="border-2 border-gold text-gold rounded-full px-6 py-3 font-semibold hover:bg-gold/10 transition-colors cursor-pointer">
           {t("newBooking")}
         </button>
       </div>
     </motion.div>
   );
 
-  const stepContent: Record<number, () => React.ReactNode> = {
-    1: renderStep1,
-    2: renderStep2,
-    3: renderStep3,
-    4: renderStep4,
-    5: renderStep5,
-  };
+  const stepContent: Record<number, () => React.ReactNode> = { 1: renderStep1, 2: renderStep2, 3: renderStep3, 4: renderStep4, 5: renderStep5 };
 
   return (
-    <motion.section
-      id="reservation"
-      initial={{ opacity: 0 }}
-      whileInView={{ opacity: 1 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.8 }}
-      className="bg-desert-night py-24"
-    >
+    <section id="reservation" className="relative py-32 md:py-40" style={{ backgroundColor: "var(--color-bg-primary)" }}>
       <div className="max-w-4xl mx-auto px-6">
         <div className="text-center mb-12">
-          <h2 className="text-4xl md:text-5xl font-[family-name:var(--font-heading)] text-gold mb-4">
-            {t("title")}
-          </h2>
-          <p className="text-cream/70 text-lg">{t("subtitle")}</p>
+          <p className="eyebrow mb-4">{t("subtitle")}</p>
+          <h2 className="heading-section" style={{ color: "var(--color-text-primary)" }}>{t("title")}</h2>
         </div>
 
-        {submitted ? (
-          renderSuccess()
-        ) : (
+        {submitted ? renderSuccess() : (
           <>
-            {/* Step Indicator */}
+            {/* Step Indicator — gold line connecting numbered circles */}
             <div className="flex items-center justify-center mb-12">
               {steps.map((label, i) => {
                 const stepNum = i + 1;
                 const isActive = step === stepNum;
                 const isCompleted = step > stepNum;
-
                 return (
                   <div key={i} className="flex items-center">
                     <div className="flex flex-col items-center">
-                      <div
-                        className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold transition-all ${
-                          isCompleted
-                            ? "bg-gold text-desert-night"
-                            : isActive
-                              ? "bg-gold text-desert-night"
-                              : "border-2 border-cream/30 text-cream/30"
-                        }`}
-                      >
-                        {isCompleted ? (
-                          <Check className="w-5 h-5" />
-                        ) : (
-                          stepNum
-                        )}
+                      <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold transition-all ${isCompleted ? "bg-gold text-white" : isActive ? "bg-gold text-white" : "border-2 border-sand-dark/40 text-text-light"}`}>
+                        {isCompleted ? <Check className="w-5 h-5" /> : stepNum}
                       </div>
-                      <span
-                        className={`text-xs mt-1 hidden md:block max-w-[80px] text-center ${
-                          isActive || isCompleted
-                            ? "text-gold"
-                            : "text-cream/30"
-                        }`}
-                      >
-                        {label}
-                      </span>
+                      <span className={`text-xs mt-1 hidden md:block max-w-[80px] text-center ${isActive || isCompleted ? "text-gold" : "text-text-light"}`}>{label}</span>
                     </div>
                     {i < steps.length - 1 && (
-                      <div
-                        className={`w-8 md:w-16 h-0.5 mx-1 md:mx-2 ${
-                          step > stepNum ? "bg-gold" : "bg-cream/20"
-                        }`}
-                      />
+                      <div className={`w-8 md:w-16 h-[2px] mx-1 md:mx-2 transition-colors ${step > stepNum ? "bg-gold" : "bg-sand-dark/30"}`} />
                     )}
                   </div>
                 );
               })}
             </div>
 
-            {/* Step Content */}
-            <div className="relative min-h-[400px]">
+            {/* Step Content Card */}
+            <div className="booking-card relative min-h-[400px] bg-white rounded-2xl p-8 md:p-12" style={{ boxShadow: "var(--shadow-card)" }}>
               <AnimatePresence mode="wait" custom={direction}>
-                <motion.div
-                  key={step}
-                  custom={direction}
-                  variants={slideVariants}
-                  initial="enter"
-                  animate="center"
-                  exit="exit"
-                  transition={{ duration: 0.3, ease: "easeInOut" }}
-                >
+                <motion.div key={step} custom={direction} variants={slideVariants} initial="enter" animate="center" exit="exit" transition={{ duration: 0.3, ease: "easeInOut" }}>
                   {stepContent[step]()}
                 </motion.div>
               </AnimatePresence>
@@ -934,34 +491,19 @@ export default function Booking() {
             {/* Navigation */}
             <div className="flex justify-between mt-8">
               {step > 1 ? (
-                <button
-                  onClick={goPrev}
-                  className="border-2 border-gold text-gold rounded-full px-6 py-3 font-semibold flex items-center gap-2 hover:bg-gold/10 transition-colors cursor-pointer"
-                >
-                  <ChevronLeft className="w-5 h-5" />
-                  {t("prev")}
+                <button onClick={goPrev} className="border-2 border-gold text-gold rounded-full px-6 py-3 font-semibold flex items-center gap-2 hover:bg-gold/10 transition-colors cursor-pointer">
+                  <ChevronLeft className="w-5 h-5" /> {t("prev")}
                 </button>
-              ) : (
-                <div />
-              )}
+              ) : <div />}
               {step < 5 && (
-                <button
-                  onClick={goNext}
-                  disabled={!canProceed()}
-                  className={`bg-gold text-desert-night rounded-full px-6 py-3 font-semibold flex items-center gap-2 transition-opacity cursor-pointer ${
-                    canProceed()
-                      ? "hover:opacity-90"
-                      : "opacity-40 cursor-not-allowed"
-                  }`}
-                >
-                  {t("next")}
-                  <ChevronRight className="w-5 h-5" />
+                <button onClick={goNext} disabled={!canProceed()} className={`bg-gold text-white rounded-full px-6 py-3 font-semibold flex items-center gap-2 transition-opacity cursor-pointer ${canProceed() ? "hover:opacity-90" : "opacity-40 cursor-not-allowed"}`}>
+                  {t("next")} <ChevronRight className="w-5 h-5" />
                 </button>
               )}
             </div>
           </>
         )}
       </div>
-    </motion.section>
+    </section>
   );
 }

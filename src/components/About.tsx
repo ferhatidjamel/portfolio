@@ -1,150 +1,66 @@
 "use client";
-import { useEffect, useRef } from "react";
 import { useTranslations } from "next-intl";
+import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { Home, Waves, Sparkles } from "lucide-react";
 
 gsap.registerPlugin(ScrollTrigger);
 
 export default function About() {
   const t = useTranslations("about");
-
   const sectionRef = useRef<HTMLElement>(null);
-  const imageWrapperRef = useRef<HTMLDivElement>(null);
-  const imageRef = useRef<HTMLImageElement>(null);
-  const headingRef = useRef<HTMLHeadingElement>(null);
-  const lineRef = useRef<HTMLDivElement>(null);
-  const paragraphRef = useRef<HTMLParagraphElement>(null);
-  const statsRef = useRef<HTMLDivElement>(null);
-
-  const stats = [
-    { icon: Home, label: t("stat1") },
-    { icon: Waves, label: t("stat2") },
-    { icon: Sparkles, label: t("stat3") },
-  ];
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Image clip-path reveal
-      if (imageWrapperRef.current) {
-        gsap.fromTo(
-          imageWrapperRef.current,
-          { clipPath: "inset(0 100% 0 0)" },
-          {
-            clipPath: "inset(0 0% 0 0)",
-            duration: 1.2,
-            ease: "power3.inOut",
-            scrollTrigger: {
-              trigger: imageWrapperRef.current,
-              start: "top 70%",
-            },
-          }
-        );
-      }
+      gsap.from(".about-eyebrow", {
+        x: -30,
+        opacity: 0,
+        duration: 0.8,
+        ease: "power3.out",
+        scrollTrigger: { trigger: ".about-content", start: "top 80%" },
+      });
 
-      // Image parallax
-      if (imageRef.current) {
-        gsap.fromTo(
-          imageRef.current,
-          { y: -80 },
-          {
-            y: 80,
-            ease: "none",
-            scrollTrigger: {
-              trigger: imageWrapperRef.current,
-              start: "top bottom",
-              end: "bottom top",
-              scrub: true,
-            },
-          }
-        );
-      }
+      gsap.from(".about-quote", {
+        clipPath: "inset(0 100% 0 0)",
+        duration: 1.2,
+        ease: "power4.inOut",
+        scrollTrigger: { trigger: ".about-quote", start: "top 80%" },
+      });
 
-      // Heading — split into words, animate each
-      if (headingRef.current) {
-        const text = headingRef.current.textContent || "";
-        const words = text.split(" ");
-        headingRef.current.innerHTML = words
-          .map(
-            (word) =>
-              `<span class="inline-block overflow-hidden"><span class="about-word inline-block">${word}</span></span>`
-          )
-          .join(
-            '<span class="inline-block overflow-hidden"><span class="about-word inline-block">&nbsp;</span></span>'
-          );
+      gsap.from(".about-img-wrap", {
+        clipPath: "inset(0 0 0 100%)",
+        duration: 1.4,
+        ease: "power4.inOut",
+        scrollTrigger: { trigger: ".about-img-wrap", start: "top 75%" },
+      });
 
-        gsap.fromTo(
-          headingRef.current.querySelectorAll(".about-word"),
-          { y: "100%", opacity: 0 },
-          {
-            y: "0%",
-            opacity: 1,
-            duration: 0.8,
-            ease: "power3.out",
-            stagger: 0.08,
-            scrollTrigger: {
-              trigger: headingRef.current,
-              start: "top 70%",
-            },
-          }
-        );
-      }
+      gsap.to(".about-img-wrap img", {
+        yPercent: -12,
+        ease: "none",
+        scrollTrigger: {
+          trigger: ".about-img-wrap",
+          start: "top bottom",
+          end: "bottom top",
+          scrub: 1,
+        },
+      });
 
-      // Gold line scaleX
-      if (lineRef.current) {
-        gsap.fromTo(
-          lineRef.current,
-          { scaleX: 0, transformOrigin: "left center" },
-          {
-            scaleX: 1,
-            duration: 0.8,
-            ease: "power2.out",
-            scrollTrigger: {
-              trigger: lineRef.current,
-              start: "top 70%",
-            },
-          }
-        );
-      }
+      gsap.from(".about-text", {
+        y: 40,
+        opacity: 0,
+        duration: 1,
+        ease: "power3.out",
+        scrollTrigger: { trigger: ".about-text", start: "top 85%" },
+      });
 
-      // Paragraph fade in + slide up
-      if (paragraphRef.current) {
-        gsap.fromTo(
-          paragraphRef.current,
-          { opacity: 0, y: 30 },
-          {
-            opacity: 1,
-            y: 0,
-            duration: 0.8,
-            ease: "power2.out",
-            scrollTrigger: {
-              trigger: paragraphRef.current,
-              start: "top 70%",
-            },
-          }
-        );
-      }
-
-      // Stats stagger fade in from bottom
-      if (statsRef.current) {
-        const items = statsRef.current.querySelectorAll(".about-stat");
-        gsap.fromTo(
-          items,
-          { opacity: 0, y: 40 },
-          {
-            opacity: 1,
-            y: 0,
-            duration: 0.7,
-            ease: "power2.out",
-            stagger: 0.15,
-            scrollTrigger: {
-              trigger: statsRef.current,
-              start: "top 70%",
-            },
-          }
-        );
-      }
+      gsap.from(".about-stat", {
+        y: 40,
+        opacity: 0,
+        duration: 0.8,
+        stagger: 0.15,
+        ease: "power3.out",
+        scrollTrigger: { trigger: ".about-stats", start: "top 85%" },
+      });
     }, sectionRef);
 
     return () => ctx.revert();
@@ -152,77 +68,63 @@ export default function About() {
 
   return (
     <section
-      id="about"
       ref={sectionRef}
-      className="bg-gradient-to-b from-[#1A150D] to-[#0D0A06] py-32"
+      id="about"
+      className="bg-day relative py-32 md:py-40 overflow-hidden"
+      style={{ backgroundColor: "var(--color-bg-primary)" }}
     >
-      <div className="max-w-7xl mx-auto px-6">
-        <div className="flex flex-col lg:flex-row gap-12 lg:gap-0">
-          {/* Left — Image (55%) */}
-          <div className="w-full lg:w-[55%]">
+      <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-12">
+        <div className="about-content flex flex-col lg:flex-row items-stretch gap-16 lg:gap-0">
+          {/* Left — quote + text */}
+          <div className="w-full lg:w-[45%] flex flex-col justify-center pr-0 lg:pr-16">
+            <p className="about-eyebrow eyebrow mb-8">{t("title")}</p>
+
+            <blockquote
+              className="about-quote pull-quote text-day mb-10"
+              style={{ clipPath: "inset(0 0% 0 0)", color: "var(--color-text-primary)" }}
+            >
+              &ldquo;Au cœur du désert, nous avons trouvé le paradis&rdquo;
+            </blockquote>
+
+            <div className="gold-line w-16 mb-8" />
+
+            <p className="about-text text-day-muted text-base md:text-[17px] leading-[1.8]" style={{ color: "var(--color-text-muted)" }}>
+              {t("text")}
+            </p>
+          </div>
+
+          {/* Right — image bleeding off edge */}
+          <div className="w-full lg:w-[55%] relative">
             <div
-              ref={imageWrapperRef}
-              className="aspect-[3/4] rounded-xl overflow-hidden"
+              className="about-img-wrap relative aspect-[4/5] lg:aspect-auto lg:h-[600px] overflow-hidden rounded-2xl lg:rounded-l-2xl lg:rounded-r-none lg:-mr-12"
+              style={{ clipPath: "inset(0 0 0 0%)" }}
             >
               <img
-                ref={imageRef}
-                src="https://images.unsplash.com/photo-1548013146-72479768bada?w=800&q=80"
-                alt=""
-                className="h-[120%] w-full object-cover will-change-transform"
+                src="https://images.unsplash.com/photo-1590523741831-ab7e8b8f9c7f?w=1200&q=80"
+                alt="Palm Garden oasis"
+                className="h-[120%] w-full object-cover parallax-img"
+                loading="lazy"
               />
             </div>
           </div>
+        </div>
 
-          {/* Right — Text content (45%) */}
-          <div className="w-full lg:w-[45%] lg:pl-16 xl:pl-24 flex flex-col justify-center">
-            {/* Decorative label */}
-            <span className="uppercase text-xs tracking-[0.3em] text-[#C8A45A] mb-6 block">
-              NOTRE HISTOIRE
-            </span>
-
-            {/* Heading */}
-            <h2
-              ref={headingRef}
-              className="font-[family-name:var(--font-heading)] text-4xl md:text-5xl lg:text-6xl text-cream mb-8"
-            >
-              {t("title")}
-            </h2>
-
-            {/* Gold line */}
-            <div
-              ref={lineRef}
-              className="w-[60px] h-px bg-[#C8A45A] mb-8"
-            />
-
-            {/* Paragraph */}
-            <p
-              ref={paragraphRef}
-              className="text-cream/70 text-lg leading-relaxed mb-12"
-            >
-              {t("text")}
-            </p>
-
-            {/* Stats */}
-            <div ref={statsRef} className="flex items-center gap-0">
-              {stats.map(({ icon: Icon, label }, i) => (
-                <div key={label} className="flex items-center">
-                  {i > 0 && (
-                    <div className="w-px h-10 bg-[#C8A45A]/40 mx-6" />
-                  )}
-                  <div className="about-stat flex items-center gap-3">
-                    <Icon
-                      className="text-[#C8A45A] shrink-0"
-                      size={24}
-                      strokeWidth={1.5}
-                    />
-                    <span className="text-[#C8A45A] text-sm md:text-base font-medium">
-                      {label}
-                    </span>
-                  </div>
-                </div>
-              ))}
+        {/* Stats */}
+        <div className="about-stats mt-20 flex flex-wrap justify-center gap-12 md:gap-20">
+          {[
+            { value: "6", label: t("stat1") },
+            { value: "1", label: t("stat2") },
+            { value: "∞", label: t("stat3") },
+          ].map((stat) => (
+            <div key={stat.label} className="about-stat text-center">
+              <span className="block font-[family-name:var(--font-heading)] text-5xl md:text-6xl text-gold font-light mb-2">
+                {stat.value}
+              </span>
+              <span className="text-sm uppercase tracking-[0.15em]" style={{ color: "var(--color-text-muted)" }}>
+                {stat.label}
+              </span>
             </div>
-          </div>
+          ))}
         </div>
       </div>
     </section>

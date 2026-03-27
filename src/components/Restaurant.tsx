@@ -19,94 +19,60 @@ export default function Restaurant() {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Image clip-path reveal
-      gsap.from(".restaurant-img", {
-        clipPath: "inset(100% 0 0 0)",
+      // Row 1: image left reveal
+      gsap.from(".rest-img-1", {
+        clipPath: "inset(0 100% 0 0)",
         duration: 1.4,
         ease: "power4.inOut",
-        scrollTrigger: {
-          trigger: ".restaurant-img",
-          start: "top 80%",
-          toggleActions: "play none none none",
-        },
+        scrollTrigger: { trigger: ".rest-row-1", start: "top 75%" },
       });
 
-      // Image parallax
-      gsap.to(".restaurant-img img", {
-        yPercent: -15,
-        ease: "none",
-        scrollTrigger: {
-          trigger: ".restaurant-img",
-          start: "top bottom",
-          end: "bottom top",
-          scrub: 1,
-        },
-      });
-
-      // Subtitle tag
-      gsap.from(".restaurant-tag", {
-        x: -40,
-        opacity: 0,
-        duration: 0.8,
-        ease: "power3.out",
-        scrollTrigger: {
-          trigger: ".restaurant-text",
-          start: "top 80%",
-          toggleActions: "play none none none",
-        },
-      });
-
-      // Title
-      gsap.from(".restaurant-title", {
+      gsap.from(".rest-text-1", {
         y: 50,
         opacity: 0,
         duration: 1,
         ease: "power3.out",
-        scrollTrigger: {
-          trigger: ".restaurant-text",
-          start: "top 80%",
-          toggleActions: "play none none none",
-        },
+        scrollTrigger: { trigger: ".rest-text-1", start: "top 80%" },
       });
 
-      // Description
-      gsap.from(".restaurant-desc", {
-        y: 40,
+      // Row 2: image right reveal
+      gsap.from(".rest-img-2", {
+        clipPath: "inset(0 0 0 100%)",
+        duration: 1.4,
+        ease: "power4.inOut",
+        scrollTrigger: { trigger: ".rest-row-2", start: "top 75%" },
+      });
+
+      gsap.from(".rest-text-2", {
+        y: 50,
         opacity: 0,
-        duration: 0.9,
-        delay: 0.2,
+        duration: 1,
         ease: "power3.out",
-        scrollTrigger: {
-          trigger: ".restaurant-text",
-          start: "top 80%",
-          toggleActions: "play none none none",
-        },
+        scrollTrigger: { trigger: ".rest-text-2", start: "top 80%" },
       });
 
-      // Highlights stagger
-      gsap.from(".restaurant-highlight", {
+      // Highlights
+      gsap.from(".rest-highlight", {
         y: 30,
         opacity: 0,
         duration: 0.7,
         stagger: 0.12,
         ease: "power3.out",
-        scrollTrigger: {
-          trigger: ".restaurant-highlights",
-          start: "top 85%",
-          toggleActions: "play none none none",
-        },
+        scrollTrigger: { trigger: ".rest-highlights", start: "top 85%" },
       });
 
-      // Decorative line
-      gsap.from(".restaurant-line", {
-        scaleX: 0,
-        duration: 1.2,
-        ease: "power2.inOut",
-        scrollTrigger: {
-          trigger: ".restaurant-line",
-          start: "top 90%",
-          toggleActions: "play none none none",
-        },
+      // Parallax on images
+      [".rest-img-1 img", ".rest-img-2 img"].forEach((sel) => {
+        gsap.to(sel, {
+          yPercent: -10,
+          ease: "none",
+          scrollTrigger: {
+            trigger: sel,
+            start: "top bottom",
+            end: "bottom top",
+            scrub: 1,
+          },
+        });
       });
     }, sectionRef);
 
@@ -117,68 +83,79 @@ export default function Restaurant() {
     <section
       ref={sectionRef}
       id="restaurant"
-      className="relative py-32 md:py-40 overflow-hidden"
-      style={{
-        background:
-          "linear-gradient(180deg, #0D0A06 0%, #131008 30%, #131008 70%, #0D0A06 100%)",
-      }}
+      className="bg-day relative py-32 md:py-40 overflow-hidden"
+      style={{ backgroundColor: "var(--color-bg-primary)" }}
     >
-      <div className="noise-overlay absolute inset-0 pointer-events-none" />
-
       <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-12">
-        {/* Editorial split layout */}
-        <div className="flex flex-col lg:flex-row rtl:lg:flex-row-reverse items-center gap-16 lg:gap-24">
-          {/* Image side — 50% */}
-          <div className="w-full lg:w-1/2">
-            <div
-              className="restaurant-img relative aspect-[4/5] overflow-hidden rounded-2xl"
-              style={{ clipPath: "inset(0 0 0 0)" }}
-            >
-              <img
-                src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&q=80"
-                alt=""
-                className="h-[120%] w-full object-cover parallax-img"
-              />
-              {/* Gold overlay on bottom */}
-              <div className="absolute bottom-0 left-0 right-0 h-1/3 bg-gradient-to-t from-[#131008]/80 to-transparent" />
-            </div>
-          </div>
-
-          {/* Text side — 50% */}
-          <div className="restaurant-text w-full lg:w-1/2">
-            <p className="restaurant-tag text-gold uppercase tracking-[0.25em] text-xs md:text-sm mb-4">
-              {t("subtitle")}
-            </p>
-
-            <div className="restaurant-line section-divider w-16 mb-8 origin-left" />
-
-            <h2 className="restaurant-title font-[family-name:var(--font-heading)] text-cream text-3xl md:text-4xl lg:text-5xl mb-8 leading-tight">
+        {/* Row 1: cream left + full-bleed photo right */}
+        <div className="rest-row-1 flex flex-col lg:flex-row rtl:lg:flex-row-reverse items-center gap-12 lg:gap-20 mb-24">
+          {/* Text */}
+          <div className="rest-text-1 w-full lg:w-1/2">
+            <p className="eyebrow mb-4">{t("subtitle")}</p>
+            <h2 className="heading-section mb-6" style={{ color: "var(--color-text-primary)" }}>
               {t("title")}
             </h2>
-
-            <p className="restaurant-desc text-cream/60 text-base md:text-lg leading-relaxed mb-12">
+            <div className="gold-line w-16 mb-8" />
+            <p className="text-base md:text-[17px] leading-[1.8] mb-10" style={{ color: "var(--color-text-muted)" }}>
               {t("text")}
             </p>
 
-            <div className="restaurant-highlights flex flex-wrap gap-10">
+            <div className="rest-highlights flex flex-wrap gap-8">
               {highlights.map(({ icon: Icon, label }) => (
-                <div
-                  key={label}
-                  className="restaurant-highlight flex items-center gap-3"
-                >
-                  <div className="w-12 h-12 rounded-full bg-gold/10 flex items-center justify-center">
-                    <Icon
-                      className="text-gold"
-                      size={22}
-                      strokeWidth={1.3}
-                    />
+                <div key={label} className="rest-highlight flex items-center gap-3">
+                  <div className="w-12 h-12 rounded-full bg-sand flex items-center justify-center">
+                    <Icon className="text-gold" size={20} strokeWidth={1.3} />
                   </div>
-                  <span className="text-cream/80 text-sm md:text-base font-medium">
+                  <span className="text-sm md:text-base font-medium" style={{ color: "var(--color-text-primary)" }}>
                     {label}
                   </span>
                 </div>
               ))}
             </div>
+          </div>
+
+          {/* Image — dome restaurant interior */}
+          <div className="w-full lg:w-1/2">
+            <div
+              className="rest-img-1 relative aspect-[4/5] overflow-hidden rounded-2xl"
+              style={{ clipPath: "inset(0 0% 0 0)" }}
+            >
+              <img
+                src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&q=80"
+                alt="Restaurant interior"
+                className="h-[120%] w-full object-cover"
+                loading="lazy"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Row 2: full-bleed photo left + text right */}
+        <div className="rest-row-2 flex flex-col-reverse lg:flex-row rtl:lg:flex-row-reverse items-center gap-12 lg:gap-20">
+          {/* Image — breakfast */}
+          <div className="w-full lg:w-1/2">
+            <div
+              className="rest-img-2 relative aspect-[4/5] overflow-hidden rounded-2xl"
+              style={{ clipPath: "inset(0 0 0 0%)" }}
+            >
+              <img
+                src="https://images.unsplash.com/photo-1504754524776-8f4f37790ca0?w=800&q=80"
+                alt="Breakfast buffet"
+                className="h-[120%] w-full object-cover"
+                loading="lazy"
+              />
+            </div>
+          </div>
+
+          {/* Text */}
+          <div className="rest-text-2 w-full lg:w-1/2">
+            <p className="pull-quote mb-8" style={{ color: "var(--color-text-primary)" }}>
+              &ldquo;Savourez un voyage culinaire au cœur de la gastronomie algérienne&rdquo;
+            </p>
+            <div className="gold-line w-16 mb-8" />
+            <p className="text-base md:text-[17px] leading-[1.8]" style={{ color: "var(--color-text-muted)" }}>
+              {t("text")}
+            </p>
           </div>
         </div>
       </div>
