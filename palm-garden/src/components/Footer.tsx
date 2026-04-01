@@ -45,75 +45,87 @@ export default function Footer() {
   };
 
   return (
-    <footer style={{ backgroundColor: "var(--color-bg-primary)" }}>
-      {/* Top divider */}
-      <div className="section-divider" />
-
+    <footer style={{ backgroundColor: "#080603" }}>
       <div className="max-w-7xl mx-auto px-6 py-16">
-        {/* Centered logo */}
-        <div className="flex flex-col items-center mb-12">
-          <a href="#" className="flex items-center gap-2 mb-4">
-            <TreePalm className="h-8 w-8 text-gold" />
-            <span className="font-[family-name:var(--font-heading)] text-2xl tracking-wide" style={{ color: "var(--color-text-primary)" }}>
-              Palm Garden
-            </span>
-          </a>
-          <p className="text-sm text-center max-w-sm" style={{ color: "var(--color-text-muted)" }}>
-            {tFooter("tagline")}
-          </p>
-        </div>
-
-        {/* Nav links — horizontal */}
-        <div className="flex flex-wrap justify-center gap-8 mb-12">
-          {navLinks.map((link) => (
-            <a
-              key={link.key}
-              href={link.href}
-              className="text-sm uppercase tracking-wider transition-colors duration-300 hover:text-gold"
-              style={{ color: "var(--color-text-muted)" }}
-            >
-              {tNav(link.key)}
+        {/* Three-column layout */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-8">
+          {/* Left: Logo + tagline */}
+          <div>
+            <a href="#" className="flex items-center gap-2 mb-4">
+              <TreePalm className="h-7 w-7 text-gold" />
+              <span className="text-cream font-[family-name:var(--font-heading)] text-xl tracking-wide">
+                Palm Garden
+              </span>
             </a>
-          ))}
-        </div>
+            <p className="text-cream/50 text-sm leading-relaxed">
+              {tFooter("tagline")}
+            </p>
+          </div>
 
-        {/* Language switcher */}
-        <div className="flex items-center justify-center gap-3 mb-12">
-          {locales.map((l) => (
-            <button
-              key={l.code}
-              onClick={() => switchLocale(l.code)}
-              className={`text-sm uppercase tracking-wider px-3 py-1 rounded border transition-colors duration-200 ${
-                locale === l.code
-                  ? "text-gold border-gold"
-                  : "border-sand-dark/30 hover:border-gold/50 hover:text-gold"
-              }`}
-              style={{ color: locale === l.code ? undefined : "var(--color-text-muted)" }}
-            >
-              {l.label}
-            </button>
-          ))}
-        </div>
+          {/* Center: Nav links */}
+          <div>
+            <ul className="space-y-3">
+              {navLinks.map((link) => (
+                <li key={link.key}>
+                  <a
+                    href={link.href}
+                    className="text-cream/60 hover:text-gold transition-colors duration-300 text-sm uppercase tracking-wider"
+                  >
+                    {tNav(link.key)}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
 
-        {/* Social */}
-        <div className="flex items-center justify-center gap-4 mb-12">
-          <a href="#" aria-label="Facebook" className="hover:text-gold transition-colors duration-300" style={{ color: "var(--color-text-light)" }}>
-            <FacebookIcon />
-          </a>
-          <a href="#" aria-label="Instagram" className="hover:text-gold transition-colors duration-300" style={{ color: "var(--color-text-light)" }}>
-            <InstagramIcon />
-          </a>
+          {/* Right: Language switcher + Social */}
+          <div>
+            {/* Language switcher */}
+            <div className="flex items-center gap-3 mb-6">
+              {locales.map((l) => (
+                <button
+                  key={l.code}
+                  onClick={() => switchLocale(l.code)}
+                  className={`text-sm uppercase tracking-wider px-3 py-1 rounded border transition-colors duration-200 ${
+                    locale === l.code
+                      ? "text-gold border-gold"
+                      : "text-cream/50 border-cream/20 hover:text-cream hover:border-cream/40"
+                  }`}
+                >
+                  {l.label}
+                </button>
+              ))}
+            </div>
+
+            {/* Social links */}
+            <div className="flex items-center gap-4">
+              <a
+                href="#"
+                aria-label="Facebook"
+                className="text-cream/50 hover:text-gold transition-colors duration-300"
+              >
+                <FacebookIcon />
+              </a>
+              <a
+                href="#"
+                aria-label="Instagram"
+                className="text-cream/50 hover:text-gold transition-colors duration-300"
+              >
+                <InstagramIcon />
+              </a>
+            </div>
+          </div>
         </div>
       </div>
 
       {/* Bottom bar */}
-      <div className="border-t" style={{ borderColor: "var(--color-sand-dark)" }}>
+      <div className="border-t border-cream/10">
         <div className="max-w-7xl mx-auto px-6 py-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-xs" style={{ color: "var(--color-text-light)" }}>
-            {tFooter("rights")}
-          </p>
-          <p className="text-xs" style={{ color: "var(--color-text-light)" }}>
+          <p className="text-cream/40 text-xs">
             {tFooter("credit")}
+          </p>
+          <p className="text-cream/40 text-xs">
+            {tFooter("rights")}
           </p>
         </div>
       </div>
