@@ -5,7 +5,7 @@
   },
   "nav": {
     "accommodation": "Hébergement",
-    "spa": "Spa",
+    "events": "Événements",
     "restaurant": "Restaurant",
     "gallery": "Galerie",
     "reservation": "Réservation",
@@ -44,26 +44,32 @@
     },
     "learnMore": "En savoir plus"
   },
-  "spa": {
-    "title": "Spa & Bien-être",
-    "subtitle": "Un sanctuaire de sérénité au cœur du désert",
-    "massage": {
-      "name": "Massage",
-      "description": "Massages relaxants et thérapeutiques inspirés des traditions ancestrales."
-    },
-    "hammam": {
-      "name": "Hammam",
-      "description": "Bain de vapeur traditionnel pour une purification complète du corps et de l'esprit."
-    },
-    "pool": {
-      "name": "Piscine de Relaxation",
-      "description": "Bassin chauffé entouré de palmiers pour une détente absolue."
-    },
-    "beauty": {
-      "name": "Soins Beauté",
-      "description": "Traitements de beauté avec des produits naturels du Sahara."
-    },
-    "cta": "Réserver un soin"
+  "events": {
+    "eyebrow": "À VENIR",
+    "title": "Vivez l'Expérience",
+    "register": "S'inscrire",
+    "location": "Palm Garden · El Oued",
+    "live": "Bientôt",
+    "modalTitle": "Inscription à l'événement",
+    "fullName": "Nom complet",
+    "phone": "Téléphone",
+    "adults": "Nombre d'adultes",
+    "children": "Nombre d'enfants",
+    "notes": "Notes (optionnel)",
+    "notesPlaceholder": "Allergies, besoins spéciaux...",
+    "confirm": "Confirmer l'inscription",
+    "successTitle": "Inscription confirmée !",
+    "successMsg": "Votre inscription est confirmée ! Notre équipe vous contactera sous 24h pour valider votre réservation. Le paiement se fait sur place.",
+    "whatsappShare": "Partager via WhatsApp",
+    "close": "Fermer",
+    "categories": {
+      "kids": "Enfants",
+      "cultural": "Culturel",
+      "gastronomy": "Gastronomie",
+      "music": "Musique",
+      "sports": "Sports",
+      "other": "Autre"
+    }
   },
   "restaurant": {
     "title": "Restaurant & Café",
