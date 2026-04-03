@@ -33,14 +33,13 @@ export default function Accommodations() {
 
     const ctx = gsap.context(() => {
       gsap.from(".acc-header", {
-        y: 50,
+        y: 30,
         opacity: 0,
-        duration: 1,
-        ease: "power3.out",
+        duration: 0.8,
+        ease: "cubic-bezier(0.16, 1, 0.3, 1)",
         scrollTrigger: { trigger: ".acc-header", start: "top 85%" },
       });
 
-      // Desktop horizontal scroll
       ScrollTrigger.matchMedia({
         "(min-width: 1024px)": function () {
           const totalWidth = track.scrollWidth - window.innerWidth;
@@ -69,12 +68,12 @@ export default function Accommodations() {
       ref={sectionRef}
       id="hebergement"
       className="bg-day-secondary relative overflow-hidden"
-      style={{ backgroundColor: "var(--color-bg-secondary)" }}
+      style={{ backgroundColor: "#F0E5D0" }}
     >
       {/* Header */}
       <div className="pt-32 pb-16 px-6 md:px-12 max-w-7xl mx-auto">
         <p className="acc-header eyebrow mb-4">{t("subtitle")}</p>
-        <h2 className="acc-header heading-section" style={{ color: "var(--color-text-primary)" }}>
+        <h2 className="acc-header heading-section" style={{ color: "#1A1208" }}>
           {t("title")}
         </h2>
       </div>
@@ -95,7 +94,7 @@ export default function Accommodations() {
                 <img
                   src={acc.image}
                   alt={t(`${acc.key}.name`)}
-                  className="acc-img h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  className="acc-img h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
                   loading="lazy"
                 />
                 <div className="absolute bottom-0 inset-x-0 h-2/3 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
@@ -103,19 +102,19 @@ export default function Accommodations() {
 
               <div className="absolute bottom-0 inset-x-0 p-8 md:p-12 lg:p-16 flex items-end justify-between">
                 <div>
-                  <h3 className="font-[family-name:var(--font-heading)] text-white text-3xl md:text-4xl lg:text-5xl mb-3">
+                  <h3
+                    className="font-[family-name:var(--font-heading)] text-3xl md:text-4xl lg:text-5xl mb-3"
+                    style={{ color: "#FAF7F2", fontWeight: 400 }}
+                  >
                     {t(`${acc.key}.name`)}
                   </h3>
-                  <p className="text-white/70 text-sm md:text-base max-w-lg leading-relaxed">
+                  <p style={{ color: "rgba(250,247,242,0.7)", fontSize: "15px", lineHeight: 1.7 }} className="max-w-lg">
                     {t(`${acc.key}.description`)}
                   </p>
                 </div>
                 <div className="hidden md:flex flex-wrap gap-2 max-w-xs justify-end">
                   {tags.map((tag) => (
-                    <span
-                      key={tag}
-                      className="text-xs uppercase tracking-wider text-white/60 border border-white/20 rounded-full px-3 py-1"
-                    >
+                    <span key={tag} className="tag-pill">
                       {tag.trim()}
                     </span>
                   ))}

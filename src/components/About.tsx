@@ -49,7 +49,7 @@ export default function About() {
         y: 40,
         opacity: 0,
         duration: 1,
-        ease: "power3.out",
+        ease: "cubic-bezier(0.16, 1, 0.3, 1)",
         scrollTrigger: { trigger: ".about-text", start: "top 85%" },
       });
 
@@ -58,7 +58,7 @@ export default function About() {
         opacity: 0,
         duration: 0.8,
         stagger: 0.15,
-        ease: "power3.out",
+        ease: "cubic-bezier(0.16, 1, 0.3, 1)",
         scrollTrigger: { trigger: ".about-stats", start: "top 85%" },
       });
     }, sectionRef);
@@ -71,7 +71,7 @@ export default function About() {
       ref={sectionRef}
       id="about"
       className="bg-day relative py-32 md:py-40 overflow-hidden"
-      style={{ backgroundColor: "var(--color-bg-primary)" }}
+      style={{ backgroundColor: "#FAF7F2" }}
     >
       <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-12">
         <div className="about-content flex flex-col lg:flex-row items-stretch gap-16 lg:gap-0">
@@ -80,20 +80,20 @@ export default function About() {
             <p className="about-eyebrow eyebrow mb-8">{t("title")}</p>
 
             <blockquote
-              className="about-quote pull-quote text-day mb-10"
-              style={{ clipPath: "inset(0 0% 0 0)", color: "var(--color-text-primary)" }}
+              className="about-quote pull-quote mb-10"
+              style={{ clipPath: "inset(0 0% 0 0)" }}
             >
               &ldquo;Au cœur du désert, nous avons trouvé le paradis&rdquo;
             </blockquote>
 
             <div className="gold-line w-16 mb-8" />
 
-            <p className="about-text text-day-muted text-base md:text-[17px] leading-[1.8]" style={{ color: "var(--color-text-muted)" }}>
+            <p className="about-text" style={{ color: "#6B5C42", fontSize: "17px", lineHeight: 1.8 }}>
               {t("text")}
             </p>
           </div>
 
-          {/* Right — image bleeding off edge */}
+          {/* Right — image */}
           <div className="w-full lg:w-[55%] relative">
             <div
               className="about-img-wrap relative aspect-[4/5] lg:aspect-auto lg:h-[600px] overflow-hidden rounded-2xl lg:rounded-l-2xl lg:rounded-r-none lg:-mr-12"
@@ -117,10 +117,10 @@ export default function About() {
             { value: "∞", label: t("stat3") },
           ].map((stat) => (
             <div key={stat.label} className="about-stat text-center">
-              <span className="block font-[family-name:var(--font-heading)] text-5xl md:text-6xl text-gold font-light mb-2">
+              <span className="block font-[family-name:var(--font-heading)] text-5xl md:text-6xl font-light mb-2" style={{ color: "#C8973A" }}>
                 {stat.value}
               </span>
-              <span className="text-sm uppercase tracking-[0.15em]" style={{ color: "var(--color-text-muted)" }}>
+              <span className="text-sm uppercase tracking-[0.15em]" style={{ color: "#6B5C42" }}>
                 {stat.label}
               </span>
             </div>

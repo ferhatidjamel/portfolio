@@ -3,7 +3,7 @@ import { useTranslations } from "next-intl";
 import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { Star, Quote } from "lucide-react";
+import { Star } from "lucide-react";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -47,19 +47,19 @@ export default function Reviews() {
   useEffect(() => {
     const ctx = gsap.context(() => {
       gsap.from(".reviews-header", {
-        y: 50,
+        y: 30,
         opacity: 0,
-        duration: 1,
-        ease: "power3.out",
+        duration: 0.8,
+        ease: "cubic-bezier(0.16, 1, 0.3, 1)",
         scrollTrigger: { trigger: ".reviews-header", start: "top 85%" },
       });
 
       gsap.from(".review-card", {
-        x: 80,
+        y: 40,
         opacity: 0,
-        duration: 0.9,
-        stagger: 0.12,
-        ease: "power3.out",
+        duration: 0.7,
+        stagger: 0.1,
+        ease: "cubic-bezier(0.16, 1, 0.3, 1)",
         scrollTrigger: { trigger: ".reviews-track", start: "top 80%" },
       });
     }, sectionRef);
@@ -72,12 +72,12 @@ export default function Reviews() {
       ref={sectionRef}
       id="reviews"
       className="relative py-32 md:py-40 overflow-hidden"
-      style={{ backgroundColor: "var(--color-bg-secondary)" }}
+      style={{ backgroundColor: "#F0E5D0" }}
     >
       <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-12">
         <div className="reviews-header text-center mb-16">
           <p className="eyebrow mb-4">{t("subtitle")}</p>
-          <h2 className="heading-section" style={{ color: "var(--color-text-primary)" }}>
+          <h2 className="heading-section" style={{ color: "#1A1208" }}>
             {t("title")}
           </h2>
         </div>
@@ -89,30 +89,46 @@ export default function Reviews() {
           {reviews.map((review) => (
             <div
               key={review.name}
-              className="review-card bg-day-card group min-w-[320px] md:min-w-[380px] flex-shrink-0 snap-start rounded-2xl bg-white p-8 md:p-10 flex flex-col gap-5 hover:shadow-xl transition-shadow duration-500"
-              style={{ boxShadow: "var(--shadow-card)" }}
+              className="review-card bg-day-card group min-w-[320px] md:min-w-[380px] flex-shrink-0 snap-start flex flex-col gap-5 hover:shadow-xl transition-shadow duration-500"
+              style={{
+                backgroundColor: "#FAF7F2",
+                borderRadius: "16px",
+                padding: "28px",
+                boxShadow: "var(--shadow-card)",
+              }}
             >
-              <Quote
-                className="text-gold/40 group-hover:text-gold/60 transition-colors duration-500"
-                size={32}
-                strokeWidth={1}
-              />
+              {/* Large quote mark */}
+              <span
+                className="font-[family-name:var(--font-heading)] leading-none"
+                style={{
+                  fontSize: "80px",
+                  color: "#C8973A",
+                  opacity: 0.4,
+                  marginBottom: "-20px",
+                  lineHeight: 0,
+                }}
+              >
+                &ldquo;
+              </span>
 
               <div className="flex gap-1">
                 {Array.from({ length: review.stars }).map((_, i) => (
-                  <Star key={i} className="text-gold fill-gold" size={16} />
+                  <Star key={i} size={16} style={{ color: "#C8973A", fill: "#C8973A" }} />
                 ))}
               </div>
 
-              <p className="pull-quote text-base md:text-lg flex-1" style={{ color: "var(--color-text-primary)", fontSize: "inherit", fontStyle: "italic" }}>
+              <p
+                className="font-[family-name:var(--font-heading)] italic flex-1"
+                style={{ fontSize: "18px", color: "#1A1208", lineHeight: 1.6 }}
+              >
                 &ldquo;{review.quote}&rdquo;
               </p>
 
-              <div className="pt-4 border-t border-sand-dark/20">
-                <p className="font-semibold" style={{ color: "var(--color-text-primary)" }}>
+              <div className="pt-4" style={{ borderTop: "1px solid #F0E5D0" }}>
+                <p className="font-medium text-sm" style={{ color: "#1A1208" }}>
                   {review.name}
                 </p>
-                <p className="text-sm mt-1" style={{ color: "var(--color-text-muted)" }}>
+                <p className="text-xs mt-1" style={{ color: "#9C8B72" }}>
                   {review.occasion}
                 </p>
               </div>

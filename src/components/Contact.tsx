@@ -30,19 +30,19 @@ export default function Contact() {
   useEffect(() => {
     const ctx = gsap.context(() => {
       gsap.from(".contact-header", {
-        y: 50,
+        y: 30,
         opacity: 0,
-        duration: 1,
-        ease: "power3.out",
+        duration: 0.8,
+        ease: "cubic-bezier(0.16, 1, 0.3, 1)",
         scrollTrigger: { trigger: ".contact-header", start: "top 85%" },
       });
 
       gsap.from(".contact-item", {
         y: 30,
         opacity: 0,
-        duration: 0.8,
+        duration: 0.7,
         stagger: 0.1,
-        ease: "power3.out",
+        ease: "cubic-bezier(0.16, 1, 0.3, 1)",
         scrollTrigger: { trigger: ".contact-info", start: "top 80%" },
       });
 
@@ -69,40 +69,68 @@ export default function Contact() {
       <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-12">
         <div className="contact-header text-center mb-16">
           <p className="eyebrow mb-4">{t("subtitle")}</p>
-          <h2 className="heading-section text-white">{t("title")}</h2>
+          <h2 className="font-[family-name:var(--font-heading)] italic" style={{ fontSize: "clamp(36px, 5vw, 64px)", fontWeight: 400, lineHeight: 1.1, color: "#FAF7F2" }}>
+            {t("title")}
+          </h2>
         </div>
 
         <div className="flex flex-col lg:flex-row gap-12 lg:gap-16">
           {/* Contact info */}
           <div className="contact-info w-full lg:w-1/2 space-y-6">
             <div className="contact-item flex items-start gap-4">
-              <MapPin className="text-gold shrink-0 mt-1" size={24} strokeWidth={1.5} />
-              <span className="text-white/80 text-base leading-relaxed">{t("address")}</span>
+              <MapPin style={{ color: "#C8973A" }} className="shrink-0 mt-1" size={24} strokeWidth={1.5} />
+              <span style={{ color: "#FAF7F2", fontSize: "16px", lineHeight: 1.6 }}>{t("address")}</span>
             </div>
             <div className="contact-item flex items-start gap-4">
-              <Phone className="text-gold shrink-0 mt-1" size={24} strokeWidth={1.5} />
-              <span className="text-white/80 text-base leading-relaxed">{t("phone")}</span>
+              <Phone style={{ color: "#C8973A" }} className="shrink-0 mt-1" size={24} strokeWidth={1.5} />
+              <span style={{ color: "#FAF7F2", fontSize: "16px", lineHeight: 1.6 }}>{t("phone")}</span>
             </div>
             <div className="contact-item flex items-start gap-4">
-              <Mail className="text-gold shrink-0 mt-1" size={24} strokeWidth={1.5} />
-              <span className="text-white/80 text-base leading-relaxed">{t("email")}</span>
+              <Mail style={{ color: "#C8973A" }} className="shrink-0 mt-1" size={24} strokeWidth={1.5} />
+              <span style={{ color: "#FAF7F2", fontSize: "16px", lineHeight: 1.6 }}>{t("email")}</span>
             </div>
 
+            {/* WhatsApp — gold, not green */}
             <a
               href="https://wa.me/213XXXXXXXXX"
               target="_blank"
               rel="noopener noreferrer"
-              className="contact-item inline-flex items-center gap-3 bg-gold hover:bg-gold-light transition-colors duration-300 text-white px-6 py-3 rounded-full text-sm font-semibold uppercase tracking-wider"
+              className="contact-item inline-flex items-center gap-3 rounded-full transition-colors duration-300"
+              style={{
+                backgroundColor: "#C8973A",
+                color: "#1A1208",
+                padding: "12px 24px",
+                fontSize: "12px",
+                fontWeight: 500,
+                textTransform: "uppercase",
+                letterSpacing: "0.1em",
+              }}
+              onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#E8B86D")}
+              onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#C8973A")}
             >
               <MessageCircle size={20} strokeWidth={1.5} />
               {t("whatsapp")}
             </a>
 
             <div className="contact-item flex items-center gap-4 pt-4">
-              <a href="#" aria-label="Facebook" className="text-white/40 hover:text-gold transition-colors duration-300">
+              <a
+                href="#"
+                aria-label="Facebook"
+                className="transition-colors duration-300"
+                style={{ color: "#C8973A" }}
+                onMouseEnter={(e) => (e.currentTarget.style.color = "#E8B86D")}
+                onMouseLeave={(e) => (e.currentTarget.style.color = "#C8973A")}
+              >
                 <FacebookIcon size={24} />
               </a>
-              <a href="#" aria-label="Instagram" className="text-white/40 hover:text-gold transition-colors duration-300">
+              <a
+                href="#"
+                aria-label="Instagram"
+                className="transition-colors duration-300"
+                style={{ color: "#C8973A" }}
+                onMouseEnter={(e) => (e.currentTarget.style.color = "#E8B86D")}
+                onMouseLeave={(e) => (e.currentTarget.style.color = "#C8973A")}
+              >
                 <InstagramIcon size={24} />
               </a>
             </div>
@@ -111,8 +139,12 @@ export default function Contact() {
           {/* Map */}
           <div className="w-full lg:w-1/2">
             <div
-              className="contact-map aspect-video rounded-2xl border border-gold/20 overflow-hidden"
-              style={{ clipPath: "inset(0 0% 0 0)" }}
+              className="contact-map aspect-video overflow-hidden"
+              style={{
+                clipPath: "inset(0 0% 0 0)",
+                borderRadius: "12px",
+                border: "1px solid rgba(200,151,58,0.2)",
+              }}
             >
               <iframe
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d26889.24!2d6.85!3d33.35!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzPCsDIxJzAwLjAiTiA2wrA1MScwMC4wIkU!5e0!3m2!1sfr!2sdz!4v1"

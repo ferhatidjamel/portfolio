@@ -45,32 +45,37 @@ export default function Footer() {
   };
 
   return (
-    <footer style={{ backgroundColor: "var(--color-bg-primary)" }}>
+    <footer style={{ backgroundColor: "#FAF7F2" }}>
       {/* Top divider */}
-      <div className="section-divider" />
+      <div style={{ height: "1px", backgroundColor: "#F0E5D0" }} />
 
       <div className="max-w-7xl mx-auto px-6 py-16">
         {/* Centered logo */}
         <div className="flex flex-col items-center mb-12">
           <a href="#" className="flex items-center gap-2 mb-4">
-            <TreePalm className="h-8 w-8 text-gold" />
-            <span className="font-[family-name:var(--font-heading)] text-2xl tracking-wide" style={{ color: "var(--color-text-primary)" }}>
+            <TreePalm className="h-8 w-8" style={{ color: "#C8973A" }} />
+            <span
+              className="font-[family-name:var(--font-heading)] text-xl tracking-wide"
+              style={{ color: "#1A1208", fontWeight: 400 }}
+            >
               Palm Garden
             </span>
           </a>
-          <p className="text-sm text-center max-w-sm" style={{ color: "var(--color-text-muted)" }}>
+          <p className="text-sm text-center max-w-sm" style={{ color: "#6B5C42", fontSize: "13px" }}>
             {tFooter("tagline")}
           </p>
         </div>
 
-        {/* Nav links — horizontal */}
+        {/* Nav links */}
         <div className="flex flex-wrap justify-center gap-8 mb-12">
           {navLinks.map((link) => (
             <a
               key={link.key}
               href={link.href}
-              className="text-sm uppercase tracking-wider transition-colors duration-300 hover:text-gold"
-              style={{ color: "var(--color-text-muted)" }}
+              className="transition-colors duration-300"
+              style={{ color: "#6B5C42", fontSize: "14px" }}
+              onMouseEnter={(e) => (e.currentTarget.style.color = "#C8973A")}
+              onMouseLeave={(e) => (e.currentTarget.style.color = "#6B5C42")}
             >
               {tNav(link.key)}
             </a>
@@ -83,12 +88,11 @@ export default function Footer() {
             <button
               key={l.code}
               onClick={() => switchLocale(l.code)}
-              className={`text-sm uppercase tracking-wider px-3 py-1 rounded border transition-colors duration-200 ${
-                locale === l.code
-                  ? "text-gold border-gold"
-                  : "border-sand-dark/30 hover:border-gold/50 hover:text-gold"
-              }`}
-              style={{ color: locale === l.code ? undefined : "var(--color-text-muted)" }}
+              className="text-sm uppercase tracking-wider px-3 py-1 rounded border transition-colors duration-200"
+              style={{
+                color: locale === l.code ? "#C8973A" : "#9C8B72",
+                borderColor: locale === l.code ? "#C8973A" : "rgba(156,139,114,0.3)",
+              }}
             >
               {l.label}
             </button>
@@ -97,22 +101,36 @@ export default function Footer() {
 
         {/* Social */}
         <div className="flex items-center justify-center gap-4 mb-12">
-          <a href="#" aria-label="Facebook" className="hover:text-gold transition-colors duration-300" style={{ color: "var(--color-text-light)" }}>
+          <a
+            href="#"
+            aria-label="Facebook"
+            className="transition-colors duration-300"
+            style={{ color: "#C8973A" }}
+            onMouseEnter={(e) => (e.currentTarget.style.color = "#E8B86D")}
+            onMouseLeave={(e) => (e.currentTarget.style.color = "#C8973A")}
+          >
             <FacebookIcon />
           </a>
-          <a href="#" aria-label="Instagram" className="hover:text-gold transition-colors duration-300" style={{ color: "var(--color-text-light)" }}>
+          <a
+            href="#"
+            aria-label="Instagram"
+            className="transition-colors duration-300"
+            style={{ color: "#C8973A" }}
+            onMouseEnter={(e) => (e.currentTarget.style.color = "#E8B86D")}
+            onMouseLeave={(e) => (e.currentTarget.style.color = "#C8973A")}
+          >
             <InstagramIcon />
           </a>
         </div>
       </div>
 
       {/* Bottom bar */}
-      <div className="border-t" style={{ borderColor: "var(--color-sand-dark)" }}>
+      <div style={{ borderTop: "1px solid #F0E5D0" }}>
         <div className="max-w-7xl mx-auto px-6 py-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-xs" style={{ color: "var(--color-text-light)" }}>
+          <p style={{ color: "#9C8B72", fontSize: "12px" }}>
             {tFooter("rights")}
           </p>
-          <p className="text-xs" style={{ color: "var(--color-text-light)" }}>
+          <p style={{ color: "#C8973A", fontSize: "12px", fontWeight: 500 }}>
             {tFooter("credit")}
           </p>
         </div>

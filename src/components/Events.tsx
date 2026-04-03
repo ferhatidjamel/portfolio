@@ -24,15 +24,6 @@ function formatDateBadge(dateStr: string) {
   return { day, month };
 }
 
-const categoryColors: Record<string, string> = {
-  kids: "#E8C068",
-  cultural: "#C8973A",
-  gastronomy: "#8B6914",
-  music: "#C8973A",
-  sports: "#2D5016",
-  other: "#6B5C42",
-};
-
 export default function Events() {
   const t = useTranslations("events");
   const locale = useLocale();
@@ -79,30 +70,20 @@ export default function Events() {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Section bg zoom
-      gsap.from(".events-bg", {
-        scale: 1.05,
-        duration: 1.5,
-        ease: "power2.out",
-        scrollTrigger: { trigger: sectionRef.current, start: "top 80%" },
-      });
-
-      // Header
       gsap.from(".events-header", {
-        y: 50,
+        y: 30,
         opacity: 0,
-        duration: 1,
-        ease: "power3.out",
+        duration: 0.8,
+        ease: "cubic-bezier(0.16, 1, 0.3, 1)",
         scrollTrigger: { trigger: ".events-header", start: "top 85%" },
       });
 
-      // Cards: translateY(60px), opacity:0, rotateX(8deg) → normal
       gsap.from(".event-card", {
-        y: 60,
+        y: 40,
         opacity: 0,
         rotateX: 8,
         duration: 0.7,
-        stagger: 0.12,
+        stagger: 0.1,
         ease: "cubic-bezier(0.16, 1, 0.3, 1)",
         scrollTrigger: { trigger: ".events-track", start: "top 80%" },
       });
@@ -118,23 +99,25 @@ export default function Events() {
       <section
         ref={sectionRef}
         id="events"
-        className="relative py-32 md:py-40 overflow-hidden"
+        className="mashrabiya-bg relative py-32 md:py-40 overflow-hidden"
       >
-        {/* Deep green background with animated noise texture */}
-        <div
-          className="events-bg absolute inset-0 noise-overlay"
-          style={{ backgroundColor: "#1A2E0F" }}
-        />
+        <div className="noise-overlay absolute inset-0 pointer-events-none" />
 
         <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-12">
           {/* Header */}
           <div className="events-header text-center mb-16">
-            <p className="eyebrow mb-4" style={{ color: "#E8C068" }}>
+            <p className="eyebrow mb-4" style={{ color: "#E8B86D" }}>
               {t("eyebrow")}
             </p>
             <h2
-              className="heading-section mb-6"
-              style={{ color: "#FAF7F2" }}
+              className="font-[family-name:var(--font-heading)] mb-6"
+              style={{
+                fontSize: "clamp(40px, 6vw, 72px)",
+                fontWeight: 300,
+                fontStyle: "italic",
+                lineHeight: 1.1,
+                color: "#FAF7F2",
+              }}
             >
               {t("title")}
             </h2>
@@ -180,31 +163,33 @@ export default function Events() {
                       className="h-full w-full object-cover"
                       loading="lazy"
                     />
-                    {/* Warm gradient at bottom */}
-                    <div className="absolute bottom-0 inset-x-0 h-1/2 bg-gradient-to-t from-[#C8973A]/30 to-transparent" />
+                    <div className="absolute bottom-0 inset-x-0 h-1/2 bg-gradient-to-t from-black/30 to-transparent" />
 
-                    {/* Category badge top-left */}
+                    {/* Category badge */}
                     <span
                       className="absolute top-3 left-3 px-3 py-1 rounded-full text-[11px] uppercase tracking-wider font-medium"
                       style={{
-                        backgroundColor: "rgba(0,0,0,0.5)",
-                        color: categoryColors[event.category] || "#C8973A",
+                        backgroundColor: "rgba(45,80,22,0.85)",
+                        color: "#FAF7F2",
                       }}
                     >
                       {t(`categories.${event.category}`)}
                     </span>
 
-                    {/* Date badge top-right */}
-                    <div className="absolute top-3 right-3 w-12 h-14 rounded-lg bg-white flex flex-col items-center justify-center shadow-md">
-                      <span className="text-lg font-bold leading-none" style={{ color: "#C8973A" }}>
+                    {/* Date badge */}
+                    <div
+                      className="absolute top-3 right-3 w-12 h-14 rounded-lg flex flex-col items-center justify-center shadow-md"
+                      style={{ backgroundColor: "#C8973A" }}
+                    >
+                      <span className="text-lg font-bold leading-none" style={{ color: "#FAF7F2" }}>
                         {day}
                       </span>
-                      <span className="text-[9px] uppercase tracking-wider" style={{ color: "#6B5C42" }}>
+                      <span className="text-[9px] uppercase tracking-wider" style={{ color: "rgba(250,247,242,0.8)" }}>
                         {month}
                       </span>
                     </div>
 
-                    {/* Live pulse if within 48h */}
+                    {/* Live pulse */}
                     {isLive && (
                       <div className="absolute top-5 right-[68px] flex items-center gap-1.5">
                         <span className="relative flex h-2.5 w-2.5">
@@ -221,8 +206,8 @@ export default function Events() {
                   {/* Card body */}
                   <div className="p-5" style={{ backgroundColor: "#FAF7F2" }}>
                     <h3
-                      className="font-[family-name:var(--font-heading)] text-lg font-semibold mb-2 line-clamp-1"
-                      style={{ color: "#1C1208" }}
+                      className="font-[family-name:var(--font-heading)] text-xl mb-2 line-clamp-1"
+                      style={{ color: "#1A1208", fontWeight: 400 }}
                     >
                       {title}
                     </h3>
@@ -233,7 +218,6 @@ export default function Events() {
                       {desc}
                     </p>
 
-                    {/* Location */}
                     <div className="flex items-center gap-1.5 mb-4">
                       <MapPin size={12} style={{ color: "#C8973A" }} />
                       <span className="text-[11px]" style={{ color: "#C8973A" }}>
@@ -241,7 +225,6 @@ export default function Events() {
                       </span>
                     </div>
 
-                    {/* Bottom row */}
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-1.5">
                         <Clock size={13} style={{ color: "#6B5C42" }} />
@@ -251,7 +234,18 @@ export default function Events() {
                       </div>
                       <button
                         onClick={() => setSelectedEvent(event)}
-                        className="px-5 py-2 rounded-full text-xs font-semibold uppercase tracking-wider bg-gold text-white hover:opacity-90 transition-opacity"
+                        className="rounded-full transition-colors duration-300"
+                        style={{
+                          backgroundColor: "#C8973A",
+                          color: "#1A1208",
+                          padding: "8px 20px",
+                          fontSize: "11px",
+                          fontWeight: 500,
+                          textTransform: "uppercase",
+                          letterSpacing: "0.1em",
+                        }}
+                        onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#E8B86D")}
+                        onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#C8973A")}
                       >
                         {t("register")}
                       </button>
@@ -264,7 +258,6 @@ export default function Events() {
         </div>
       </section>
 
-      {/* Registration modal */}
       {selectedEvent && (
         <EventRegistrationModal
           event={selectedEvent}

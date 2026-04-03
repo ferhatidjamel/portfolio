@@ -151,27 +151,36 @@ export default function Booking() {
   const timeSlots = t("timeSlots").split(",");
 
   const inputClasses =
-    "booking-input w-full bg-white border-b-2 border-sand-dark/40 focus:border-gold text-text-primary px-1 py-3 outline-none transition-colors placeholder:text-text-light";
+    "booking-input w-full bg-transparent border-b-[1.5px] px-0 py-3 outline-none transition-colors";
 
   const renderCheckbox = (label: string, checked: boolean, onChange: (v: boolean) => void) => (
     <label className="flex items-center gap-3 cursor-pointer group">
-      <div className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-all ${checked ? "bg-gold border-gold" : "border-sand-dark/50 group-hover:border-gold/50"}`}>
+      <div
+        className="w-5 h-5 rounded flex items-center justify-center transition-all"
+        style={{
+          backgroundColor: checked ? "#C8973A" : "transparent",
+          border: checked ? "2px solid #C8973A" : "2px solid rgba(156,139,114,0.5)",
+        }}
+      >
         {checked && <Check className="w-3 h-3 text-white" />}
       </div>
-      <span style={{ color: "var(--color-text-primary)" }}>{label}</span>
+      <span style={{ color: "#1A1208" }}>{label}</span>
       <input type="checkbox" checked={checked} onChange={(e) => onChange(e.target.checked)} className="sr-only" />
     </label>
   );
 
   const renderNumberInput = (label: string, value: number, onChange: (v: number) => void, min = 1) => (
     <div className="flex items-center gap-3">
-      <span className="text-sm" style={{ color: "var(--color-text-muted)" }}>{label}</span>
+      <span className="text-sm" style={{ color: "#6B5C42" }}>{label}</span>
       <input
         type="number"
         min={min}
         value={value}
         onChange={(e) => onChange(Math.max(min, parseInt(e.target.value) || min))}
-        className="booking-input w-20 bg-white border-b-2 border-sand-dark/40 focus:border-gold text-text-primary px-3 py-2 text-center outline-none transition-colors"
+        className="booking-input w-20 bg-transparent border-b-[1.5px] px-3 py-2 text-center outline-none transition-colors"
+        style={{ borderColor: "#F0E5D0", color: "#1A1208" }}
+        onFocus={(e) => (e.currentTarget.style.borderColor = "#C8973A")}
+        onBlur={(e) => (e.currentTarget.style.borderColor = "#F0E5D0")}
       />
     </div>
   );
@@ -180,10 +189,13 @@ export default function Booking() {
     <div className="flex gap-4 ml-8">
       {options.map((opt) => (
         <label key={opt.value} className="flex items-center gap-2 cursor-pointer">
-          <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${selected === opt.value ? "border-gold" : "border-sand-dark/50"}`}>
-            {selected === opt.value && <div className="w-2 h-2 rounded-full bg-gold" />}
+          <div
+            className="w-4 h-4 rounded-full flex items-center justify-center"
+            style={{ border: `2px solid ${selected === opt.value ? "#C8973A" : "rgba(156,139,114,0.5)"}` }}
+          >
+            {selected === opt.value && <div className="w-2 h-2 rounded-full" style={{ backgroundColor: "#C8973A" }} />}
           </div>
-          <span className="text-sm" style={{ color: "var(--color-text-muted)" }}>{opt.label}</span>
+          <span className="text-sm" style={{ color: "#6B5C42" }}>{opt.label}</span>
           <input type="radio" name={name} value={opt.value} checked={selected === opt.value} onChange={() => onChange(opt.value)} className="sr-only" />
         </label>
       ))}
@@ -196,7 +208,12 @@ export default function Booking() {
         <button
           key={ct}
           onClick={() => update({ cateringType: ct })}
-          className={`px-3 py-1.5 rounded-lg border text-sm transition-all cursor-pointer ${data.cateringType === ct ? "border-gold bg-gold/10 text-gold" : "border-sand-dark/30 text-text-muted hover:border-gold/40"}`}
+          className="px-3 py-1.5 rounded-lg border text-sm transition-all cursor-pointer"
+          style={{
+            borderColor: data.cateringType === ct ? "#C8973A" : "rgba(156,139,114,0.3)",
+            backgroundColor: data.cateringType === ct ? "rgba(200,151,58,0.1)" : "transparent",
+            color: data.cateringType === ct ? "#C8973A" : "#6B5C42",
+          }}
         >
           {t(ct)}
         </button>
@@ -210,11 +227,17 @@ export default function Booking() {
         <button
           key={type}
           onClick={() => update({ type })}
-          className={`booking-card flex flex-col items-center justify-center gap-3 p-6 rounded-2xl border-2 transition-all duration-200 cursor-pointer bg-white ${data.type === type ? "border-gold shadow-lg" : "border-sand-dark/20 hover:border-gold/40"}`}
-          style={{ boxShadow: data.type === type ? "var(--shadow-card-hover)" : "var(--shadow-card)" }}
+          className="booking-card flex flex-col items-center justify-center gap-3 p-6 transition-all duration-200 cursor-pointer"
+          style={{
+            backgroundColor: "#FAF7F2",
+            borderRadius: "12px",
+            border: data.type === type ? "1.5px solid #C8973A" : "1.5px solid #F0E5D0",
+            background: data.type === type ? "rgba(200,151,58,0.08)" : "#FAF7F2",
+            boxShadow: data.type === type ? "var(--shadow-card-hover)" : "var(--shadow-card)",
+          }}
         >
           <span className="text-4xl">{typeIconMap[type]}</span>
-          <span className="font-medium" style={{ color: "var(--color-text-primary)" }}>{t(`types.${type}`)}</span>
+          <span style={{ color: "#1A1208", fontWeight: 500, fontSize: "14px" }}>{t(`types.${type}`)}</span>
         </button>
       ))}
     </div>
@@ -224,7 +247,7 @@ export default function Booking() {
     if (data.type === "chalet") {
       return (
         <div className="flex flex-col items-center gap-6">
-          <div className="booking-card rounded-2xl p-4 bg-white" style={{ boxShadow: "var(--shadow-card)" }}>
+          <div className="booking-card rounded-2xl p-4" style={{ backgroundColor: "#FAF7F2", boxShadow: "var(--shadow-card)" }}>
             <DayPicker
               mode="range"
               selected={data.checkIn ? { from: data.checkIn, to: data.checkOut } : undefined}
@@ -233,8 +256,8 @@ export default function Booking() {
             />
           </div>
           {data.checkIn && (
-            <div className="flex items-center gap-2" style={{ color: "var(--color-text-muted)" }}>
-              <Calendar className="w-4 h-4 text-gold" />
+            <div className="flex items-center gap-2" style={{ color: "#6B5C42" }}>
+              <Calendar className="w-4 h-4" style={{ color: "#C8973A" }} />
               <span>{format(data.checkIn, "PPP")}{data.checkOut && ` — ${format(data.checkOut, "PPP")}`}</span>
             </div>
           )}
@@ -243,12 +266,12 @@ export default function Booking() {
     }
     return (
       <div className="flex flex-col items-center gap-6">
-        <div className="booking-card rounded-2xl p-4 bg-white" style={{ boxShadow: "var(--shadow-card)" }}>
+        <div className="booking-card rounded-2xl p-4" style={{ backgroundColor: "#FAF7F2", boxShadow: "var(--shadow-card)" }}>
           <DayPicker mode="single" selected={data.date} onSelect={(day) => update({ date: day ?? undefined })} disabled={blockedDates} />
         </div>
         {data.date && (
-          <div className="flex items-center gap-2" style={{ color: "var(--color-text-muted)" }}>
-            <Calendar className="w-4 h-4 text-gold" />
+          <div className="flex items-center gap-2" style={{ color: "#6B5C42" }}>
+            <Calendar className="w-4 h-4" style={{ color: "#C8973A" }} />
             <span>{format(data.date, "PPP")}</span>
           </div>
         )}
@@ -257,7 +280,12 @@ export default function Booking() {
             <button
               key={slot}
               onClick={() => update({ time: slot.trim() })}
-              className={`px-4 py-2 rounded-lg border transition-all cursor-pointer ${data.time === slot.trim() ? "border-gold bg-gold/10 text-gold" : "border-sand-dark/30 text-text-muted hover:border-gold/40"}`}
+              className="px-4 py-2 rounded-lg border transition-all cursor-pointer"
+              style={{
+                borderColor: data.time === slot.trim() ? "#C8973A" : "rgba(156,139,114,0.3)",
+                backgroundColor: data.time === slot.trim() ? "rgba(200,151,58,0.1)" : "transparent",
+                color: data.time === slot.trim() ? "#C8973A" : "#6B5C42",
+              }}
             >
               {slot.trim()}
             </button>
@@ -327,14 +355,20 @@ export default function Booking() {
         )}
         {typ === "photoshoot" && (
           <div className="space-y-3">
-            <span className="font-medium" style={{ color: "var(--color-text-primary)" }}>{t("shootingZones")}</span>
+            <span className="font-medium" style={{ color: "#1A1208" }}>{t("shootingZones")}</span>
             <div className="grid grid-cols-2 gap-3">
               {ZONE_KEYS.map((zone) => (
                 <label key={zone} className="flex items-center gap-3 cursor-pointer group">
-                  <div className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-all ${data.shootingZones.includes(zone) ? "bg-gold border-gold" : "border-sand-dark/50 group-hover:border-gold/50"}`}>
+                  <div
+                    className="w-5 h-5 rounded flex items-center justify-center transition-all"
+                    style={{
+                      backgroundColor: data.shootingZones.includes(zone) ? "#C8973A" : "transparent",
+                      border: data.shootingZones.includes(zone) ? "2px solid #C8973A" : "2px solid rgba(156,139,114,0.5)",
+                    }}
+                  >
                     {data.shootingZones.includes(zone) && <Check className="w-3 h-3 text-white" />}
                   </div>
-                  <span style={{ color: "var(--color-text-primary)" }}>{t(`zones.${zone}`)}</span>
+                  <span style={{ color: "#1A1208" }}>{t(`zones.${zone}`)}</span>
                   <input type="checkbox" checked={data.shootingZones.includes(zone)} onChange={(e) => {
                     if (e.target.checked) update({ shootingZones: [...data.shootingZones, zone] });
                     else update({ shootingZones: data.shootingZones.filter((z) => z !== zone) });
@@ -350,29 +384,62 @@ export default function Booking() {
 
   const renderStep4 = () => (
     <div className="space-y-6">
+      {[
+        { key: "fullName", type: "text", value: data.fullName, required: true },
+        { key: "phone", type: "tel", value: data.phone, required: true },
+        { key: "email", type: "email", value: data.email, required: true },
+        { key: "whatsapp", type: "tel", value: data.whatsapp, required: false },
+      ].map(({ key, type, value, required }) => (
+        <div key={key}>
+          <label
+            className="block mb-1"
+            style={{ fontWeight: 500, fontSize: "11px", textTransform: "uppercase", letterSpacing: "0.1em", color: "#9C8B72" }}
+          >
+            {t(key)} {required ? "*" : ""}
+          </label>
+          <input
+            type={type}
+            value={value}
+            onChange={(e) => update({ [key]: e.target.value })}
+            className={inputClasses}
+            style={{ borderColor: "#F0E5D0", color: "#1A1208" }}
+            onFocus={(e) => (e.currentTarget.style.borderColor = "#C8973A")}
+            onBlur={(e) => (e.currentTarget.style.borderColor = "#F0E5D0")}
+          />
+        </div>
+      ))}
       <div>
-        <label className="block text-sm mb-1" style={{ color: "var(--color-text-muted)" }}>{t("fullName")} *</label>
-        <input type="text" value={data.fullName} onChange={(e) => update({ fullName: e.target.value })} className={inputClasses} />
+        <label
+          className="block mb-1"
+          style={{ fontWeight: 500, fontSize: "11px", textTransform: "uppercase", letterSpacing: "0.1em", color: "#9C8B72" }}
+        >
+          {t("message")}
+        </label>
+        <textarea
+          value={data.message}
+          onChange={(e) => update({ message: e.target.value })}
+          rows={4}
+          className={inputClasses}
+          style={{ borderColor: "#F0E5D0", color: "#1A1208" }}
+          onFocus={(e) => (e.currentTarget.style.borderColor = "#C8973A")}
+          onBlur={(e) => (e.currentTarget.style.borderColor = "#F0E5D0")}
+        />
       </div>
       <div>
-        <label className="block text-sm mb-1" style={{ color: "var(--color-text-muted)" }}>{t("phone")} *</label>
-        <input type="tel" value={data.phone} onChange={(e) => update({ phone: e.target.value })} className={inputClasses} />
-      </div>
-      <div>
-        <label className="block text-sm mb-1" style={{ color: "var(--color-text-muted)" }}>{t("email")} *</label>
-        <input type="email" value={data.email} onChange={(e) => update({ email: e.target.value })} className={inputClasses} />
-      </div>
-      <div>
-        <label className="block text-sm mb-1" style={{ color: "var(--color-text-muted)" }}>{t("whatsapp")}</label>
-        <input type="tel" value={data.whatsapp} onChange={(e) => update({ whatsapp: e.target.value })} className={inputClasses} />
-      </div>
-      <div>
-        <label className="block text-sm mb-1" style={{ color: "var(--color-text-muted)" }}>{t("message")}</label>
-        <textarea value={data.message} onChange={(e) => update({ message: e.target.value })} rows={4} className={inputClasses} />
-      </div>
-      <div>
-        <label className="block text-sm mb-1" style={{ color: "var(--color-text-muted)" }}>{t("langPref")}</label>
-        <select value={data.langPref} onChange={(e) => update({ langPref: e.target.value })} className={inputClasses}>
+        <label
+          className="block mb-1"
+          style={{ fontWeight: 500, fontSize: "11px", textTransform: "uppercase", letterSpacing: "0.1em", color: "#9C8B72" }}
+        >
+          {t("langPref")}
+        </label>
+        <select
+          value={data.langPref}
+          onChange={(e) => update({ langPref: e.target.value })}
+          className={inputClasses}
+          style={{ borderColor: "#F0E5D0", color: "#1A1208" }}
+          onFocus={(e) => (e.currentTarget.style.borderColor = "#C8973A")}
+          onBlur={(e) => (e.currentTarget.style.borderColor = "#F0E5D0")}
+        >
           <option value="Français">Français</option>
           <option value="العربية">العربية</option>
           <option value="English">English</option>
@@ -383,21 +450,21 @@ export default function Booking() {
 
   const renderStep5 = () => (
     <div className="space-y-6">
-      <h3 className="text-xl font-[family-name:var(--font-heading)] text-gold">{t("summary")}</h3>
-      <div className="booking-card space-y-3 bg-white rounded-2xl p-6" style={{ boxShadow: "var(--shadow-card)" }}>
-        <div className="flex justify-between border-b border-sand-dark/20 pb-2">
-          <span style={{ color: "var(--color-text-muted)" }}>{t("step1")}</span>
-          <span style={{ color: "var(--color-text-primary)" }}>{t(`types.${data.type}`)}</span>
+      <h3 className="text-xl font-[family-name:var(--font-heading)]" style={{ color: "#C8973A" }}>{t("summary")}</h3>
+      <div className="booking-card space-y-3 rounded-2xl p-6" style={{ backgroundColor: "#FAF7F2", boxShadow: "var(--shadow-card)" }}>
+        <div className="flex justify-between pb-2" style={{ borderBottom: "1px solid #F0E5D0" }}>
+          <span style={{ color: "#6B5C42" }}>{t("step1")}</span>
+          <span style={{ color: "#1A1208" }}>{t(`types.${data.type}`)}</span>
         </div>
-        <div className="flex justify-between border-b border-sand-dark/20 pb-2">
-          <span style={{ color: "var(--color-text-muted)" }}>{t("step2")}</span>
-          <span style={{ color: "var(--color-text-primary)" }}>
+        <div className="flex justify-between pb-2" style={{ borderBottom: "1px solid #F0E5D0" }}>
+          <span style={{ color: "#6B5C42" }}>{t("step2")}</span>
+          <span style={{ color: "#1A1208" }}>
             {data.type === "chalet" ? (<>{data.checkIn && format(data.checkIn, "PPP")}{data.checkOut && ` — ${format(data.checkOut, "PPP")}`}</>) : (<>{data.date && format(data.date, "PPP")}{data.time && ` @ ${data.time}`}</>)}
           </span>
         </div>
-        <div className="border-b border-sand-dark/20 pb-2">
-          <span className="block mb-1" style={{ color: "var(--color-text-muted)" }}>{t("step3")}</span>
-          <ul className="space-y-1 text-sm" style={{ color: "var(--color-text-primary)" }}>
+        <div className="pb-2" style={{ borderBottom: "1px solid #F0E5D0" }}>
+          <span className="block mb-1" style={{ color: "#6B5C42" }}>{t("step3")}</span>
+          <ul className="space-y-1 text-sm" style={{ color: "#1A1208" }}>
             <li>{t("guests")}: {data.guests}</li>
             {data.breakfast && <li>{t("breakfast")}</li>}
             {data.catering && <li>{t("catering")}: {t(data.cateringType)}</li>}
@@ -410,17 +477,23 @@ export default function Booking() {
           </ul>
         </div>
         <div className="space-y-1">
-          <span className="block mb-1" style={{ color: "var(--color-text-muted)" }}>{t("step4")}</span>
-          <p className="text-sm" style={{ color: "var(--color-text-primary)" }}>{data.fullName}</p>
-          <p className="text-sm" style={{ color: "var(--color-text-primary)" }}>{data.phone}</p>
-          <p className="text-sm" style={{ color: "var(--color-text-primary)" }}>{data.email}</p>
-          {data.whatsapp && <p className="text-sm" style={{ color: "var(--color-text-primary)" }}>WhatsApp: {data.whatsapp}</p>}
-          {data.message && <p className="text-sm italic" style={{ color: "var(--color-text-muted)" }}>{data.message}</p>}
-          <p className="text-sm" style={{ color: "var(--color-text-primary)" }}>{data.langPref}</p>
+          <span className="block mb-1" style={{ color: "#6B5C42" }}>{t("step4")}</span>
+          <p className="text-sm" style={{ color: "#1A1208" }}>{data.fullName}</p>
+          <p className="text-sm" style={{ color: "#1A1208" }}>{data.phone}</p>
+          <p className="text-sm" style={{ color: "#1A1208" }}>{data.email}</p>
+          {data.whatsapp && <p className="text-sm" style={{ color: "#1A1208" }}>WhatsApp: {data.whatsapp}</p>}
+          {data.message && <p className="text-sm italic" style={{ color: "#6B5C42" }}>{data.message}</p>}
+          <p className="text-sm" style={{ color: "#1A1208" }}>{data.langPref}</p>
         </div>
       </div>
       <div className="flex justify-center">
-        <button onClick={handleSubmit} className="bg-gold text-white rounded-full px-8 py-4 font-semibold flex items-center gap-2 hover:opacity-90 transition-opacity cursor-pointer">
+        <button
+          onClick={handleSubmit}
+          className="rounded-full flex items-center gap-2 transition-colors duration-300 cursor-pointer"
+          style={{ backgroundColor: "#C8973A", color: "#1A1208", padding: "14px 32px", fontSize: "12px", fontWeight: 500, textTransform: "uppercase", letterSpacing: "0.1em" }}
+          onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#E8B86D")}
+          onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#C8973A")}
+        >
           <Send className="w-5 h-5" /> {t("submit")}
         </button>
       </div>
@@ -429,16 +502,28 @@ export default function Booking() {
 
   const renderSuccess = () => (
     <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="flex flex-col items-center gap-6 py-12 text-center">
-      <div className="w-20 h-20 rounded-full bg-gold/20 flex items-center justify-center">
-        <Check className="w-10 h-10 text-gold" />
+      <div className="w-20 h-20 rounded-full flex items-center justify-center" style={{ backgroundColor: "rgba(200,151,58,0.2)" }}>
+        <Check className="w-10 h-10" style={{ color: "#C8973A" }} />
       </div>
-      <h3 className="text-2xl font-[family-name:var(--font-heading)] text-gold">{t("success")}</h3>
-      <p className="max-w-md" style={{ color: "var(--color-text-muted)" }}>{t("successMsg")}</p>
+      <h3 className="text-2xl font-[family-name:var(--font-heading)]" style={{ color: "#C8973A" }}>{t("success")}</h3>
+      <p className="max-w-md" style={{ color: "#6B5C42" }}>{t("successMsg")}</p>
       <div className="flex gap-4 flex-wrap justify-center">
-        <a href={`https://wa.me/213XXXXXXXXX?text=${buildWhatsAppText()}`} target="_blank" rel="noopener noreferrer" className="bg-gold text-white rounded-full px-6 py-3 font-semibold hover:opacity-90 transition-opacity">
+        <a
+          href={`https://wa.me/213XXXXXXXXX?text=${buildWhatsAppText()}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="rounded-full transition-colors duration-300"
+          style={{ backgroundColor: "#C8973A", color: "#1A1208", padding: "14px 32px", fontSize: "12px", fontWeight: 500, textTransform: "uppercase", letterSpacing: "0.1em" }}
+        >
           {t("whatsappLink")}
         </a>
-        <button onClick={resetBooking} className="border-2 border-gold text-gold rounded-full px-6 py-3 font-semibold hover:bg-gold/10 transition-colors cursor-pointer">
+        <button
+          onClick={resetBooking}
+          className="rounded-full transition-colors duration-300 cursor-pointer"
+          style={{ border: "1.5px solid #C8973A", color: "#C8973A", padding: "12px 28px", fontSize: "12px", fontWeight: 500, textTransform: "uppercase", letterSpacing: "0.1em", backgroundColor: "transparent" }}
+          onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "rgba(200,151,58,0.08)")}
+          onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "transparent")}
+        >
           {t("newBooking")}
         </button>
       </div>
@@ -448,16 +533,16 @@ export default function Booking() {
   const stepContent: Record<number, () => React.ReactNode> = { 1: renderStep1, 2: renderStep2, 3: renderStep3, 4: renderStep4, 5: renderStep5 };
 
   return (
-    <section id="reservation" className="relative py-32 md:py-40" style={{ backgroundColor: "var(--color-bg-primary)" }}>
+    <section id="reservation" className="relative py-32 md:py-40" style={{ backgroundColor: "#FAF7F2" }}>
       <div className="max-w-4xl mx-auto px-6">
         <div className="text-center mb-12">
           <p className="eyebrow mb-4">{t("subtitle")}</p>
-          <h2 className="heading-section" style={{ color: "var(--color-text-primary)" }}>{t("title")}</h2>
+          <h2 className="heading-section" style={{ color: "#1A1208" }}>{t("title")}</h2>
         </div>
 
         {submitted ? renderSuccess() : (
           <>
-            {/* Step Indicator — gold line connecting numbered circles */}
+            {/* Step Indicator */}
             <div className="flex items-center justify-center mb-12">
               {steps.map((label, i) => {
                 const stepNum = i + 1;
@@ -466,13 +551,28 @@ export default function Booking() {
                 return (
                   <div key={i} className="flex items-center">
                     <div className="flex flex-col items-center">
-                      <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold transition-all ${isCompleted ? "bg-gold text-white" : isActive ? "bg-gold text-white" : "border-2 border-sand-dark/40 text-text-light"}`}>
+                      <div
+                        className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold transition-all"
+                        style={{
+                          backgroundColor: isCompleted ? "#2D5016" : isActive ? "#C8973A" : "transparent",
+                          color: isCompleted || isActive ? "#FFFFFF" : "#9C8B72",
+                          border: isCompleted || isActive ? "none" : "1.5px solid #9C8B72",
+                        }}
+                      >
                         {isCompleted ? <Check className="w-5 h-5" /> : stepNum}
                       </div>
-                      <span className={`text-xs mt-1 hidden md:block max-w-[80px] text-center ${isActive || isCompleted ? "text-gold" : "text-text-light"}`}>{label}</span>
+                      <span
+                        className="text-xs mt-1 hidden md:block max-w-[80px] text-center"
+                        style={{ color: isActive || isCompleted ? "#C8973A" : "#9C8B72" }}
+                      >
+                        {label}
+                      </span>
                     </div>
                     {i < steps.length - 1 && (
-                      <div className={`w-8 md:w-16 h-[2px] mx-1 md:mx-2 transition-colors ${step > stepNum ? "bg-gold" : "bg-sand-dark/30"}`} />
+                      <div
+                        className="w-8 md:w-16 h-[2px] mx-1 md:mx-2 transition-colors"
+                        style={{ backgroundColor: step > stepNum ? "#C8973A" : "#F0E5D0" }}
+                      />
                     )}
                   </div>
                 );
@@ -480,7 +580,10 @@ export default function Booking() {
             </div>
 
             {/* Step Content Card */}
-            <div className="booking-card relative min-h-[400px] bg-white rounded-2xl p-8 md:p-12" style={{ boxShadow: "var(--shadow-card)" }}>
+            <div
+              className="booking-card relative min-h-[400px] rounded-2xl p-8 md:p-12"
+              style={{ backgroundColor: "#FAF7F2", boxShadow: "var(--shadow-card)" }}
+            >
               <AnimatePresence mode="wait" custom={direction}>
                 <motion.div key={step} custom={direction} variants={slideVariants} initial="enter" animate="center" exit="exit" transition={{ duration: 0.3, ease: "easeInOut" }}>
                   {stepContent[step]()}
@@ -491,12 +594,35 @@ export default function Booking() {
             {/* Navigation */}
             <div className="flex justify-between mt-8">
               {step > 1 ? (
-                <button onClick={goPrev} className="border-2 border-gold text-gold rounded-full px-6 py-3 font-semibold flex items-center gap-2 hover:bg-gold/10 transition-colors cursor-pointer">
+                <button
+                  onClick={goPrev}
+                  className="rounded-full flex items-center gap-2 transition-colors duration-300 cursor-pointer"
+                  style={{ border: "1.5px solid #C8973A", color: "#C8973A", padding: "12px 28px", fontSize: "12px", fontWeight: 500, textTransform: "uppercase", letterSpacing: "0.1em", backgroundColor: "transparent" }}
+                  onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "rgba(200,151,58,0.08)")}
+                  onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "transparent")}
+                >
                   <ChevronLeft className="w-5 h-5" /> {t("prev")}
                 </button>
               ) : <div />}
               {step < 5 && (
-                <button onClick={goNext} disabled={!canProceed()} className={`bg-gold text-white rounded-full px-6 py-3 font-semibold flex items-center gap-2 transition-opacity cursor-pointer ${canProceed() ? "hover:opacity-90" : "opacity-40 cursor-not-allowed"}`}>
+                <button
+                  onClick={goNext}
+                  disabled={!canProceed()}
+                  className="rounded-full flex items-center gap-2 transition-all duration-300 cursor-pointer"
+                  style={{
+                    backgroundColor: "#C8973A",
+                    color: "#1A1208",
+                    padding: "14px 32px",
+                    fontSize: "12px",
+                    fontWeight: 500,
+                    textTransform: "uppercase",
+                    letterSpacing: "0.1em",
+                    opacity: canProceed() ? 1 : 0.4,
+                    cursor: canProceed() ? "pointer" : "not-allowed",
+                  }}
+                  onMouseEnter={(e) => { if (canProceed()) e.currentTarget.style.backgroundColor = "#E8B86D"; }}
+                  onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#C8973A")}
+                >
                   {t("next")} <ChevronRight className="w-5 h-5" />
                 </button>
               )}

@@ -28,17 +28,17 @@ export default function Gallery() {
   useEffect(() => {
     const ctx = gsap.context(() => {
       gsap.from(".gallery-header", {
-        y: 50,
+        y: 30,
         opacity: 0,
-        duration: 1,
-        ease: "power3.out",
+        duration: 0.8,
+        ease: "cubic-bezier(0.16, 1, 0.3, 1)",
         scrollTrigger: { trigger: ".gallery-header", start: "top 85%" },
       });
 
       gsap.from(".gallery-item", {
-        clipPath: "inset(0 100% 0 0)",
-        scale: 1.05,
-        duration: 1,
+        scale: 1.03,
+        opacity: 0,
+        duration: 0.9,
         stagger: 0.1,
         ease: "cubic-bezier(0.16, 1, 0.3, 1)",
         scrollTrigger: { trigger: ".gallery-grid", start: "top 70%" },
@@ -73,12 +73,12 @@ export default function Gallery() {
       ref={sectionRef}
       id="galerie"
       className="film-grain relative py-32 md:py-40 overflow-hidden"
-      style={{ backgroundColor: "var(--color-bg-secondary)" }}
+      style={{ backgroundColor: "#F0E5D0" }}
     >
       <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-12">
         <div className="gallery-header text-center mb-16">
           <p className="eyebrow mb-4">{t("subtitle")}</p>
-          <h2 className="heading-section" style={{ color: "var(--color-text-primary)" }}>
+          <h2 className="heading-section" style={{ color: "#1A1208" }}>
             {t("title")}
           </h2>
         </div>
@@ -97,8 +97,8 @@ export default function Gallery() {
                 className="h-full w-full object-cover"
                 loading="lazy"
               />
-              <div className="gallery-overlay absolute inset-0 bg-gold/20 mix-blend-multiply flex items-center justify-center">
-                <span className="text-white text-sm uppercase tracking-[0.2em]">View</span>
+              <div className="gallery-overlay absolute inset-0 flex items-center justify-center">
+                <span style={{ color: "#FAF7F2", fontSize: "12px", textTransform: "uppercase", letterSpacing: "0.2em" }}>View</span>
               </div>
             </div>
           ))}

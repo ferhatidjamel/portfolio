@@ -1,34 +1,51 @@
 @import "tailwindcss";
 
 @theme inline {
-  /* Light / Day mode (default) */
+  /* Palm Garden Brand Tokens */
+  --color-pg-green: #2D5016;
+  --color-pg-gold: #C8973A;
+  --color-pg-gold-light: #E8B86D;
+  --color-pg-sand-rose: #C4805A;
+  --color-pg-white: #FAF7F2;
+  --color-pg-sand: #F0E5D0;
+  --color-pg-night: #1A1208;
+  --color-pg-umber: #6B5C42;
+  --color-pg-umber-light: #9C8B72;
+
+  /* Legacy aliases for backwards compat */
   --color-bg-primary: #FAF7F2;
-  --color-bg-secondary: #F0E8D8;
+  --color-bg-secondary: #F0E5D0;
   --color-bg-dark: #1A1208;
-  --color-bg-card: #FFFFFF;
-  --color-text-primary: #1C1208;
+  --color-bg-card: #FAF7F2;
+  --color-text-primary: #1A1208;
   --color-text-muted: #6B5C42;
-  --color-text-light: #9A8B70;
+  --color-text-light: #9C8B72;
   --color-gold: #C8973A;
-  --color-gold-light: #E8C068;
+  --color-gold-light: #E8B86D;
   --color-gold-muted: #8B6914;
   --color-green: #2D5016;
   --color-cream: #FAF7F2;
-  --color-sand: #F0E8D8;
+  --color-sand: #F0E5D0;
   --color-sand-dark: #D4C4A8;
-
-  /* Legacy aliases */
-  --color-desert-night: #1A1208;
-  --color-desert-dark: #231B10;
-  --color-sand-light: #F5E6C8;
-  --color-palm-green: #2D5016;
 
   --font-heading: "Cormorant Garamond", Georgia, serif;
   --font-body: "Inter", system-ui, sans-serif;
-  --font-arabic: "Noto Naskh Arabic", sans-serif;
+  --font-arabic: "Cairo", sans-serif;
 
   --shadow-card: 0 4px 32px rgba(28, 18, 8, 0.06);
   --shadow-card-hover: 0 8px 48px rgba(28, 18, 8, 0.1);
+}
+
+:root {
+  --pg-green: #2D5016;
+  --pg-gold: #C8973A;
+  --pg-gold-light: #E8B86D;
+  --pg-sand-rose: #C4805A;
+  --pg-white: #FAF7F2;
+  --pg-sand: #F0E5D0;
+  --pg-night: #1A1208;
+  --pg-umber: #6B5C42;
+  --pg-umber-light: #9C8B72;
 }
 
 /* ============================
@@ -48,9 +65,11 @@ html.lenis, html.lenis body {
    BASE STYLES (DAY MODE)
    ============================ */
 body {
-  background-color: var(--color-bg-primary);
-  color: var(--color-text-primary);
+  background-color: var(--pg-white);
+  color: var(--pg-night);
   font-family: var(--font-body);
+  font-size: 17px;
+  line-height: 1.8;
   overflow-x: hidden;
   transition: background-color 0.6s ease, color 0.6s ease;
   cursor: none;
@@ -84,34 +103,34 @@ h1, h2, h3, h4, h5, h6 {
    NIGHT MODE
    ============================ */
 html.night-mode body {
-  background-color: #0D0A06;
-  color: #FAF6EE;
+  background-color: #1A1208;
+  color: #FAF7F2;
 }
 
-html.night-mode .bg-day { background-color: #0D0A06 !important; }
-html.night-mode .bg-day-secondary { background-color: #1A1208 !important; }
+html.night-mode .bg-day { background-color: #1A1208 !important; }
+html.night-mode .bg-day-secondary { background-color: #2A1E0E !important; }
 html.night-mode .bg-day-card {
-  background-color: #1A150D !important;
+  background-color: #2A1E0E !important;
   border-color: rgba(200, 151, 58, 0.15) !important;
 }
-html.night-mode .text-day { color: #FAF6EE !important; }
-html.night-mode .text-day-muted { color: rgba(250, 246, 238, 0.6) !important; }
+html.night-mode .text-day { color: #FAF7F2 !important; }
+html.night-mode .text-day-muted { color: rgba(250, 247, 242, 0.6) !important; }
 html.night-mode .border-day { border-color: rgba(200, 151, 58, 0.2) !important; }
 
 html.night-mode .nav-bg-scroll {
-  background-color: #0D0A06 !important;
+  background-color: #1A1208 !important;
   border-color: rgba(200, 151, 58, 0.1) !important;
 }
 
 /* Night mode booking overrides */
 html.night-mode .booking-input {
-  background-color: #1A150D !important;
-  border-color: rgba(250, 246, 238, 0.15) !important;
-  color: #FAF6EE !important;
+  background-color: #2A1E0E !important;
+  border-color: rgba(250, 247, 242, 0.15) !important;
+  color: #FAF7F2 !important;
 }
 
 html.night-mode .booking-card {
-  background-color: #1A150D !important;
+  background-color: #2A1E0E !important;
 }
 
 /* ============================
@@ -157,43 +176,73 @@ html.night-mode .booking-card {
    ============================ */
 .heading-hero {
   font-family: var(--font-heading);
-  font-size: clamp(3.5rem, 10vw, 7.5rem);
+  font-size: clamp(64px, 10vw, 120px);
   font-weight: 300;
   font-style: italic;
   line-height: 0.95;
-  letter-spacing: -0.02em;
+  letter-spacing: 0.02em;
 }
 
 .heading-section {
   font-family: var(--font-heading);
-  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-size: clamp(36px, 5vw, 64px);
   font-weight: 400;
   line-height: 1.1;
+  color: #1A1208;
 }
 
 .eyebrow {
   font-family: var(--font-body);
   font-size: 11px;
+  font-weight: 500;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--color-gold);
+  color: #C8973A;
 }
 
 .pull-quote {
   font-family: var(--font-heading);
-  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-size: 26px;
   font-style: italic;
+  font-weight: 400;
   line-height: 1.4;
+  color: #C8973A;
+  border-left: 3px solid #C8973A;
+  padding-left: 24px;
+}
+
+.body-text {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 17px;
+  line-height: 1.8;
+  color: #6B5C42;
 }
 
 /* ============================
    GOLD GRADIENT TEXT
    ============================ */
 .gold-gradient-text {
-  background: linear-gradient(135deg, #C8973A 0%, #E8C068 50%, #C8973A 100%);
+  background: linear-gradient(135deg, #C8973A 0%, #E8B86D 50%, #C8973A 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+}
+
+/* ============================
+   AMENITY TAGS / PILLS
+   ============================ */
+.tag-pill {
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  background: rgba(200, 151, 58, 0.12);
+  color: #8B6914;
+  border: 1px solid rgba(200, 151, 58, 0.3);
+  border-radius: 999px;
+  padding: 4px 12px;
 }
 
 /* ============================
@@ -207,6 +256,15 @@ html.night-mode .booking-card {
 .gold-line {
   height: 1px;
   background-color: #C8973A;
+}
+
+/* ============================
+   MASHRABIYA PATTERN (Events)
+   ============================ */
+.mashrabiya-bg {
+  background-color: #2D5016;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20'%3E%3Cpath d='M10 0L20 10L10 20L0 10Z' fill='none' stroke='%23C8973A' stroke-width='0.4' opacity='0.2'/%3E%3Ccircle cx='10' cy='10' r='1' fill='%23C8973A' opacity='0.15'/%3E%3C/svg%3E");
+  background-size: 20px 20px;
 }
 
 /* ============================
@@ -248,6 +306,7 @@ html.night-mode .booking-card {
 .gallery-item .gallery-overlay {
   opacity: 0;
   transition: opacity 0.5s ease;
+  background: rgba(200, 151, 58, 0.25);
 }
 .gallery-item:hover .gallery-overlay {
   opacity: 1;

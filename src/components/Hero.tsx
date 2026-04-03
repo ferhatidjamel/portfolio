@@ -11,7 +11,6 @@ export default function Hero() {
   const sectionRef = useRef<HTMLElement>(null);
   const [isNight, setIsNight] = useState(false);
 
-  // Listen for day/night toggle changes
   useEffect(() => {
     const check = () => {
       setIsNight(document.documentElement.classList.contains("night-mode"));
@@ -25,7 +24,6 @@ export default function Hero() {
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({ delay: 0.5 });
 
-      // Image Ken Burns — slow subtle zoom (targets both images)
       gsap.to(".hero-img-day, .hero-img-night", {
         scale: 1.08,
         duration: 20,
@@ -34,7 +32,6 @@ export default function Hero() {
         yoyo: true,
       });
 
-      // Tagline
       tl.from(".hero-tagline", {
         y: 30,
         opacity: 0,
@@ -42,65 +39,36 @@ export default function Hero() {
         ease: "power3.out",
       });
 
-      // Headline
       tl.from(
         ".hero-headline",
-        {
-          y: 60,
-          opacity: 0,
-          duration: 1.2,
-          ease: "power3.out",
-        },
+        { y: 60, opacity: 0, duration: 1.2, ease: "power3.out" },
         "-=0.5"
       );
 
-      // Gold line animates width
       tl.from(
         ".hero-gold-line",
-        {
-          scaleX: 0,
-          duration: 1,
-          ease: "power2.inOut",
-        },
+        { scaleX: 0, duration: 1, ease: "power2.inOut" },
         "-=0.6"
       );
 
-      // Subtitle
       tl.from(
         ".hero-subtitle",
-        {
-          y: 20,
-          opacity: 0,
-          duration: 0.8,
-          ease: "power3.out",
-        },
+        { y: 20, opacity: 0, duration: 0.8, ease: "power3.out" },
         "-=0.5"
       );
 
-      // CTA button
       tl.from(
         ".hero-cta",
-        {
-          y: 20,
-          opacity: 0,
-          duration: 0.8,
-          ease: "power3.out",
-        },
+        { y: 20, opacity: 0, duration: 0.8, ease: "power3.out" },
         "-=0.4"
       );
 
-      // Scroll indicator
       tl.from(
         ".hero-scroll",
-        {
-          opacity: 0,
-          duration: 0.6,
-          ease: "power2.out",
-        },
+        { opacity: 0, duration: 0.6, ease: "power2.out" },
         "-=0.2"
       );
 
-      // Parallax on scroll
       gsap.to(".hero-images-wrap", {
         yPercent: 20,
         ease: "none",
@@ -123,14 +91,12 @@ export default function Hero() {
     >
       {/* Two image layers for day/night crossfade */}
       <div className="hero-images-wrap absolute inset-0">
-        {/* Day image */}
         <img
           src="/images/hero-palm-garden.jpg"
           alt="Palm Garden — white domes, palm trees, green gardens"
           className="hero-img-day absolute inset-0 h-full w-full object-cover scale-100 transition-opacity duration-800 ease-in-out"
           style={{ opacity: isNight ? 0 : 1 }}
         />
-        {/* Night image */}
         <img
           src="/images/hero-palm-garden-night.webp"
           alt="Palm Garden at night — warm amber lighting, glowing domes"
@@ -154,53 +120,67 @@ export default function Hero() {
       <div className="particle particle-2" style={{ top: "35%", right: "20%" }} />
       <div className="particle particle-3" style={{ top: "60%", left: "70%" }} />
 
-      {/* Content — positioned slightly lower (55-60% from top) */}
+      {/* Content */}
       <div className="relative z-10 text-center px-6 max-w-5xl mx-auto mt-[10vh]">
-        {/* Eyebrow tagline with subtle backdrop */}
+        {/* Eyebrow */}
         <p
-          className="hero-tagline eyebrow mb-6"
+          className="hero-tagline mb-6"
           style={{
-            color: "#C8973A",
+            fontFamily: "var(--font-body)",
+            fontSize: "11px",
             letterSpacing: "0.25em",
-            textShadow: "0 1px 8px rgba(0,0,0,0.6)",
+            textTransform: "uppercase",
+            color: "#C8973A",
+            textShadow: "0 1px 8px rgba(0,0,0,0.5)",
           }}
         >
           {t("tagline")}
         </p>
 
-        {/* Main headline */}
+        {/* Headline */}
         <h1
           className="hero-headline heading-hero mb-8"
           style={{
-            color: "#FFFFFF",
-            letterSpacing: "0.02em",
-            textShadow: "0 2px 40px rgba(0,0,0,0.5)",
+            color: "#FAF7F2",
+            textShadow: "0 2px 40px rgba(0,0,0,0.4)",
           }}
         >
           Palm Garden
         </h1>
 
-        {/* Animated gold line */}
+        {/* Gold line */}
         <div className="hero-gold-line gold-line w-20 mx-auto mb-8 origin-center" />
 
         {/* Subtitle */}
         <p
-          className="hero-subtitle text-lg md:text-xl max-w-2xl mx-auto mb-10"
+          className="hero-subtitle max-w-2xl mx-auto mb-10"
           style={{
-            color: "#FFFFFF",
+            fontFamily: "var(--font-body)",
             fontWeight: 300,
-            letterSpacing: "0.03em",
+            fontSize: "16px",
+            letterSpacing: "0.08em",
+            color: "rgba(250,247,242,0.85)",
             textShadow: "0 1px 12px rgba(0,0,0,0.5)",
           }}
         >
           {t("subtitle")}
         </p>
 
-        {/* CTA — minimal outline */}
+        {/* CTA — ghost white border */}
         <a
           href="#reservation"
-          className="hero-cta inline-block rounded-full border border-white/50 px-10 py-4 text-white text-sm uppercase tracking-[0.2em] font-light hover:bg-white/10 transition-all duration-500"
-          style={{ textShadow: "0 1px 6px rgba(0,0,0,0.3)" }}
+          className="hero-cta inline-block rounded-full transition-all duration-300"
+          style={{
+            border: "1.5px solid #FAF7F2",
+            color: "#FAF7F2",
+            padding: "14px 32px",
+            fontSize: "12px",
+            fontWeight: 500,
+            textTransform: "uppercase",
+            letterSpacing: "0.1em",
+          }}
+          onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "rgba(250,247,242,0.15)")}
+          onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "transparent")}
         >
           {t("cta")}
         </a>
@@ -208,7 +188,7 @@ export default function Hero() {
 
       {/* Scroll indicator */}
       <div className="hero-scroll absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 z-10">
-        <span className="text-white/70 text-[10px] uppercase tracking-[0.3em]">Scroll</span>
+        <span style={{ color: "rgba(250,247,242,0.7)", fontSize: "10px", textTransform: "uppercase", letterSpacing: "0.3em" }}>Scroll</span>
         <div className="scroll-indicator-line" />
       </div>
 
@@ -217,7 +197,13 @@ export default function Hero() {
         href="https://wa.me/213XXXXXXXXX"
         target="_blank"
         rel="noopener noreferrer"
-        className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full bg-gold flex items-center justify-center shadow-lg hover:scale-110 transition-transform duration-300"
+        className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110"
+        style={{
+          backgroundColor: "#C8973A",
+          boxShadow: "0 4px 20px rgba(200,151,58,0.4)",
+        }}
+        onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#E8B86D")}
+        onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#C8973A")}
         aria-label="WhatsApp"
       >
         <svg viewBox="0 0 24 24" className="w-7 h-7 text-white" fill="currentColor">

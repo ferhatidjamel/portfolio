@@ -23,7 +23,6 @@ export default function DayNightToggle() {
         document.documentElement.classList.remove("night-mode");
         localStorage.setItem("palm-garden-theme", "day");
       }
-      // Dispatch event so Hero and other components can react
       window.dispatchEvent(new Event("theme-change"));
       return next;
     });
@@ -32,18 +31,18 @@ export default function DayNightToggle() {
   return (
     <button
       onClick={toggle}
-      className="fixed top-24 right-4 z-50 w-10 h-10 rounded-full border flex items-center justify-center shadow-lg transition-all duration-600"
+      className="fixed top-24 right-4 z-50 w-10 h-10 rounded-full flex items-center justify-center shadow-lg transition-all duration-600"
       aria-label="Toggle day/night mode"
       style={{
         cursor: "none",
-        backgroundColor: isNight ? "#1A1208" : "#FFFFFF",
-        borderColor: isNight ? "rgba(200, 151, 58, 0.4)" : "rgba(200, 151, 58, 0.3)",
+        backgroundColor: isNight ? "rgba(26,18,8,0.9)" : "rgba(250,247,242,0.9)",
+        border: isNight ? "1px solid #C8973A" : "1px solid rgba(200,151,58,0.3)",
       }}
     >
       {isNight ? (
-        <Sun className="w-4 h-4 text-gold" />
+        <Sun className="w-4 h-4" style={{ color: "#C8973A" }} />
       ) : (
-        <Moon className="w-4 h-4" style={{ color: "#6B5C42" }} />
+        <Moon className="w-4 h-4" style={{ color: "#1A1208" }} />
       )}
     </button>
   );
