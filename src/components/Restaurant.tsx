@@ -95,7 +95,7 @@ export default function Restaurant() {
               {t("text")}
             </p>
 
-            <div className="rest-highlights flex flex-wrap gap-8">
+            <div className="rest-highlights flex flex-wrap gap-8 mb-10">
               {highlights.map(({ icon: Icon, label }) => (
                 <div key={label} className="rest-highlight flex items-center gap-3">
                   <div className="w-12 h-12 rounded-full flex items-center justify-center" style={{ backgroundColor: "#F0E5D0" }}>
@@ -107,6 +107,19 @@ export default function Restaurant() {
                 </div>
               ))}
             </div>
+
+            <a
+              href="#reservation"
+              className="inline-block px-8 py-3 rounded-full text-xs uppercase tracking-[0.1em] font-medium transition-colors duration-300"
+              style={{ backgroundColor: "#C8973A", color: "#1A1208" }}
+              onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#E8B86D")}
+              onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#C8973A")}
+            >
+              {t("reserveCta")}
+            </a>
+            <p className="mt-4 text-xs uppercase tracking-[0.1em]" style={{ color: "#9C8B72" }}>
+              {t("openToAll")}
+            </p>
           </div>
 
           <div className="w-full lg:w-1/2">

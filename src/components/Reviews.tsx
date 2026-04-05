@@ -23,8 +23,8 @@ const reviews = [
   {
     name: "Sophie L.",
     stars: 5,
-    quote: "Le spa et le hammam sont divins. Une parenthèse de bien-être inoubliable au milieu du désert.",
-    occasion: "Spa & Bien-être · Hiver 2024",
+    quote: "Les dômes sont absolument féeriques, surtout au coucher du soleil. Un séjour hors du temps dans un cadre unique.",
+    occasion: "Séjour en dôme · Hiver 2024",
   },
   {
     name: "Yacine D.",

@@ -113,8 +113,9 @@ export default function About() {
         <div className="about-stats mt-20 flex flex-wrap justify-center gap-12 md:gap-20">
           {[
             { value: "6", label: t("stat1") },
-            { value: "1", label: t("stat2") },
-            { value: "∞", label: t("stat3") },
+            { value: "2", label: t("stat2") },
+            { value: "☕", label: t("stat3") },
+            { value: "🍽", label: t("stat4") },
           ].map((stat) => (
             <div key={stat.label} className="about-stat text-center">
               <span className="block font-[family-name:var(--font-heading)] text-5xl md:text-6xl font-light mb-2" style={{ color: "#C8973A" }}>

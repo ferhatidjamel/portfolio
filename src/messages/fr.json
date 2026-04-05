@@ -1,7 +1,7 @@
 {
   "meta": {
-    "title": "Palm Garden — Spa & Resort · El Oued, Algérie",
-    "description": "Découvrez Palm Garden, un resort & spa de luxe au cœur du Sahara, dans la ville aux 1000 dômes — El Oued, Algérie."
+    "title": "Palm Garden — Resort de luxe · El Oued, Algérie",
+    "description": "Découvrez Palm Garden, un resort de luxe au cœur du Sahara, dans la ville aux 1000 dômes — El Oued, Algérie."
   },
   "nav": {
     "accommodation": "Hébergement",
@@ -14,15 +14,16 @@
   },
   "hero": {
     "tagline": "Une oasis au cœur du Sahara",
-    "subtitle": "Resort & spa de luxe à El Oued — La ville aux 1000 dômes",
+    "subtitle": "Resort de luxe à El Oued — La ville aux 1000 dômes",
     "cta": "Réserver maintenant"
   },
   "about": {
     "title": "Bienvenue à Palm Garden",
-    "text": "Niché au cœur d'Oued Souf, la légendaire Ville aux 1000 Dômes, Palm Garden est un havre de luxe où la tradition algérienne rencontre le confort contemporain. Entouré de palmeraies majestueuses et baigné par la lumière dorée du Sahara, notre resort offre une expérience unique mêlant architecture traditionnelle, gastronomie raffinée et bien-être absolu.",
+    "text": "Niché au cœur d'Oued Souf, la légendaire Ville aux 1000 Dômes, Palm Garden est un havre de luxe où la tradition algérienne rencontre le confort contemporain. Entouré de palmeraies majestueuses et baigné par la lumière dorée du Sahara, notre resort offre une expérience unique mêlant architecture traditionnelle, gastronomie raffinée et détente absolue.",
     "stat1": "6 Chalets",
-    "stat2": "Piscine",
-    "stat3": "Spa & Bien-être"
+    "stat2": "2 Piscines",
+    "stat3": "Cafétéria",
+    "stat4": "Restaurant en plein air"
   },
   "accommodation": {
     "title": "Hébergement",
@@ -30,17 +31,14 @@
     "chalets": {
       "name": "Chalets",
       "description": "Chalets glamping en forme de pyramide, un séjour unique sous les étoiles du Sahara avec tout le confort moderne.",
-      "tags": "Piscine,Petit-déjeuner,Climatisation,Wi-Fi"
+      "tags": "Piscine,Petit-déjeuner,Climatisation,Wi-Fi",
+      "price": "À partir de 15 000 DA / nuit"
     },
     "domes": {
       "name": "Dômes",
       "description": "Chambres dômes géodésiques emblématiques avec intérieurs traditionnels, inspirées de l'architecture locale d'Oued Souf.",
-      "tags": "Vue jardin,Petit-déjeuner,Climatisation,Décor traditionnel"
-    },
-    "salon": {
-      "name": "Salon Traditionnel",
-      "description": "Espace lounge de style algérien pour vos événements privés, mariages et réceptions dans un cadre authentique.",
-      "tags": "Événements,Capacité 100+,Restauration,Décoration"
+      "tags": "Vue jardin,Petit-déjeuner,Climatisation,Décor traditionnel",
+      "price": "À partir de 12 000 DA / nuit"
     },
     "learnMore": "En savoir plus"
   },
@@ -72,12 +70,14 @@
     }
   },
   "restaurant": {
-    "title": "Restaurant & Café",
+    "title": "Restaurant & Cafétéria",
     "subtitle": "Saveurs authentiques sous les dômes dorés",
-    "text": "Sous les dômes dorés ornés de lustres étincelants, notre restaurant vous invite à un voyage culinaire au cœur de la gastronomie algérienne. Chaque soir, savourez un dîner raffiné dans une ambiance feutrée de velours et d'or. Le matin, un petit-déjeuner buffet généreux vous attend. Notre coin café traditionnel est l'endroit idéal pour déguster un thé à la menthe ou un café turc.",
+    "text": "Sous les dômes dorés ornés de lustres étincelants, notre restaurant en plein air vous invite à un voyage culinaire au cœur de la gastronomie algérienne. Chaque soir, savourez un dîner raffiné dans une ambiance feutrée. Le matin, un petit-déjeuner buffet généreux vous attend. Notre cafétéria est l'endroit idéal pour déguster un thé à la menthe ou un café turc.",
     "dinner": "Dîner tous les soirs",
     "breakfast": "Petit-déjeuner buffet",
-    "cafe": "Café traditionnel"
+    "cafe": "Cafétéria",
+    "reserveCta": "Réserver une table",
+    "openToAll": "Ouvert à tous — résidents et visiteurs"
   },
   "gallery": {
     "title": "Galerie",

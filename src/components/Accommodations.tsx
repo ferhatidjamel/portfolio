@@ -15,10 +15,6 @@ const accommodations = [
     key: "domes",
     image: "https://images.unsplash.com/photo-1596394516093-501ba68a0ba6?w=1400&q=80",
   },
-  {
-    key: "salon",
-    image: "https://images.unsplash.com/photo-1590490360182-c33d0e0a2a5e?w=1400&q=80",
-  },
 ];
 
 export default function Accommodations() {
@@ -108,8 +104,11 @@ export default function Accommodations() {
                   >
                     {t(`${acc.key}.name`)}
                   </h3>
-                  <p style={{ color: "rgba(250,247,242,0.7)", fontSize: "15px", lineHeight: 1.7 }} className="max-w-lg">
+                  <p style={{ color: "rgba(250,247,242,0.7)", fontSize: "15px", lineHeight: 1.7 }} className="max-w-lg mb-3">
                     {t(`${acc.key}.description`)}
+                  </p>
+                  <p className="text-sm font-medium" style={{ color: "#E8B86D" }}>
+                    {t(`${acc.key}.price`)}
                   </p>
                 </div>
                 <div className="hidden md:flex flex-wrap gap-2 max-w-xs justify-end">

@@ -26,11 +26,11 @@ export default async function HomePage({ params }: Props) {
         <Hero />
         <About />
         <Accommodations />
-        <Events />
         <Restaurant />
         <Gallery />
         <Booking />
         <Reviews />
+        <Events />
         <Contact />
       </main>
       <Footer />

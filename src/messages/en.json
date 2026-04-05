@@ -1,7 +1,7 @@
 {
   "meta": {
-    "title": "Palm Garden — Spa & Resort · El Oued, Algeria",
-    "description": "Discover Palm Garden, a luxury resort & spa in the heart of the Sahara, in the City of 1000 Domes — El Oued, Algeria."
+    "title": "Palm Garden — Luxury Resort · El Oued, Algeria",
+    "description": "Discover Palm Garden, a luxury resort in the heart of the Sahara, in the City of 1000 Domes — El Oued, Algeria."
   },
   "nav": {
     "accommodation": "Accommodation",
@@ -14,15 +14,16 @@
   },
   "hero": {
     "tagline": "An oasis in the heart of the Sahara",
-    "subtitle": "Luxury resort & spa in El Oued — The City of 1000 Domes",
+    "subtitle": "Luxury resort in El Oued — The City of 1000 Domes",
     "cta": "Book now"
   },
   "about": {
     "title": "Welcome to Palm Garden",
-    "text": "Nestled in the heart of Oued Souf, the legendary City of 1000 Domes, Palm Garden is a luxury haven where Algerian tradition meets contemporary comfort. Surrounded by majestic palm groves and bathed in the golden light of the Sahara, our resort offers a unique experience blending traditional architecture, refined cuisine, and absolute wellness.",
+    "text": "Nestled in the heart of Oued Souf, the legendary City of 1000 Domes, Palm Garden is a luxury haven where Algerian tradition meets contemporary comfort. Surrounded by majestic palm groves and bathed in the golden light of the Sahara, our resort offers a unique experience blending traditional architecture, refined cuisine, and absolute relaxation.",
     "stat1": "6 Chalets",
-    "stat2": "Pool",
-    "stat3": "Spa & Wellness"
+    "stat2": "2 Pools",
+    "stat3": "Cafeteria",
+    "stat4": "Open Air Restaurant"
   },
   "accommodation": {
     "title": "Accommodation",
@@ -30,17 +31,14 @@
     "chalets": {
       "name": "Chalets",
       "description": "Pyramid-shaped glamping chalets, a unique stay under the Saharan stars with all modern comforts.",
-      "tags": "Pool,Breakfast,Air conditioning,Wi-Fi"
+      "tags": "Pool,Breakfast,Air conditioning,Wi-Fi",
+      "price": "From 15,000 DZD / night"
     },
     "domes": {
       "name": "Domes",
       "description": "Iconic geodesic dome rooms with traditional interiors, inspired by the local architecture of Oued Souf.",
-      "tags": "Garden view,Breakfast,Air conditioning,Traditional décor"
-    },
-    "salon": {
-      "name": "Traditional Salon",
-      "description": "Algerian-style lounge space for your private events, weddings, and receptions in an authentic setting.",
-      "tags": "Events,100+ capacity,Catering,Decoration"
+      "tags": "Garden view,Breakfast,Air conditioning,Traditional décor",
+      "price": "From 12,000 DZD / night"
     },
     "learnMore": "Learn more"
   },
@@ -72,12 +70,14 @@
     }
   },
   "restaurant": {
-    "title": "Restaurant & Café",
+    "title": "Restaurant & Cafeteria",
     "subtitle": "Authentic flavors under golden domes",
-    "text": "Under golden domes adorned with sparkling chandeliers, our restaurant invites you on a culinary journey through Algerian cuisine. Every evening, enjoy a refined dinner in an intimate atmosphere of velvet and gold. In the morning, a generous breakfast buffet awaits you. Our traditional café corner is the perfect place to savor mint tea or Turkish coffee.",
+    "text": "Under golden domes adorned with sparkling chandeliers, our open air restaurant invites you on a culinary journey through Algerian cuisine. Every evening, enjoy a refined dinner in an intimate atmosphere. In the morning, a generous breakfast buffet awaits you. Our cafeteria is the perfect place to savor mint tea or Turkish coffee.",
     "dinner": "Dinner every evening",
     "breakfast": "Breakfast buffet",
-    "cafe": "Traditional café"
+    "cafe": "Cafeteria",
+    "reserveCta": "Reserve a table",
+    "openToAll": "Open to all — guests and visitors"
   },
   "gallery": {
     "title": "Gallery",
