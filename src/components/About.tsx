@@ -1,10 +1,48 @@
 "use client";
 import { useTranslations } from "next-intl";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
+
+function CountUp({ target, suffix = "" }: { target: number; suffix?: string }) {
+  const ref = useRef<HTMLSpanElement>(null);
+  const [displayed, setDisplayed] = useState(0);
+  const hasAnimated = useRef(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || hasAnimated.current) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !hasAnimated.current) {
+          hasAnimated.current = true;
+          const obj = { val: 0 };
+          gsap.to(obj, {
+            val: target,
+            duration: 2,
+            ease: "power2.out",
+            onUpdate: () => setDisplayed(Math.round(obj.val)),
+          });
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.5 }
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [target]);
+
+  return (
+    <span ref={ref}>
+      {displayed}
+      {suffix}
+    </span>
+  );
+}
 
 export default function About() {
   const t = useTranslations("about");
@@ -12,54 +50,82 @@ export default function About() {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      gsap.from(".about-eyebrow", {
-        x: -30,
-        opacity: 0,
-        duration: 0.8,
-        ease: "power3.out",
-        scrollTrigger: { trigger: ".about-content", start: "top 80%" },
-      });
-
-      gsap.from(".about-quote", {
-        clipPath: "inset(0 100% 0 0)",
-        duration: 1.2,
-        ease: "power4.inOut",
-        scrollTrigger: { trigger: ".about-quote", start: "top 80%" },
-      });
-
-      gsap.from(".about-img-wrap", {
-        clipPath: "inset(0 0 0 100%)",
-        duration: 1.4,
-        ease: "power4.inOut",
-        scrollTrigger: { trigger: ".about-img-wrap", start: "top 75%" },
-      });
-
-      gsap.to(".about-img-wrap img", {
-        yPercent: -12,
+      // Parallax on the background image
+      gsap.to(".about-bg-img", {
+        yPercent: 20,
         ease: "none",
         scrollTrigger: {
-          trigger: ".about-img-wrap",
+          trigger: sectionRef.current,
           start: "top bottom",
           end: "bottom top",
-          scrub: 1,
+          scrub: true,
         },
       });
 
-      gsap.from(".about-text", {
-        y: 40,
+      // Eyebrow — appears first
+      gsap.from(".about-eyebrow", {
+        y: 60,
         opacity: 0,
         duration: 1,
         ease: "cubic-bezier(0.16, 1, 0.3, 1)",
-        scrollTrigger: { trigger: ".about-text", start: "top 85%" },
+        scrollTrigger: { trigger: ".about-eyebrow", start: "top 88%" },
       });
 
-      gsap.from(".about-stat", {
-        y: 40,
+      // Big quote — dramatic clipPath wipe from center
+      gsap.from(".about-big-quote", {
+        clipPath: "inset(0 50% 0 50%)",
+        opacity: 0,
+        duration: 1.6,
+        ease: "power4.inOut",
+        scrollTrigger: { trigger: ".about-big-quote", start: "top 82%" },
+      });
+
+      // Description text — fade up
+      gsap.from(".about-description", {
+        y: 50,
+        opacity: 0,
+        duration: 1.2,
+        ease: "cubic-bezier(0.16, 1, 0.3, 1)",
+        scrollTrigger: { trigger: ".about-description", start: "top 85%" },
+      });
+
+      // Gold line
+      gsap.from(".about-gold-line", {
+        scaleX: 0,
+        duration: 1.2,
+        ease: "power4.inOut",
+        scrollTrigger: { trigger: ".about-gold-line", start: "top 88%" },
+      });
+
+      // Stats bar — slide up with frosted glass
+      gsap.from(".about-stats-bar", {
+        y: 80,
+        opacity: 0,
+        duration: 1,
+        ease: "cubic-bezier(0.16, 1, 0.3, 1)",
+        scrollTrigger: { trigger: ".about-stats-bar", start: "top 95%" },
+      });
+
+      // Each stat staggers in
+      gsap.from(".about-stat-item", {
+        y: 30,
         opacity: 0,
         duration: 0.8,
-        stagger: 0.15,
+        stagger: 0.12,
         ease: "cubic-bezier(0.16, 1, 0.3, 1)",
-        scrollTrigger: { trigger: ".about-stats", start: "top 85%" },
+        scrollTrigger: { trigger: ".about-stats-bar", start: "top 90%" },
+      });
+
+      // Progressive overlay darken on scroll
+      gsap.to(".about-overlay-gradient", {
+        opacity: 0.7,
+        ease: "none",
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top top",
+          end: "bottom top",
+          scrub: true,
+        },
       });
     }, sectionRef);
 
@@ -70,62 +136,128 @@ export default function About() {
     <section
       ref={sectionRef}
       id="about"
-      className="bg-day relative py-32 md:py-40 overflow-hidden"
-      style={{ backgroundColor: "#FAF7F2" }}
+      className="relative overflow-hidden"
+      style={{ minHeight: "100vh" }}
     >
-      <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-12">
-        <div className="about-content flex flex-col lg:flex-row items-stretch gap-16 lg:gap-0">
-          {/* Left — quote + text */}
-          <div className="w-full lg:w-[45%] flex flex-col justify-center pr-0 lg:pr-16">
-            <p className="about-eyebrow eyebrow mb-8">{t("title")}</p>
+      {/* Full-bleed background image with parallax */}
+      <div className="absolute inset-0 overflow-hidden">
+        <img
+          src="/images/about-palm-garden.jpg"
+          onError={(e) => {
+            (e.target as HTMLImageElement).src =
+              "https://images.unsplash.com/photo-1590523741831-ab7e8b8f9c7f?w=1600&q=80";
+          }}
+          alt="Palm Garden resort panorama"
+          className="about-bg-img absolute w-full h-[130%] object-cover object-center"
+          style={{ top: "-15%" }}
+          loading="lazy"
+        />
+      </div>
 
-            <blockquote
-              className="about-quote pull-quote mb-10"
-              style={{ clipPath: "inset(0 0% 0 0)" }}
-            >
-              &ldquo;Au cœur du désert, nous avons trouvé le paradis&rdquo;
-            </blockquote>
+      {/* Progressive gradient overlay */}
+      <div
+        className="about-overlay-gradient absolute inset-0"
+        style={{
+          background:
+            "linear-gradient(to bottom, rgba(26,18,8,0.15) 0%, rgba(26,18,8,0.4) 40%, rgba(26,18,8,0.75) 70%, rgba(26,18,8,0.92) 100%)",
+          opacity: 0.5,
+        }}
+      />
 
-            <div className="gold-line w-16 mb-8" />
+      {/* Subtle top vignette for nav readability */}
+      <div
+        className="absolute inset-x-0 top-0 h-32 pointer-events-none"
+        style={{
+          background: "linear-gradient(to bottom, rgba(26,18,8,0.4), transparent)",
+        }}
+      />
 
-            <p className="about-text" style={{ color: "#6B5C42", fontSize: "17px", lineHeight: 1.8 }}>
-              {t("text")}
-            </p>
-          </div>
+      {/* Content layers */}
+      <div className="relative z-10 flex flex-col justify-end min-h-screen px-6 md:px-12 lg:px-20 pb-0">
+        {/* Text content — positioned in lower portion */}
+        <div className="max-w-5xl mb-12">
+          {/* Eyebrow */}
+          <p
+            className="about-eyebrow uppercase text-xs tracking-[0.25em] font-medium mb-6"
+            style={{ color: "#C8973A" }}
+          >
+            {t("title")}
+          </p>
 
-          {/* Right — image */}
-          <div className="w-full lg:w-[55%] relative">
-            <div
-              className="about-img-wrap relative aspect-[4/5] lg:aspect-auto lg:h-[600px] overflow-hidden rounded-2xl lg:rounded-l-2xl lg:rounded-r-none lg:-mr-12"
-              style={{ clipPath: "inset(0 0 0 0%)" }}
-            >
-              <img
-                src="https://images.unsplash.com/photo-1590523741831-ab7e8b8f9c7f?w=1200&q=80"
-                alt="Palm Garden oasis"
-                className="h-[120%] w-full object-cover parallax-img"
-                loading="lazy"
-              />
-            </div>
-          </div>
+          {/* Big immersive quote */}
+          <h2
+            className="about-big-quote font-[family-name:var(--font-heading)] italic font-light leading-[1.1] mb-8"
+            style={{
+              fontSize: "clamp(36px, 6vw, 80px)",
+              color: "#FAF7F2",
+              clipPath: "inset(0 0% 0 0%)",
+            }}
+          >
+            Au c&oelig;ur du d&eacute;sert,
+            <br />
+            <span style={{ color: "#C8973A" }}>nous avons trouv&eacute; le paradis</span>
+          </h2>
+
+          {/* Gold accent line */}
+          <div
+            className="about-gold-line w-20 h-[2px] mb-8 origin-left"
+            style={{ backgroundColor: "#C8973A" }}
+          />
+
+          {/* Description */}
+          <p
+            className="about-description max-w-2xl"
+            style={{
+              color: "rgba(250,247,242,0.85)",
+              fontSize: "17px",
+              lineHeight: 1.9,
+              fontWeight: 300,
+            }}
+          >
+            {t("text")}
+          </p>
         </div>
 
-        {/* Stats */}
-        <div className="about-stats mt-20 flex flex-wrap justify-center gap-12 md:gap-20">
-          {[
-            { value: "6", label: t("stat1") },
-            { value: "2", label: t("stat2") },
-            { value: "☕", label: t("stat3") },
-            { value: "🍽", label: t("stat4") },
-          ].map((stat) => (
-            <div key={stat.label} className="about-stat text-center">
-              <span className="block font-[family-name:var(--font-heading)] text-5xl md:text-6xl font-light mb-2" style={{ color: "#C8973A" }}>
-                {stat.value}
-              </span>
-              <span className="text-sm uppercase tracking-[0.15em]" style={{ color: "#6B5C42" }}>
-                {stat.label}
-              </span>
-            </div>
-          ))}
+        {/* Stats bar with frosted glass */}
+        <div
+          className="about-stats-bar -mx-6 md:-mx-12 lg:-mx-20 px-6 md:px-12 lg:px-20 py-8"
+          style={{
+            background: "rgba(26,18,8,0.5)",
+            backdropFilter: "blur(20px)",
+            WebkitBackdropFilter: "blur(20px)",
+            borderTop: "1px solid rgba(200,151,58,0.2)",
+          }}
+        >
+          <div className="max-w-5xl mx-auto flex flex-wrap justify-between gap-8 md:gap-4">
+            {[
+              { value: 6, suffix: "", label: t("stat1") },
+              { value: 2, suffix: "", label: t("stat2") },
+              { value: 0, suffix: "", label: t("stat3"), icon: "☕" },
+              { value: 0, suffix: "", label: t("stat4"), icon: "🍽" },
+            ].map((stat) => (
+              <div
+                key={stat.label}
+                className="about-stat-item flex items-center gap-4 min-w-[140px]"
+              >
+                <span
+                  className="font-[family-name:var(--font-heading)] text-4xl md:text-5xl font-light"
+                  style={{ color: "#C8973A" }}
+                >
+                  {"icon" in stat && stat.icon ? (
+                    stat.icon
+                  ) : (
+                    <CountUp target={stat.value} suffix={stat.suffix} />
+                  )}
+                </span>
+                <span
+                  className="text-xs uppercase tracking-[0.12em] leading-tight"
+                  style={{ color: "rgba(250,247,242,0.7)" }}
+                >
+                  {stat.label}
+                </span>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </section>
