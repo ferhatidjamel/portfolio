@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { motion, AnimatePresence } from "framer-motion";
 import { DayPicker } from "react-day-picker";
@@ -10,6 +10,7 @@ import {
   ChevronLeft,
   Calendar,
   Send,
+  X,
 } from "lucide-react";
 import "react-day-picker/style.css";
 import blockedDatesData from "@/data/blockedDates.json";
@@ -81,26 +82,51 @@ const ZONE_KEYS = ["garden", "domes", "salon", "pool"] as const;
 
 export default function Booking() {
   const t = useTranslations("booking");
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(2);
   const [direction, setDirection] = useState(1);
   const [data, setData] = useState<BookingData>(initialBookingData);
   const [submitted, setSubmitted] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
 
   const blockedDates = blockedDatesData.blockedDates.map(
     (d: string) => new Date(d)
   );
 
-  const steps = [t("step1"), t("step2"), t("step3"), t("step4"), t("step5")];
+  const steps = [t("step2"), t("step3"), t("step4"), t("step5")];
 
   const update = (partial: Partial<BookingData>) =>
     setData((prev) => ({ ...prev, ...partial }));
 
   const goNext = () => { setDirection(1); setStep((s) => Math.min(s + 1, 5)); };
-  const goPrev = () => { setDirection(-1); setStep((s) => Math.max(s - 1, 1)); };
+  const goPrev = () => { setDirection(-1); setStep((s) => Math.max(s - 1, 2)); };
+
+  const openModal = (type: string) => {
+    update({ type });
+    setStep(2);
+    setDirection(1);
+    setSubmitted(false);
+    setModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setModalOpen(false);
+    setData(initialBookingData);
+    setStep(2);
+    setSubmitted(false);
+  };
+
+  // Lock body scroll when modal is open
+  useEffect(() => {
+    if (modalOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => { document.body.style.overflow = ""; };
+  }, [modalOpen]);
 
   const canProceed = () => {
     switch (step) {
-      case 1: return data.type !== "";
       case 2:
         if (data.type === "chalet") return !!data.checkIn && !!data.checkOut;
         return !!data.date;
@@ -112,7 +138,7 @@ export default function Booking() {
   };
 
   const handleSubmit = () => setSubmitted(true);
-  const resetBooking = () => { setData(initialBookingData); setStep(1); setDirection(1); setSubmitted(false); };
+  const resetBooking = () => { setData(initialBookingData); setStep(2); setDirection(1); setSubmitted(false); setModalOpen(false); };
 
   const buildWhatsAppText = () => {
     let text = `Booking Request:\nType: ${data.type}\n`;
@@ -237,7 +263,7 @@ export default function Booking() {
         return (
           <button
             key={type}
-            onClick={() => { update({ type }); goNext(); }}
+            onClick={() => openModal(type)}
             className="group relative overflow-hidden cursor-pointer"
             style={{
               borderRadius: "16px",
@@ -611,125 +637,168 @@ export default function Booking() {
     </motion.div>
   );
 
-  const stepContent: Record<number, () => React.ReactNode> = { 1: renderStep1, 2: renderStep2, 3: renderStep3, 4: renderStep4, 5: renderStep5 };
+  const stepContent: Record<number, () => React.ReactNode> = { 2: renderStep2, 3: renderStep3, 4: renderStep4, 5: renderStep5 };
 
   return (
-    <section id="reservation" className="relative py-24 md:py-32" style={{ backgroundColor: "#FAF7F2" }}>
-      {/* Header — always centered */}
-      <div className="max-w-4xl mx-auto px-6 text-center mb-12">
-        <p className="eyebrow mb-4">{t("subtitle")}</p>
-        <h2 className="heading-section" style={{ color: "#1A1208" }}>{t("title")}</h2>
-      </div>
+    <>
+      <section id="reservation" className="relative py-24 md:py-32" style={{ backgroundColor: "#FAF7F2" }}>
+        {/* Header */}
+        <div className="max-w-4xl mx-auto px-6 text-center mb-12">
+          <p className="eyebrow mb-4">{t("subtitle")}</p>
+          <h2 className="heading-section" style={{ color: "#1A1208" }}>{t("title")}</h2>
+        </div>
 
-      {submitted ? (
-        <div className="max-w-4xl mx-auto px-6">{renderSuccess()}</div>
-      ) : (
-        <>
-          {/* Step Indicator — only show from step 2 onward */}
-          {step > 1 && (
-            <div className="max-w-4xl mx-auto px-6">
-              <div className="flex items-center justify-center mb-12">
-                {steps.map((label, i) => {
-                  const stepNum = i + 1;
-                  if (stepNum === 1) return null;
-                  const isActive = step === stepNum;
-                  const isCompleted = step > stepNum;
-                  return (
-                    <div key={i} className="flex items-center">
-                      <div className="flex flex-col items-center">
-                        <div
-                          className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold transition-all"
-                          style={{
-                            backgroundColor: isCompleted ? "#2D5016" : isActive ? "#C8973A" : "transparent",
-                            color: isCompleted || isActive ? "#FFFFFF" : "#9C8B72",
-                            border: isCompleted || isActive ? "none" : "1.5px solid #9C8B72",
-                          }}
-                        >
-                          {isCompleted ? <Check className="w-5 h-5" /> : stepNum - 1}
-                        </div>
-                        <span
-                          className="text-xs mt-1 hidden md:block max-w-[80px] text-center"
-                          style={{ color: isActive || isCompleted ? "#C8973A" : "#9C8B72" }}
-                        >
-                          {label}
-                        </span>
-                      </div>
-                      {i < steps.length - 1 && (
-                        <div
-                          className="w-8 md:w-16 h-[2px] mx-1 md:mx-2 transition-colors"
-                          style={{ backgroundColor: step > stepNum ? "#C8973A" : "#F0E5D0" }}
-                        />
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          )}
+        {/* Full-width image card grid — always visible */}
+        <div className="px-4 md:px-6 lg:px-8">
+          {renderStep1()}
+        </div>
+      </section>
 
-          {/* Step 1: Full-width image grid */}
-          {step === 1 && (
-            <div className="px-4 md:px-6 lg:px-8">
-              <AnimatePresence mode="wait" custom={direction}>
-                <motion.div key={step} custom={direction} variants={slideVariants} initial="enter" animate="center" exit="exit" transition={{ duration: 0.3, ease: "easeInOut" }}>
-                  {renderStep1()}
-                </motion.div>
-              </AnimatePresence>
-            </div>
-          )}
+      {/* Booking Modal Overlay */}
+      <AnimatePresence>
+        {modalOpen && (
+          <motion.div
+            className="fixed inset-0 z-[100] flex items-center justify-center"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.4 }}
+          >
+            {/* Dimmed backdrop */}
+            <motion.div
+              className="absolute inset-0"
+              style={{ backgroundColor: "rgba(26,18,8,0.75)", backdropFilter: "blur(4px)", WebkitBackdropFilter: "blur(4px)" }}
+              onClick={closeModal}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.4 }}
+            />
 
-          {/* Steps 2-5: Contained card */}
-          {step > 1 && (
-            <div className="max-w-4xl mx-auto px-6">
-              <div
-                className="booking-card relative min-h-[400px] rounded-2xl p-8 md:p-12"
-                style={{ backgroundColor: "#FAF7F2", boxShadow: "var(--shadow-card)" }}
+            {/* Modal card */}
+            <motion.div
+              className="relative w-full max-w-2xl max-h-[90vh] mx-4 overflow-y-auto rounded-2xl"
+              style={{
+                backgroundColor: "#FAF7F2",
+                boxShadow: "0 24px 80px rgba(0,0,0,0.3)",
+              }}
+              initial={{ opacity: 0, y: 60, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 40, scale: 0.97 }}
+              transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+            >
+              {/* Close button */}
+              <button
+                onClick={closeModal}
+                className="absolute top-4 right-4 z-10 w-10 h-10 rounded-full flex items-center justify-center transition-colors cursor-pointer"
+                style={{ backgroundColor: "rgba(240,229,208,0.8)" }}
+                onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#F0E5D0")}
+                onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "rgba(240,229,208,0.8)")}
               >
-                <AnimatePresence mode="wait" custom={direction}>
-                  <motion.div key={step} custom={direction} variants={slideVariants} initial="enter" animate="center" exit="exit" transition={{ duration: 0.3, ease: "easeInOut" }}>
-                    {stepContent[step]()}
-                  </motion.div>
-                </AnimatePresence>
+                <X size={18} style={{ color: "#1A1208" }} />
+              </button>
+
+              {/* Modal header — selected type */}
+              <div className="px-8 md:px-12 pt-8 pb-4">
+                <p className="eyebrow mb-2">{t(`types.${data.type}`)}</p>
+                <h3
+                  className="font-[family-name:var(--font-heading)] text-2xl md:text-3xl"
+                  style={{ color: "#1A1208" }}
+                >
+                  {t("title")}
+                </h3>
               </div>
 
-              {/* Navigation */}
-              <div className="flex justify-between mt-8">
-                <button
-                  onClick={goPrev}
-                  className="rounded-full flex items-center gap-2 transition-colors duration-300 cursor-pointer"
-                  style={{ border: "1.5px solid #C8973A", color: "#C8973A", padding: "12px 28px", fontSize: "12px", fontWeight: 500, textTransform: "uppercase", letterSpacing: "0.1em", backgroundColor: "transparent" }}
-                  onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "rgba(200,151,58,0.08)")}
-                  onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "transparent")}
-                >
-                  <ChevronLeft className="w-5 h-5" /> {t("prev")}
-                </button>
-                {step < 5 && (
-                  <button
-                    onClick={goNext}
-                    disabled={!canProceed()}
-                    className="rounded-full flex items-center gap-2 transition-all duration-300 cursor-pointer"
-                    style={{
-                      backgroundColor: "#C8973A",
-                      color: "#1A1208",
-                      padding: "14px 32px",
-                      fontSize: "12px",
-                      fontWeight: 500,
-                      textTransform: "uppercase",
-                      letterSpacing: "0.1em",
-                      opacity: canProceed() ? 1 : 0.4,
-                      cursor: canProceed() ? "pointer" : "not-allowed",
-                    }}
-                    onMouseEnter={(e) => { if (canProceed()) e.currentTarget.style.backgroundColor = "#E8B86D"; }}
-                    onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#C8973A")}
-                  >
-                    {t("next")} <ChevronRight className="w-5 h-5" />
-                  </button>
-                )}
-              </div>
-            </div>
-          )}
-        </>
-      )}
-    </section>
+              {submitted ? (
+                <div className="px-8 md:px-12 pb-8">{renderSuccess()}</div>
+              ) : (
+                <div className="px-8 md:px-12 pb-8">
+                  {/* Step indicator */}
+                  <div className="flex items-center justify-center mb-8 mt-4">
+                    {steps.map((label, i) => {
+                      const stepNum = i + 2;
+                      const isActive = step === stepNum;
+                      const isCompleted = step > stepNum;
+                      return (
+                        <div key={i} className="flex items-center">
+                          <div className="flex flex-col items-center">
+                            <div
+                              className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold transition-all"
+                              style={{
+                                backgroundColor: isCompleted ? "#2D5016" : isActive ? "#C8973A" : "transparent",
+                                color: isCompleted || isActive ? "#FFFFFF" : "#9C8B72",
+                                border: isCompleted || isActive ? "none" : "1.5px solid #9C8B72",
+                              }}
+                            >
+                              {isCompleted ? <Check className="w-4 h-4" /> : i + 1}
+                            </div>
+                            <span
+                              className="text-[10px] mt-1 hidden md:block max-w-[70px] text-center"
+                              style={{ color: isActive || isCompleted ? "#C8973A" : "#9C8B72" }}
+                            >
+                              {label}
+                            </span>
+                          </div>
+                          {i < steps.length - 1 && (
+                            <div
+                              className="w-8 md:w-12 h-[2px] mx-1 transition-colors"
+                              style={{ backgroundColor: step > stepNum ? "#C8973A" : "#F0E5D0" }}
+                            />
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  {/* Step content */}
+                  <div className="min-h-[300px]">
+                    <AnimatePresence mode="wait" custom={direction}>
+                      <motion.div key={step} custom={direction} variants={slideVariants} initial="enter" animate="center" exit="exit" transition={{ duration: 0.3, ease: "easeInOut" }}>
+                        {stepContent[step]?.()}
+                      </motion.div>
+                    </AnimatePresence>
+                  </div>
+
+                  {/* Navigation */}
+                  <div className="flex justify-between mt-8 pt-6" style={{ borderTop: "1px solid #F0E5D0" }}>
+                    <button
+                      onClick={step === 2 ? closeModal : goPrev}
+                      className="rounded-full flex items-center gap-2 transition-colors duration-300 cursor-pointer"
+                      style={{ border: "1.5px solid #C8973A", color: "#C8973A", padding: "10px 24px", fontSize: "12px", fontWeight: 500, textTransform: "uppercase", letterSpacing: "0.1em", backgroundColor: "transparent" }}
+                      onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "rgba(200,151,58,0.08)")}
+                      onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "transparent")}
+                    >
+                      <ChevronLeft className="w-4 h-4" /> {step === 2 ? t("step1") : t("prev")}
+                    </button>
+                    {step < 5 && (
+                      <button
+                        onClick={goNext}
+                        disabled={!canProceed()}
+                        className="rounded-full flex items-center gap-2 transition-all duration-300 cursor-pointer"
+                        style={{
+                          backgroundColor: "#C8973A",
+                          color: "#1A1208",
+                          padding: "10px 28px",
+                          fontSize: "12px",
+                          fontWeight: 500,
+                          textTransform: "uppercase",
+                          letterSpacing: "0.1em",
+                          opacity: canProceed() ? 1 : 0.4,
+                          cursor: canProceed() ? "pointer" : "not-allowed",
+                        }}
+                        onMouseEnter={(e) => { if (canProceed()) e.currentTarget.style.backgroundColor = "#E8B86D"; }}
+                        onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#C8973A")}
+                      >
+                        {t("next")} <ChevronRight className="w-4 h-4" />
+                      </button>
+                    )}
+                  </div>
+                </div>
+              )}
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
   );
 }
