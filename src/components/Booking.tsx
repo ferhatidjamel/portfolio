@@ -20,7 +20,8 @@ type BookingData = {
   checkIn: Date | undefined;
   checkOut: Date | undefined;
   date: Date | undefined;
-  time: string;
+  timeFrom: string;
+  timeTo: string;
   guests: number;
   breakfast: boolean;
   catering: boolean;
@@ -47,7 +48,8 @@ const initialBookingData: BookingData = {
   checkIn: undefined,
   checkOut: undefined,
   date: undefined,
-  time: "",
+  timeFrom: "",
+  timeTo: "",
   guests: 1,
   breakfast: false,
   catering: false,
@@ -129,7 +131,7 @@ export default function Booking() {
     switch (step) {
       case 2:
         if (data.type === "chalet") return !!data.checkIn && !!data.checkOut;
-        return !!data.date;
+        return !!data.date && !!data.timeFrom && !!data.timeTo;
       case 3: return true;
       case 4:
         return data.fullName.trim() !== "" && data.phone.trim() !== "" && data.email.trim() !== "";
@@ -147,7 +149,7 @@ export default function Booking() {
       if (data.checkOut) text += `Check-out: ${format(data.checkOut, "PPP")}\n`;
     } else {
       if (data.date) text += `Date: ${format(data.date, "PPP")}\n`;
-      if (data.time) text += `Time: ${data.time}\n`;
+      if (data.timeFrom && data.timeTo) text += `Time: ${data.timeFrom} — ${data.timeTo}\n`;
     }
     text += `Guests: ${data.guests}\n`;
     if (data.breakfast) text += `Breakfast: Yes\n`;
@@ -382,21 +384,53 @@ export default function Booking() {
             <span>{format(data.date, "PPP")}</span>
           </div>
         )}
-        <div className="flex flex-wrap gap-2 justify-center">
-          {timeSlots.map((slot) => (
-            <button
-              key={slot}
-              onClick={() => update({ time: slot.trim() })}
-              className="px-4 py-2 rounded-lg border transition-all cursor-pointer"
-              style={{
-                borderColor: data.time === slot.trim() ? "#C8973A" : "rgba(156,139,114,0.3)",
-                backgroundColor: data.time === slot.trim() ? "rgba(200,151,58,0.1)" : "transparent",
-                color: data.time === slot.trim() ? "#C8973A" : "#6B5C42",
-              }}
-            >
-              {slot.trim()}
-            </button>
-          ))}
+
+        {/* Time range: From — To */}
+        <div className="w-full max-w-md">
+          <p className="text-xs uppercase tracking-[0.1em] font-medium mb-3 text-center" style={{ color: "#9C8B72" }}>
+            {t("selectTime")}
+          </p>
+          <div className="flex items-center gap-3">
+            <div className="flex-1">
+              <label className="block text-[10px] uppercase tracking-[0.1em] font-medium mb-1" style={{ color: "#9C8B72" }}>{t("timeFrom")}</label>
+              <div className="flex flex-wrap gap-1.5">
+                {timeSlots.map((slot) => (
+                  <button
+                    key={`from-${slot}`}
+                    onClick={() => update({ timeFrom: slot.trim() })}
+                    className="px-3 py-1.5 rounded-lg border text-xs transition-all cursor-pointer"
+                    style={{
+                      borderColor: data.timeFrom === slot.trim() ? "#C8973A" : "rgba(156,139,114,0.2)",
+                      backgroundColor: data.timeFrom === slot.trim() ? "rgba(200,151,58,0.12)" : "transparent",
+                      color: data.timeFrom === slot.trim() ? "#C8973A" : "#6B5C42",
+                    }}
+                  >
+                    {slot.trim()}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <span className="text-lg mt-5" style={{ color: "#9C8B72" }}>—</span>
+            <div className="flex-1">
+              <label className="block text-[10px] uppercase tracking-[0.1em] font-medium mb-1" style={{ color: "#9C8B72" }}>{t("timeTo")}</label>
+              <div className="flex flex-wrap gap-1.5">
+                {timeSlots.map((slot) => (
+                  <button
+                    key={`to-${slot}`}
+                    onClick={() => update({ timeTo: slot.trim() })}
+                    className="px-3 py-1.5 rounded-lg border text-xs transition-all cursor-pointer"
+                    style={{
+                      borderColor: data.timeTo === slot.trim() ? "#C8973A" : "rgba(156,139,114,0.2)",
+                      backgroundColor: data.timeTo === slot.trim() ? "rgba(200,151,58,0.12)" : "transparent",
+                      color: data.timeTo === slot.trim() ? "#C8973A" : "#6B5C42",
+                    }}
+                  >
+                    {slot.trim()}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     );
@@ -566,7 +600,7 @@ export default function Booking() {
         <div className="flex justify-between pb-2" style={{ borderBottom: "1px solid #F0E5D0" }}>
           <span style={{ color: "#6B5C42" }}>{t("step2")}</span>
           <span style={{ color: "#1A1208" }}>
-            {data.type === "chalet" ? (<>{data.checkIn && format(data.checkIn, "PPP")}{data.checkOut && ` — ${format(data.checkOut, "PPP")}`}</>) : (<>{data.date && format(data.date, "PPP")}{data.time && ` @ ${data.time}`}</>)}
+            {data.type === "chalet" ? (<>{data.checkIn && format(data.checkIn, "PPP")}{data.checkOut && ` — ${format(data.checkOut, "PPP")}`}</>) : (<>{data.date && format(data.date, "PPP")}{data.timeFrom && data.timeTo && ` · ${data.timeFrom} — ${data.timeTo}`}</>)}
           </span>
         </div>
         <div className="pb-2" style={{ borderBottom: "1px solid #F0E5D0" }}>
@@ -675,9 +709,9 @@ export default function Booking() {
               transition={{ duration: 0.4 }}
             />
 
-            {/* Modal card */}
+            {/* Modal card — flex column with scrollable content area */}
             <motion.div
-              className="relative w-full max-w-2xl max-h-[90vh] mx-4 overflow-y-auto rounded-2xl"
+              className="relative w-full max-w-2xl max-h-[90vh] mx-4 rounded-2xl flex flex-col"
               style={{
                 backgroundColor: "#FAF7F2",
                 boxShadow: "0 24px 80px rgba(0,0,0,0.3)",
@@ -686,54 +720,51 @@ export default function Booking() {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 40, scale: 0.97 }}
               transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+              onClick={(e) => e.stopPropagation()}
             >
-              {/* Close button */}
-              <button
-                onClick={closeModal}
-                className="absolute top-4 right-4 z-10 w-10 h-10 rounded-full flex items-center justify-center transition-colors cursor-pointer"
-                style={{ backgroundColor: "rgba(240,229,208,0.8)" }}
-                onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#F0E5D0")}
-                onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "rgba(240,229,208,0.8)")}
-              >
-                <X size={18} style={{ color: "#1A1208" }} />
-              </button>
+              {/* Fixed header */}
+              <div className="flex-shrink-0 px-8 md:px-12 pt-8 pb-4 relative" style={{ borderBottom: "1px solid #F0E5D0" }}>
+                {/* Close button */}
+                <button
+                  onClick={closeModal}
+                  className="absolute top-4 right-4 z-10 w-10 h-10 rounded-full flex items-center justify-center transition-colors cursor-pointer"
+                  style={{ backgroundColor: "rgba(240,229,208,0.8)" }}
+                  onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#F0E5D0")}
+                  onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "rgba(240,229,208,0.8)")}
+                >
+                  <X size={18} style={{ color: "#1A1208" }} />
+                </button>
 
-              {/* Modal header — selected type */}
-              <div className="px-8 md:px-12 pt-8 pb-4">
                 <p className="eyebrow mb-2">{t(`types.${data.type}`)}</p>
                 <h3
-                  className="font-[family-name:var(--font-heading)] text-2xl md:text-3xl"
+                  className="font-[family-name:var(--font-heading)] text-2xl md:text-3xl mb-4"
                   style={{ color: "#1A1208" }}
                 >
                   {t("title")}
                 </h3>
-              </div>
 
-              {submitted ? (
-                <div className="px-8 md:px-12 pb-8">{renderSuccess()}</div>
-              ) : (
-                <div className="px-8 md:px-12 pb-8">
-                  {/* Step indicator */}
-                  <div className="flex items-center justify-center mb-8 mt-4">
+                {/* Step indicator — horizontal, consistent alignment */}
+                {!submitted && (
+                  <div className="flex items-center justify-center gap-0">
                     {steps.map((label, i) => {
                       const stepNum = i + 2;
                       const isActive = step === stepNum;
                       const isCompleted = step > stepNum;
                       return (
                         <div key={i} className="flex items-center">
-                          <div className="flex flex-col items-center">
+                          <div className="flex items-center gap-2">
                             <div
-                              className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold transition-all"
+                              className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all flex-shrink-0"
                               style={{
                                 backgroundColor: isCompleted ? "#2D5016" : isActive ? "#C8973A" : "transparent",
                                 color: isCompleted || isActive ? "#FFFFFF" : "#9C8B72",
                                 border: isCompleted || isActive ? "none" : "1.5px solid #9C8B72",
                               }}
                             >
-                              {isCompleted ? <Check className="w-4 h-4" /> : i + 1}
+                              {isCompleted ? <Check className="w-3.5 h-3.5" /> : i + 1}
                             </div>
                             <span
-                              className="text-[10px] mt-1 hidden md:block max-w-[70px] text-center"
+                              className="text-[11px] hidden md:inline whitespace-nowrap"
                               style={{ color: isActive || isCompleted ? "#C8973A" : "#9C8B72" }}
                             >
                               {label}
@@ -741,7 +772,7 @@ export default function Booking() {
                           </div>
                           {i < steps.length - 1 && (
                             <div
-                              className="w-8 md:w-12 h-[2px] mx-1 transition-colors"
+                              className="w-6 md:w-10 h-[1.5px] mx-2 transition-colors flex-shrink-0"
                               style={{ backgroundColor: step > stepNum ? "#C8973A" : "#F0E5D0" }}
                             />
                           )}
@@ -749,50 +780,59 @@ export default function Booking() {
                       );
                     })}
                   </div>
+                )}
+              </div>
 
-                  {/* Step content */}
-                  <div className="min-h-[300px]">
-                    <AnimatePresence mode="wait" custom={direction}>
-                      <motion.div key={step} custom={direction} variants={slideVariants} initial="enter" animate="center" exit="exit" transition={{ duration: 0.3, ease: "easeInOut" }}>
-                        {stepContent[step]?.()}
-                      </motion.div>
-                    </AnimatePresence>
-                  </div>
+              {/* Scrollable content area */}
+              <div
+                className="flex-1 overflow-y-auto px-8 md:px-12 py-6"
+                style={{ overscrollBehavior: "contain" }}
+              >
+                {submitted ? (
+                  renderSuccess()
+                ) : (
+                  <AnimatePresence mode="wait" custom={direction}>
+                    <motion.div key={step} custom={direction} variants={slideVariants} initial="enter" animate="center" exit="exit" transition={{ duration: 0.3, ease: "easeInOut" }}>
+                      {stepContent[step]?.()}
+                    </motion.div>
+                  </AnimatePresence>
+                )}
+              </div>
 
-                  {/* Navigation */}
-                  <div className="flex justify-between mt-8 pt-6" style={{ borderTop: "1px solid #F0E5D0" }}>
+              {/* Fixed footer navigation */}
+              {!submitted && (
+                <div className="flex-shrink-0 flex justify-between px-8 md:px-12 py-5" style={{ borderTop: "1px solid #F0E5D0" }}>
+                  <button
+                    onClick={step === 2 ? closeModal : goPrev}
+                    className="rounded-full flex items-center gap-2 transition-colors duration-300 cursor-pointer"
+                    style={{ border: "1.5px solid #C8973A", color: "#C8973A", padding: "10px 24px", fontSize: "12px", fontWeight: 500, textTransform: "uppercase", letterSpacing: "0.1em", backgroundColor: "transparent" }}
+                    onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "rgba(200,151,58,0.08)")}
+                    onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "transparent")}
+                  >
+                    <ChevronLeft className="w-4 h-4" /> {step === 2 ? t("step1") : t("prev")}
+                  </button>
+                  {step < 5 && (
                     <button
-                      onClick={step === 2 ? closeModal : goPrev}
-                      className="rounded-full flex items-center gap-2 transition-colors duration-300 cursor-pointer"
-                      style={{ border: "1.5px solid #C8973A", color: "#C8973A", padding: "10px 24px", fontSize: "12px", fontWeight: 500, textTransform: "uppercase", letterSpacing: "0.1em", backgroundColor: "transparent" }}
-                      onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "rgba(200,151,58,0.08)")}
-                      onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "transparent")}
+                      onClick={goNext}
+                      disabled={!canProceed()}
+                      className="rounded-full flex items-center gap-2 transition-all duration-300 cursor-pointer"
+                      style={{
+                        backgroundColor: "#C8973A",
+                        color: "#1A1208",
+                        padding: "10px 28px",
+                        fontSize: "12px",
+                        fontWeight: 500,
+                        textTransform: "uppercase",
+                        letterSpacing: "0.1em",
+                        opacity: canProceed() ? 1 : 0.4,
+                        cursor: canProceed() ? "pointer" : "not-allowed",
+                      }}
+                      onMouseEnter={(e) => { if (canProceed()) e.currentTarget.style.backgroundColor = "#E8B86D"; }}
+                      onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#C8973A")}
                     >
-                      <ChevronLeft className="w-4 h-4" /> {step === 2 ? t("step1") : t("prev")}
+                      {t("next")} <ChevronRight className="w-4 h-4" />
                     </button>
-                    {step < 5 && (
-                      <button
-                        onClick={goNext}
-                        disabled={!canProceed()}
-                        className="rounded-full flex items-center gap-2 transition-all duration-300 cursor-pointer"
-                        style={{
-                          backgroundColor: "#C8973A",
-                          color: "#1A1208",
-                          padding: "10px 28px",
-                          fontSize: "12px",
-                          fontWeight: 500,
-                          textTransform: "uppercase",
-                          letterSpacing: "0.1em",
-                          opacity: canProceed() ? 1 : 0.4,
-                          cursor: canProceed() ? "pointer" : "not-allowed",
-                        }}
-                        onMouseEnter={(e) => { if (canProceed()) e.currentTarget.style.backgroundColor = "#E8B86D"; }}
-                        onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#C8973A")}
-                      >
-                        {t("next")} <ChevronRight className="w-4 h-4" />
-                      </button>
-                    )}
-                  </div>
+                  )}
                 </div>
               )}
             </motion.div>
