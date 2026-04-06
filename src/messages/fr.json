@@ -95,8 +95,11 @@
     "subtitle": "Saveurs authentiques sous les dômes dorés",
     "text": "Sous les dômes dorés ornés de lustres étincelants, notre restaurant en plein air vous invite à un voyage culinaire au cœur de la gastronomie algérienne. Chaque soir, savourez un dîner raffiné dans une ambiance feutrée. Le matin, un petit-déjeuner buffet généreux vous attend. Notre cafétéria est l'endroit idéal pour déguster un thé à la menthe ou un café turc.",
     "dinner": "Dîner tous les soirs",
+    "dinnerDesc": "Cuisine algérienne raffinée servie chaque soir dans un cadre somptueux en plein air, sous les étoiles du Sahara.",
     "breakfast": "Petit-déjeuner buffet",
+    "breakfastDesc": "Un buffet généreux chaque matin avec pâtisseries fraîches, spécialités locales et jus de fruits naturels.",
     "cafe": "Cafétéria",
+    "cafeDesc": "Thé à la menthe, café turc et douceurs traditionnelles dans un salon aux accents berbères et aux arches majestueuses.",
     "reserveCta": "Réserver une table",
     "openToAll": "Ouvert à tous — résidents et visiteurs"
   },

@@ -95,8 +95,11 @@
     "subtitle": "Authentic flavors under golden domes",
     "text": "Under golden domes adorned with sparkling chandeliers, our open air restaurant invites you on a culinary journey through Algerian cuisine. Every evening, enjoy a refined dinner in an intimate atmosphere. In the morning, a generous breakfast buffet awaits you. Our cafeteria is the perfect place to savor mint tea or Turkish coffee.",
     "dinner": "Dinner every evening",
+    "dinnerDesc": "Refined Algerian cuisine served every evening in a stunning open-air setting, under the Saharan stars.",
     "breakfast": "Breakfast buffet",
+    "breakfastDesc": "A generous morning buffet with fresh pastries, local specialties and natural fruit juices.",
     "cafe": "Cafeteria",
+    "cafeDesc": "Mint tea, Turkish coffee and traditional sweets in a Berber-inspired lounge with majestic arches.",
     "reserveCta": "Reserve a table",
     "openToAll": "Open to all — guests and visitors"
   },
