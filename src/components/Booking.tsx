@@ -117,14 +117,19 @@ export default function Booking() {
     setSubmitted(false);
   };
 
-  // Lock body scroll when modal is open
+  // Lock body scroll + stop Lenis when modal is open
   useEffect(() => {
     if (modalOpen) {
       document.body.style.overflow = "hidden";
+      window.__lenis?.stop();
     } else {
       document.body.style.overflow = "";
+      window.__lenis?.start();
     }
-    return () => { document.body.style.overflow = ""; };
+    return () => {
+      document.body.style.overflow = "";
+      window.__lenis?.start();
+    };
   }, [modalOpen]);
 
   const canProceed = () => {
