@@ -66,62 +66,72 @@ export default function Accommodations() {
       className="bg-day-secondary relative overflow-hidden"
       style={{ backgroundColor: "#F0E5D0" }}
     >
-      {/* Header */}
-      <div className="pt-32 pb-16 px-6 md:px-12 max-w-7xl mx-auto">
-        <p className="acc-header eyebrow mb-4">{t("subtitle")}</p>
-        <h2 className="acc-header heading-section" style={{ color: "#1A1208" }}>
-          {t("title")}
-        </h2>
-      </div>
+      {/* Full pinned viewport — header + cards share the screen */}
+      <div className="lg:h-screen lg:flex lg:flex-col">
+        {/* Header */}
+        <div className="pt-20 lg:pt-10 pb-8 lg:pb-4 px-6 md:px-12 max-w-7xl mx-auto w-full flex-shrink-0">
+          <p className="acc-header eyebrow mb-3">{t("subtitle")}</p>
+          <h2 className="acc-header heading-section" style={{ color: "#1A1208" }}>
+            {t("title")}
+          </h2>
+        </div>
 
-      {/* Horizontal scroll track */}
-      <div
-        ref={trackRef}
-        className="flex flex-col lg:flex-row gap-8 lg:gap-0 px-6 lg:px-0 pb-32 lg:pb-0"
-      >
-        {accommodations.map((acc) => {
-          const tags = t(`${acc.key}.tags`).split(",");
-          return (
-            <div
-              key={acc.key}
-              className="acc-card flex-shrink-0 w-full lg:w-[85vw] lg:h-screen relative overflow-hidden group"
-            >
-              <div className="relative h-[60vh] lg:h-full overflow-hidden">
-                <img
-                  src={acc.image}
-                  alt={t(`${acc.key}.name`)}
-                  className="acc-img h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
-                  loading="lazy"
-                />
-                <div className="absolute bottom-0 inset-x-0 h-2/3 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
-              </div>
+        {/* Horizontal scroll track — fills remaining height */}
+        <div
+          ref={trackRef}
+          className="flex flex-col lg:flex-row gap-8 lg:gap-6 px-6 lg:px-6 pb-24 lg:pb-6 lg:flex-1 lg:min-h-0"
+        >
+          {accommodations.map((acc) => {
+            const tags = t(`${acc.key}.tags`).split(",");
+            return (
+              <div
+                key={acc.key}
+                className="acc-card flex-shrink-0 w-full lg:w-[70vw] relative overflow-hidden group rounded-2xl lg:h-full"
+              >
+                <div className="relative h-[60vh] lg:h-full overflow-hidden rounded-2xl">
+                  <img
+                    src={acc.image}
+                    alt={t(`${acc.key}.name`)}
+                    className="acc-img h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
+                    loading="lazy"
+                  />
+                  <div className="absolute bottom-0 inset-x-0 h-2/3 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
+                </div>
 
-              <div className="absolute bottom-0 inset-x-0 p-8 md:p-12 lg:p-16 flex items-end justify-between">
-                <div>
-                  <h3
-                    className="font-[family-name:var(--font-heading)] text-3xl md:text-4xl lg:text-5xl mb-3"
-                    style={{ color: "#FAF7F2", fontWeight: 400 }}
-                  >
-                    {t(`${acc.key}.name`)}
-                  </h3>
-                  <p style={{ color: "rgba(250,247,242,0.7)", fontSize: "15px", lineHeight: 1.7 }} className="max-w-lg mb-3">
-                    {t(`${acc.key}.description`)}
-                  </p>
-                  <p className="text-sm font-medium" style={{ color: "#E8B86D" }}>
-                    {t(`${acc.key}.price`)}
-                  </p>
-                </div>
-                <div className="hidden md:flex flex-wrap gap-2 max-w-xs justify-end">
-                  {tags.map((tag) => (
-                    <span key={tag} className="tag-pill">
-                      {tag.trim()}
-                    </span>
-                  ))}
+                <div className="absolute bottom-0 inset-x-0 p-6 md:p-10 lg:p-12 flex items-end justify-between">
+                  <div>
+                    <h3
+                      className="font-[family-name:var(--font-heading)] text-3xl md:text-4xl lg:text-5xl mb-2"
+                      style={{ color: "#FAF7F2", fontWeight: 400 }}
+                    >
+                      {t(`${acc.key}.name`)}
+                    </h3>
+                    <p
+                      style={{
+                        color: "rgba(250,247,242,0.75)",
+                        fontSize: "15px",
+                        lineHeight: 1.7,
+                      }}
+                      className="max-w-lg mb-3"
+                    >
+                      {t(`${acc.key}.description`)}
+                    </p>
+                    <p className="text-sm font-medium" style={{ color: "#E8B86D" }}>
+                      {t(`${acc.key}.price`)}
+                    </p>
+                  </div>
+                  <div className="hidden md:flex flex-wrap gap-2 max-w-xs justify-end">
+                    {tags.map((tag) => (
+                      <span key={tag} className="tag-pill">
+                        {tag.trim()}
+                      </span>
+                    ))}
+                  </div>
                 </div>
               </div>
-            </div>
-          );
-        })}
+            );
+          })}
+        </div>
       </div>
     </section>
   );
