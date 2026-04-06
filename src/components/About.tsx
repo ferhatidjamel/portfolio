@@ -142,7 +142,7 @@ export default function About() {
       {/* Full-bleed background image with parallax */}
       <div className="absolute inset-0 overflow-hidden">
         <img
-          src="/images/about-palm-garden.jpg"
+          src="/images/about-palm-garden.webp"
           onError={(e) => {
             (e.target as HTMLImageElement).src =
               "https://images.unsplash.com/photo-1590523741831-ab7e8b8f9c7f?w=1600&q=80";
