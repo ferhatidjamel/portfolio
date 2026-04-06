@@ -26,20 +26,41 @@
     "stat4": "Open Air Restaurant"
   },
   "accommodation": {
-    "title": "Accommodation",
-    "subtitle": "Unique spaces between tradition and modernity",
-    "chalets": {
-      "name": "Chalets",
-      "description": "Pyramid-shaped glamping chalets, a unique stay under the Saharan stars with all modern comforts.",
-      "tags": "Pool,Breakfast,Air conditioning,Wi-Fi",
-      "price": "From 15,000 DZD / night"
+    "title": "Our Chalets",
+    "subtitle": "6 unique chalets in the heart of the palm grove",
+    "intro": "Our 6 pyramid-shaped chalets offer a unique glamping experience under the Saharan stars, blending traditional charm with modern comfort and room service.",
+    "views": {
+      "exterior": {
+        "label": "Overview",
+        "title": "Pyramid Chalets",
+        "description": "Inspired by Saharan architecture, our pyramid-shaped chalets blend harmoniously into the palm grove landscape of El Oued.",
+        "alt": "Exterior view of Palm Garden pyramid chalets"
+      },
+      "interior": {
+        "label": "Interior",
+        "title": "Comfort & Elegance",
+        "description": "Premium bedding, refined décor and a warm ambiance. Each chalet is a cocoon of comfort designed for your ultimate relaxation.",
+        "alt": "Interior of a Palm Garden chalet with double bed and décor"
+      },
+      "services": {
+        "label": "Room Service",
+        "title": "Breakfast in Bed",
+        "description": "Enjoy our room service: breakfast delivered to your door, meal trays and beverages brought directly to your chalet.",
+        "alt": "Room service in a Palm Garden chalet"
+      }
     },
-    "domes": {
-      "name": "Domes",
-      "description": "Iconic geodesic dome rooms with traditional interiors, inspired by the local architecture of Oued Souf.",
-      "tags": "Garden view,Breakfast,Air conditioning,Traditional décor",
-      "price": "From 12,000 DZD / night"
+    "amenitiesTitle": "Amenities & Services",
+    "amenitiesSubtitle": "All the comfort, in the heart of the desert",
+    "amenities": {
+      "beds": "Premium bedding",
+      "roomService": "Room service",
+      "ac": "Air conditioning",
+      "wifi": "Free Wi-Fi",
+      "pool": "Pool access"
     },
+    "priceLabel": "Starting from",
+    "price": "15,000 DZD / night",
+    "roomServiceNote": "In-room breakfast and room service available on request",
     "learnMore": "Learn more"
   },
   "events": {

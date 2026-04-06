@@ -26,20 +26,41 @@
     "stat4": "Restaurant en plein air"
   },
   "accommodation": {
-    "title": "Hébergement",
-    "subtitle": "Des espaces uniques entre tradition et modernité",
-    "chalets": {
-      "name": "Chalets",
-      "description": "Chalets glamping en forme de pyramide, un séjour unique sous les étoiles du Sahara avec tout le confort moderne.",
-      "tags": "Piscine,Petit-déjeuner,Climatisation,Wi-Fi",
-      "price": "À partir de 15 000 DA / nuit"
+    "title": "Nos Chalets",
+    "subtitle": "6 chalets uniques au cœur de la palmeraie",
+    "intro": "Nos 6 chalets pyramidaux vous offrent une expérience glamping unique sous les étoiles du Sahara, alliant charme traditionnel et confort moderne avec service en chambre.",
+    "views": {
+      "exterior": {
+        "label": "Vue d'ensemble",
+        "title": "Chalets Pyramidaux",
+        "description": "Inspirés de l'architecture saharienne, nos chalets en forme de pyramide s'intègrent harmonieusement dans le paysage de palmeraies d'El Oued.",
+        "alt": "Vue extérieure des chalets pyramidaux Palm Garden"
+      },
+      "interior": {
+        "label": "Intérieur",
+        "title": "Confort & Élégance",
+        "description": "Literie premium, décoration soignée et ambiance chaleureuse. Chaque chalet est un cocon de confort pensé pour votre détente absolue.",
+        "alt": "Intérieur d'un chalet Palm Garden avec lit double et décoration"
+      },
+      "services": {
+        "label": "Service en chambre",
+        "title": "Petit-déjeuner au lit",
+        "description": "Profitez de notre service en chambre : petit-déjeuner servi à votre porte, plateau repas et boissons livrés directement dans votre chalet.",
+        "alt": "Service en chambre dans un chalet Palm Garden"
+      }
     },
-    "domes": {
-      "name": "Dômes",
-      "description": "Chambres dômes géodésiques emblématiques avec intérieurs traditionnels, inspirées de l'architecture locale d'Oued Souf.",
-      "tags": "Vue jardin,Petit-déjeuner,Climatisation,Décor traditionnel",
-      "price": "À partir de 12 000 DA / nuit"
+    "amenitiesTitle": "Équipements & Services",
+    "amenitiesSubtitle": "Tout le confort, au cœur du désert",
+    "amenities": {
+      "beds": "Literie premium",
+      "roomService": "Service en chambre",
+      "ac": "Climatisation",
+      "wifi": "Wi-Fi gratuit",
+      "pool": "Accès piscine"
     },
+    "priceLabel": "À partir de",
+    "price": "15 000 DA / nuit",
+    "roomServiceNote": "Petit-déjeuner en chambre et room service disponibles sur demande",
     "learnMore": "En savoir plus"
   },
   "events": {

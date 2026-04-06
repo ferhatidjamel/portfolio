@@ -23,8 +23,8 @@ const reviews = [
   {
     name: "Sophie L.",
     stars: 5,
-    quote: "Les dômes sont absolument féeriques, surtout au coucher du soleil. Un séjour hors du temps dans un cadre unique.",
-    occasion: "Séjour en dôme · Hiver 2024",
+    quote: "Les chalets sont un vrai cocon de confort. Le petit-déjeuner livré en chambre au réveil, avec vue sur les palmiers — un pur bonheur.",
+    occasion: "Séjour en chalet · Hiver 2024",
   },
   {
     name: "Yacine D.",
