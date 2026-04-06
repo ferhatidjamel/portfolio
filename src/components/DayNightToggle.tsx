@@ -16,6 +16,8 @@ export default function DayNightToggle() {
   const toggle = () => {
     setIsNight((prev) => {
       const next = !prev;
+      // Enable transition class before switching
+      document.documentElement.classList.add("theme-transitioning");
       if (next) {
         document.documentElement.classList.add("night-mode");
         localStorage.setItem("palm-garden-theme", "night");
@@ -24,6 +26,10 @@ export default function DayNightToggle() {
         localStorage.setItem("palm-garden-theme", "day");
       }
       window.dispatchEvent(new Event("theme-change"));
+      // Remove transition class after animation completes
+      setTimeout(() => {
+        document.documentElement.classList.remove("theme-transitioning");
+      }, 1200);
       return next;
     });
   };

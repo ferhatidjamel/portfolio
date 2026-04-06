@@ -221,25 +221,106 @@ export default function Booking() {
     </div>
   );
 
+  const typeImageMap: Record<string, string> = {
+    chalet: "/images/chalets-interior.jpg",
+    wedding: "https://images.unsplash.com/photo-1519741497674-611481863552?w=800&q=80",
+    venue: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&q=80",
+    conference: "https://images.unsplash.com/photo-1505373877841-8d25f7d46678?w=800&q=80",
+    family: "https://images.unsplash.com/photo-1529543544282-ea57407bc2e3?w=800&q=80",
+    photoshoot: "https://images.unsplash.com/photo-1542038784456-1ea8e935640e?w=800&q=80",
+  };
+
   const renderStep1 = () => (
-    <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-      {BOOKING_TYPES.map((type) => (
-        <button
-          key={type}
-          onClick={() => update({ type })}
-          className="booking-card flex flex-col items-center justify-center gap-3 p-6 transition-all duration-200 cursor-pointer"
-          style={{
-            backgroundColor: "#FAF7F2",
-            borderRadius: "12px",
-            border: data.type === type ? "1.5px solid #C8973A" : "1.5px solid #F0E5D0",
-            background: data.type === type ? "rgba(200,151,58,0.08)" : "#FAF7F2",
-            boxShadow: data.type === type ? "var(--shadow-card-hover)" : "var(--shadow-card)",
-          }}
-        >
-          <span className="text-4xl">{typeIconMap[type]}</span>
-          <span style={{ color: "#1A1208", fontWeight: 500, fontSize: "14px" }}>{t(`types.${type}`)}</span>
-        </button>
-      ))}
+    <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5">
+      {BOOKING_TYPES.map((type) => {
+        const isSelected = data.type === type;
+        return (
+          <button
+            key={type}
+            onClick={() => { update({ type }); goNext(); }}
+            className="group relative overflow-hidden cursor-pointer"
+            style={{
+              borderRadius: "16px",
+              border: isSelected ? "2px solid #C8973A" : "2px solid transparent",
+              aspectRatio: "3/4",
+            }}
+          >
+            {/* Background image */}
+            <img
+              src={typeImageMap[type]}
+              alt={t(`types.${type}`)}
+              className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+            />
+
+            {/* Default gradient at bottom for text */}
+            <div
+              className="absolute bottom-0 inset-x-0 h-1/2 transition-opacity duration-500 group-hover:opacity-0"
+              style={{
+                background: "linear-gradient(to top, rgba(26,18,8,0.85), transparent)",
+              }}
+            />
+
+            {/* Blur curtain — drops from top on hover */}
+            <div
+              className="absolute inset-x-0 top-0 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]"
+              style={{
+                height: "0%",
+                backdropFilter: "blur(12px)",
+                WebkitBackdropFilter: "blur(12px)",
+                background: "rgba(26,18,8,0.4)",
+              }}
+              ref={(el) => {
+                if (!el) return;
+                const parent = el.parentElement;
+                if (!parent) return;
+                const show = () => { el.style.height = "100%"; };
+                const hide = () => { el.style.height = "0%"; };
+                parent.addEventListener("mouseenter", show);
+                parent.addEventListener("mouseleave", hide);
+              }}
+            />
+
+            {/* Type name — always visible at bottom */}
+            <div className="absolute bottom-0 inset-x-0 p-5 md:p-6 z-10">
+              <p
+                className="uppercase text-[10px] tracking-[0.2em] mb-1 transition-opacity duration-500"
+                style={{ color: "#C8973A" }}
+              >
+                {typeIconMap[type]}
+              </p>
+              <h3
+                className="font-[family-name:var(--font-heading)] text-xl md:text-2xl font-light"
+                style={{ color: "#FAF7F2" }}
+              >
+                {t(`types.${type}`)}
+              </h3>
+            </div>
+
+            {/* Book button — revealed on hover */}
+            <div className="absolute inset-0 flex items-center justify-center z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-200">
+              <span
+                className="px-8 py-3 rounded-full text-xs uppercase tracking-[0.12em] font-medium"
+                style={{
+                  backgroundColor: "#C8973A",
+                  color: "#1A1208",
+                }}
+              >
+                {t("step1Select") || t("next")}
+              </span>
+            </div>
+
+            {/* Selected indicator */}
+            {isSelected && (
+              <div
+                className="absolute top-4 right-4 w-8 h-8 rounded-full flex items-center justify-center z-10"
+                style={{ backgroundColor: "#C8973A" }}
+              >
+                <Check className="w-4 h-4 text-white" />
+              </div>
+            )}
+          </button>
+        );
+      })}
     </div>
   );
 
@@ -533,67 +614,86 @@ export default function Booking() {
   const stepContent: Record<number, () => React.ReactNode> = { 1: renderStep1, 2: renderStep2, 3: renderStep3, 4: renderStep4, 5: renderStep5 };
 
   return (
-    <section id="reservation" className="relative py-32 md:py-40" style={{ backgroundColor: "#FAF7F2" }}>
-      <div className="max-w-4xl mx-auto px-6">
-        <div className="text-center mb-12">
-          <p className="eyebrow mb-4">{t("subtitle")}</p>
-          <h2 className="heading-section" style={{ color: "#1A1208" }}>{t("title")}</h2>
-        </div>
+    <section id="reservation" className="relative py-24 md:py-32" style={{ backgroundColor: "#FAF7F2" }}>
+      {/* Header — always centered */}
+      <div className="max-w-4xl mx-auto px-6 text-center mb-12">
+        <p className="eyebrow mb-4">{t("subtitle")}</p>
+        <h2 className="heading-section" style={{ color: "#1A1208" }}>{t("title")}</h2>
+      </div>
 
-        {submitted ? renderSuccess() : (
-          <>
-            {/* Step Indicator */}
-            <div className="flex items-center justify-center mb-12">
-              {steps.map((label, i) => {
-                const stepNum = i + 1;
-                const isActive = step === stepNum;
-                const isCompleted = step > stepNum;
-                return (
-                  <div key={i} className="flex items-center">
-                    <div className="flex flex-col items-center">
-                      <div
-                        className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold transition-all"
-                        style={{
-                          backgroundColor: isCompleted ? "#2D5016" : isActive ? "#C8973A" : "transparent",
-                          color: isCompleted || isActive ? "#FFFFFF" : "#9C8B72",
-                          border: isCompleted || isActive ? "none" : "1.5px solid #9C8B72",
-                        }}
-                      >
-                        {isCompleted ? <Check className="w-5 h-5" /> : stepNum}
+      {submitted ? (
+        <div className="max-w-4xl mx-auto px-6">{renderSuccess()}</div>
+      ) : (
+        <>
+          {/* Step Indicator — only show from step 2 onward */}
+          {step > 1 && (
+            <div className="max-w-4xl mx-auto px-6">
+              <div className="flex items-center justify-center mb-12">
+                {steps.map((label, i) => {
+                  const stepNum = i + 1;
+                  if (stepNum === 1) return null;
+                  const isActive = step === stepNum;
+                  const isCompleted = step > stepNum;
+                  return (
+                    <div key={i} className="flex items-center">
+                      <div className="flex flex-col items-center">
+                        <div
+                          className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold transition-all"
+                          style={{
+                            backgroundColor: isCompleted ? "#2D5016" : isActive ? "#C8973A" : "transparent",
+                            color: isCompleted || isActive ? "#FFFFFF" : "#9C8B72",
+                            border: isCompleted || isActive ? "none" : "1.5px solid #9C8B72",
+                          }}
+                        >
+                          {isCompleted ? <Check className="w-5 h-5" /> : stepNum - 1}
+                        </div>
+                        <span
+                          className="text-xs mt-1 hidden md:block max-w-[80px] text-center"
+                          style={{ color: isActive || isCompleted ? "#C8973A" : "#9C8B72" }}
+                        >
+                          {label}
+                        </span>
                       </div>
-                      <span
-                        className="text-xs mt-1 hidden md:block max-w-[80px] text-center"
-                        style={{ color: isActive || isCompleted ? "#C8973A" : "#9C8B72" }}
-                      >
-                        {label}
-                      </span>
+                      {i < steps.length - 1 && (
+                        <div
+                          className="w-8 md:w-16 h-[2px] mx-1 md:mx-2 transition-colors"
+                          style={{ backgroundColor: step > stepNum ? "#C8973A" : "#F0E5D0" }}
+                        />
+                      )}
                     </div>
-                    {i < steps.length - 1 && (
-                      <div
-                        className="w-8 md:w-16 h-[2px] mx-1 md:mx-2 transition-colors"
-                        style={{ backgroundColor: step > stepNum ? "#C8973A" : "#F0E5D0" }}
-                      />
-                    )}
-                  </div>
-                );
-              })}
+                  );
+                })}
+              </div>
             </div>
+          )}
 
-            {/* Step Content Card */}
-            <div
-              className="booking-card relative min-h-[400px] rounded-2xl p-8 md:p-12"
-              style={{ backgroundColor: "#FAF7F2", boxShadow: "var(--shadow-card)" }}
-            >
+          {/* Step 1: Full-width image grid */}
+          {step === 1 && (
+            <div className="px-4 md:px-6 lg:px-8">
               <AnimatePresence mode="wait" custom={direction}>
                 <motion.div key={step} custom={direction} variants={slideVariants} initial="enter" animate="center" exit="exit" transition={{ duration: 0.3, ease: "easeInOut" }}>
-                  {stepContent[step]()}
+                  {renderStep1()}
                 </motion.div>
               </AnimatePresence>
             </div>
+          )}
 
-            {/* Navigation */}
-            <div className="flex justify-between mt-8">
-              {step > 1 ? (
+          {/* Steps 2-5: Contained card */}
+          {step > 1 && (
+            <div className="max-w-4xl mx-auto px-6">
+              <div
+                className="booking-card relative min-h-[400px] rounded-2xl p-8 md:p-12"
+                style={{ backgroundColor: "#FAF7F2", boxShadow: "var(--shadow-card)" }}
+              >
+                <AnimatePresence mode="wait" custom={direction}>
+                  <motion.div key={step} custom={direction} variants={slideVariants} initial="enter" animate="center" exit="exit" transition={{ duration: 0.3, ease: "easeInOut" }}>
+                    {stepContent[step]()}
+                  </motion.div>
+                </AnimatePresence>
+              </div>
+
+              {/* Navigation */}
+              <div className="flex justify-between mt-8">
                 <button
                   onClick={goPrev}
                   className="rounded-full flex items-center gap-2 transition-colors duration-300 cursor-pointer"
@@ -603,33 +703,33 @@ export default function Booking() {
                 >
                   <ChevronLeft className="w-5 h-5" /> {t("prev")}
                 </button>
-              ) : <div />}
-              {step < 5 && (
-                <button
-                  onClick={goNext}
-                  disabled={!canProceed()}
-                  className="rounded-full flex items-center gap-2 transition-all duration-300 cursor-pointer"
-                  style={{
-                    backgroundColor: "#C8973A",
-                    color: "#1A1208",
-                    padding: "14px 32px",
-                    fontSize: "12px",
-                    fontWeight: 500,
-                    textTransform: "uppercase",
-                    letterSpacing: "0.1em",
-                    opacity: canProceed() ? 1 : 0.4,
-                    cursor: canProceed() ? "pointer" : "not-allowed",
-                  }}
-                  onMouseEnter={(e) => { if (canProceed()) e.currentTarget.style.backgroundColor = "#E8B86D"; }}
-                  onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#C8973A")}
-                >
-                  {t("next")} <ChevronRight className="w-5 h-5" />
-                </button>
-              )}
+                {step < 5 && (
+                  <button
+                    onClick={goNext}
+                    disabled={!canProceed()}
+                    className="rounded-full flex items-center gap-2 transition-all duration-300 cursor-pointer"
+                    style={{
+                      backgroundColor: "#C8973A",
+                      color: "#1A1208",
+                      padding: "14px 32px",
+                      fontSize: "12px",
+                      fontWeight: 500,
+                      textTransform: "uppercase",
+                      letterSpacing: "0.1em",
+                      opacity: canProceed() ? 1 : 0.4,
+                      cursor: canProceed() ? "pointer" : "not-allowed",
+                    }}
+                    onMouseEnter={(e) => { if (canProceed()) e.currentTarget.style.backgroundColor = "#E8B86D"; }}
+                    onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#C8973A")}
+                  >
+                    {t("next")} <ChevronRight className="w-5 h-5" />
+                  </button>
+                )}
+              </div>
             </div>
-          </>
-        )}
-      </div>
+          )}
+        </>
+      )}
     </section>
   );
 }
