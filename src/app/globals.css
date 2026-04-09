@@ -316,6 +316,14 @@ html.night-mode .booking-card {
 }
 
 /* ============================
+   HERO THEME TOGGLE HINT
+   ============================ */
+@keyframes hintPulse {
+  0%, 100% { opacity: 0.55; transform: translateY(0); }
+  50% { opacity: 1; transform: translateY(-2px); }
+}
+
+/* ============================
    PARALLAX IMAGE CONTAINER
    ============================ */
 .parallax-img {

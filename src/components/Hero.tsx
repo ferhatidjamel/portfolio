@@ -3,6 +3,7 @@ import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { Sun, Moon } from "lucide-react";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -10,15 +11,43 @@ export default function Hero() {
   const t = useTranslations("hero");
   const sectionRef = useRef<HTMLElement>(null);
   const [isNight, setIsNight] = useState(false);
+  const [hasInteracted, setHasInteracted] = useState(false);
 
+  // Initial sync with localStorage + listen for external theme changes
   useEffect(() => {
+    const saved = localStorage.getItem("palm-garden-theme");
+    if (saved === "night") {
+      document.documentElement.classList.add("night-mode");
+      setIsNight(true);
+    }
+    if (localStorage.getItem("palm-garden-theme-interacted") === "true") {
+      setHasInteracted(true);
+    }
     const check = () => {
       setIsNight(document.documentElement.classList.contains("night-mode"));
     };
-    check();
     window.addEventListener("theme-change", check);
     return () => window.removeEventListener("theme-change", check);
   }, []);
+
+  const setTheme = (next: boolean) => {
+    if (next === isNight) return;
+    document.documentElement.classList.add("theme-transitioning");
+    if (next) {
+      document.documentElement.classList.add("night-mode");
+      localStorage.setItem("palm-garden-theme", "night");
+    } else {
+      document.documentElement.classList.remove("night-mode");
+      localStorage.setItem("palm-garden-theme", "day");
+    }
+    setIsNight(next);
+    setHasInteracted(true);
+    localStorage.setItem("palm-garden-theme-interacted", "true");
+    window.dispatchEvent(new Event("theme-change"));
+    setTimeout(() => {
+      document.documentElement.classList.remove("theme-transitioning");
+    }, 1200);
+  };
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -61,6 +90,12 @@ export default function Hero() {
         ".hero-cta",
         { y: 20, opacity: 0, duration: 0.8, ease: "power3.out" },
         "-=0.4"
+      );
+
+      tl.from(
+        ".hero-theme-toggle",
+        { y: 20, opacity: 0, duration: 0.8, ease: "power3.out" },
+        "-=0.5"
       );
 
       tl.from(
@@ -184,6 +219,75 @@ export default function Hero() {
         >
           {t("cta")}
         </a>
+
+        {/* Day / Night pill toggle */}
+        <div className="hero-theme-toggle mt-10 flex flex-col items-center gap-3">
+          {/* Hint — pulses once then fades after interaction */}
+          <div
+            className="hero-theme-hint flex items-center gap-2 transition-opacity duration-700"
+            style={{
+              opacity: hasInteracted ? 0 : 1,
+              fontFamily: "var(--font-body)",
+              fontSize: "10px",
+              letterSpacing: "0.2em",
+              textTransform: "uppercase",
+              color: "rgba(232,184,109,0.9)",
+              textShadow: "0 1px 6px rgba(0,0,0,0.6)",
+              animation: hasInteracted ? "none" : "hintPulse 2.4s ease-in-out infinite",
+            }}
+          >
+            <span style={{ fontSize: "12px" }}>✦</span>
+            {t("themeHint")}
+          </div>
+
+          {/* Pill */}
+          <div
+            role="group"
+            aria-label="Toggle day/night view"
+            className="inline-flex items-center rounded-full backdrop-blur-md"
+            style={{
+              backgroundColor: "rgba(26,18,8,0.35)",
+              border: "1px solid rgba(250,247,242,0.25)",
+              padding: "4px",
+              boxShadow: "0 4px 24px rgba(0,0,0,0.3)",
+            }}
+          >
+            <button
+              onClick={() => setTheme(false)}
+              aria-pressed={!isNight}
+              className="flex items-center gap-2 rounded-full transition-all duration-500"
+              style={{
+                backgroundColor: !isNight ? "#C8973A" : "transparent",
+                color: !isNight ? "#1A1208" : "rgba(250,247,242,0.75)",
+                padding: "9px 20px",
+                fontSize: "11px",
+                fontWeight: 500,
+                textTransform: "uppercase",
+                letterSpacing: "0.15em",
+              }}
+            >
+              <Sun size={14} strokeWidth={2} />
+              <span>{t("day")}</span>
+            </button>
+            <button
+              onClick={() => setTheme(true)}
+              aria-pressed={isNight}
+              className="flex items-center gap-2 rounded-full transition-all duration-500"
+              style={{
+                backgroundColor: isNight ? "#C8973A" : "transparent",
+                color: isNight ? "#1A1208" : "rgba(250,247,242,0.75)",
+                padding: "9px 20px",
+                fontSize: "11px",
+                fontWeight: 500,
+                textTransform: "uppercase",
+                letterSpacing: "0.15em",
+              }}
+            >
+              <Moon size={14} strokeWidth={2} />
+              <span>{t("night")}</span>
+            </button>
+          </div>
+        </div>
       </div>
 
       {/* Scroll indicator */}

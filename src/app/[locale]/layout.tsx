@@ -6,7 +6,6 @@ import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { routing } from "@/i18n/routing";
 import SmoothScroll from "@/components/SmoothScroll";
 import CustomCursor from "@/components/CustomCursor";
-import DayNightToggle from "@/components/DayNightToggle";
 import "../globals.css";
 
 type Props = {
@@ -59,7 +58,6 @@ export default async function LocaleLayout({ children, params }: Props) {
       <body className="min-h-screen overflow-x-hidden" style={{ backgroundColor: "var(--color-bg-primary)", color: "var(--color-text-primary)" }}>
         <NextIntlClientProvider messages={messages}>
           <CustomCursor />
-          <DayNightToggle />
           <SmoothScroll>
             {children}
           </SmoothScroll>

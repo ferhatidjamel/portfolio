@@ -15,7 +15,10 @@
   "hero": {
     "tagline": "Une oasis au cœur du Sahara",
     "subtitle": "Resort de luxe à El Oued — La ville aux 1000 dômes",
-    "cta": "Réserver maintenant"
+    "cta": "Réserver maintenant",
+    "day": "Jour",
+    "night": "Nuit",
+    "themeHint": "Découvrez Palm Garden au coucher du soleil"
   },
   "about": {
     "title": "Bienvenue à Palm Garden",
