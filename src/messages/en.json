@@ -172,6 +172,7 @@
     "submit": "Submit request",
     "next": "Next",
     "prev": "Previous",
+    "step1Select": "Book",
     "success": "Request sent successfully!",
     "successMsg": "Thank you for your request. Our team will contact you within 24 hours to confirm your reservation.",
     "whatsappLink": "Contact via WhatsApp",

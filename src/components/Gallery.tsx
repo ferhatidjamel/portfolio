@@ -7,16 +7,13 @@ import { X, ChevronLeft, ChevronRight } from "lucide-react";
 
 gsap.registerPlugin(ScrollTrigger);
 
-const topRow = [
+const galleryImages = [
   { src: "/images/about-palm-garden.webp", alt: "Palm Garden dome panorama" },
   { src: "/images/chalets-exterior.jpg", alt: "Pyramid chalets exterior" },
   { src: "https://images.unsplash.com/photo-1539650116574-8efeb43e2750?w=800&q=80", alt: "Desert palms at sunset" },
   { src: "/images/chalets-interior.jpg", alt: "Chalet interior" },
   { src: "https://images.unsplash.com/photo-1590523741831-ab7e8b8f9c7f?w=800&q=80", alt: "White domes architecture" },
   { src: "/images/chalets-services.jpg", alt: "Room service breakfast" },
-];
-
-const bottomRow = [
   { src: "https://images.unsplash.com/photo-1596394516093-501ba68a0ba6?w=800&q=80", alt: "Garden greenery" },
   { src: "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&q=80", alt: "Dining setup" },
   { src: "/images/hero-palm-garden.jpg", alt: "Palm Garden main entrance" },
@@ -25,21 +22,16 @@ const bottomRow = [
   { src: "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=800&q=80", alt: "Pool area" },
 ];
 
-const allImages = [...topRow, ...bottomRow];
-
 export default function Gallery() {
   const t = useTranslations("gallery");
   const sectionRef = useRef<HTMLElement>(null);
-  const topTrackRef = useRef<HTMLDivElement>(null);
-  const bottomTrackRef = useRef<HTMLDivElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
   const [lightbox, setLightbox] = useState<number | null>(null);
   const [isPaused, setIsPaused] = useState(false);
-  const topTween = useRef<gsap.core.Tween | null>(null);
-  const bottomTween = useRef<gsap.core.Tween | null>(null);
+  const filmTween = useRef<gsap.core.Tween | null>(null);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Header animation
       gsap.from(".gallery-header", {
         y: 30,
         opacity: 0,
@@ -52,60 +44,33 @@ export default function Gallery() {
     return () => ctx.revert();
   }, []);
 
-  // Auto-scrolling filmstrips
+  // Single auto-scrolling filmstrip
   useEffect(() => {
-    const topTrack = topTrackRef.current;
-    const bottomTrack = bottomTrackRef.current;
-    if (!topTrack || !bottomTrack) return;
+    const track = trackRef.current;
+    if (!track) return;
 
     // Duplicate children for seamless loop
-    topTrack.innerHTML += topTrack.innerHTML;
-    bottomTrack.innerHTML += bottomTrack.innerHTML;
+    track.innerHTML += track.innerHTML;
+    const totalWidth = track.scrollWidth / 2;
 
-    const topWidth = topTrack.scrollWidth / 2;
-    const bottomWidth = bottomTrack.scrollWidth / 2;
-
-    // Top row — scrolls left
-    topTween.current = gsap.to(topTrack, {
-      x: -topWidth,
-      duration: 60,
-      ease: "none",
-      repeat: -1,
-      modifiers: {
-        x: gsap.utils.unitize((x) => parseFloat(x) % topWidth),
-      },
-    });
-
-    // Bottom row — scrolls right (starts offset)
-    gsap.set(bottomTrack, { x: -bottomWidth });
-    bottomTween.current = gsap.to(bottomTrack, {
-      x: 0,
+    filmTween.current = gsap.to(track, {
+      x: -totalWidth,
       duration: 70,
       ease: "none",
       repeat: -1,
       modifiers: {
-        x: gsap.utils.unitize((x) => {
-          const val = parseFloat(x) % bottomWidth;
-          return val > 0 ? val - bottomWidth : val;
-        }),
+        x: gsap.utils.unitize((x) => parseFloat(x) % totalWidth),
       },
     });
 
     return () => {
-      topTween.current?.kill();
-      bottomTween.current?.kill();
+      filmTween.current?.kill();
     };
   }, []);
 
-  // Pause/resume on hover
   useEffect(() => {
-    if (isPaused) {
-      topTween.current?.pause();
-      bottomTween.current?.pause();
-    } else {
-      topTween.current?.resume();
-      bottomTween.current?.resume();
-    }
+    if (isPaused) filmTween.current?.pause();
+    else filmTween.current?.resume();
   }, [isPaused]);
 
   const openLightbox = (i: number) => {
@@ -116,8 +81,8 @@ export default function Gallery() {
     setLightbox(null);
     window.__lenis?.start();
   };
-  const goNext = () => setLightbox((p) => (p !== null ? (p + 1) % allImages.length : null));
-  const goPrev = () => setLightbox((p) => (p !== null ? (p - 1 + allImages.length) % allImages.length : null));
+  const goNext = () => setLightbox((p) => (p !== null ? (p + 1) % galleryImages.length : null));
+  const goPrev = () => setLightbox((p) => (p !== null ? (p - 1 + galleryImages.length) % galleryImages.length : null));
 
   useEffect(() => {
     if (lightbox === null) return;
@@ -130,104 +95,57 @@ export default function Gallery() {
     return () => window.removeEventListener("keydown", handleKey);
   }, [lightbox]);
 
-  const FilmstripImage = ({
-    src,
-    alt,
-    index,
-    height,
-  }: {
-    src: string;
-    alt: string;
-    index: number;
-    height: string;
-  }) => (
-    <div
-      className="flex-shrink-0 relative overflow-hidden rounded-xl cursor-pointer group"
-      style={{ width: "auto", height }}
-      onClick={() => openLightbox(index)}
-      onMouseEnter={() => setIsPaused(true)}
-      onMouseLeave={() => setIsPaused(false)}
-    >
-      <img
-        src={src}
-        alt={alt}
-        className="h-full w-auto max-w-none object-cover transition-transform duration-700 group-hover:scale-105"
-        loading="lazy"
-      />
-      {/* Hover overlay */}
-      <div
-        className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-        style={{ backgroundColor: "rgba(200,151,58,0.2)" }}
-      >
-        <span
-          className="px-5 py-2 rounded-full text-[10px] uppercase tracking-[0.15em] font-medium"
-          style={{ backgroundColor: "rgba(250,247,242,0.95)", color: "#1A1208" }}
-        >
-          View
-        </span>
-      </div>
-    </div>
-  );
-
   return (
     <section
       ref={sectionRef}
       id="galerie"
       className="relative py-24 md:py-32 overflow-hidden"
-      style={{ backgroundColor: "#1A1208" }}
+      style={{ backgroundColor: "#FAF7F2" }}
     >
       {/* Header */}
       <div className="gallery-header text-center mb-12 md:mb-16 px-6">
-        <p className="eyebrow mb-4" style={{ color: "#E8B86D" }}>
-          {t("subtitle")}
-        </p>
+        <p className="eyebrow mb-4">{t("subtitle")}</p>
         <h2
           className="font-[family-name:var(--font-heading)] italic font-light leading-[1.1]"
-          style={{ fontSize: "clamp(36px, 5vw, 64px)", color: "#FAF7F2" }}
+          style={{ fontSize: "clamp(36px, 5vw, 64px)", color: "#1A1208" }}
         >
           {t("title")}
         </h2>
       </div>
 
-      {/* Top filmstrip — scrolls left */}
-      <div className="mb-4 md:mb-6 overflow-hidden">
-        <div ref={topTrackRef} className="flex gap-4 md:gap-6 will-change-transform">
-          {topRow.map((img, i) => (
-            <FilmstripImage
-              key={`top-${i}`}
-              src={img.src}
-              alt={img.alt}
-              index={i}
-              height="280px"
-            />
-          ))}
-        </div>
-      </div>
-
-      {/* Bottom filmstrip — scrolls right */}
+      {/* Single filmstrip */}
       <div className="overflow-hidden">
-        <div ref={bottomTrackRef} className="flex gap-4 md:gap-6 will-change-transform">
-          {bottomRow.map((img, i) => (
-            <FilmstripImage
-              key={`bottom-${i}`}
-              src={img.src}
-              alt={img.alt}
-              index={topRow.length + i}
-              height="240px"
-            />
+        <div ref={trackRef} className="flex gap-4 md:gap-6 will-change-transform">
+          {galleryImages.map((img, i) => (
+            <div
+              key={`g-${i}`}
+              className="flex-shrink-0 relative overflow-hidden rounded-xl cursor-pointer group"
+              style={{ width: "auto", height: "300px" }}
+              onClick={() => openLightbox(i)}
+              onMouseEnter={() => setIsPaused(true)}
+              onMouseLeave={() => setIsPaused(false)}
+            >
+              <img
+                src={img.src}
+                alt={img.alt}
+                className="h-full w-auto max-w-none object-cover transition-transform duration-700 group-hover:scale-105"
+                loading="lazy"
+              />
+              <div
+                className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+                style={{ backgroundColor: "rgba(26,18,8,0.25)" }}
+              >
+                <span
+                  className="px-5 py-2 rounded-full text-[10px] uppercase tracking-[0.15em] font-medium"
+                  style={{ backgroundColor: "rgba(250,247,242,0.95)", color: "#1A1208" }}
+                >
+                  View
+                </span>
+              </div>
+            </div>
           ))}
         </div>
       </div>
-
-      {/* Subtle edge fades */}
-      <div
-        className="absolute inset-y-0 left-0 w-24 md:w-40 pointer-events-none z-10"
-        style={{ background: "linear-gradient(to right, #1A1208, transparent)" }}
-      />
-      <div
-        className="absolute inset-y-0 right-0 w-24 md:w-40 pointer-events-none z-10"
-        style={{ background: "linear-gradient(to left, #1A1208, transparent)" }}
-      />
 
       {/* Lightbox */}
       {lightbox !== null && (
@@ -255,17 +173,16 @@ export default function Gallery() {
             <ChevronRight size={40} />
           </button>
           <img
-            src={allImages[lightbox].src.replace("w=800", "w=1600")}
-            alt={allImages[lightbox].alt}
+            src={galleryImages[lightbox].src.replace("w=800", "w=1600")}
+            alt={galleryImages[lightbox].alt}
             className="max-h-[85vh] max-w-[90vw] object-contain rounded-lg"
             onClick={(e) => e.stopPropagation()}
           />
-          {/* Image counter */}
           <div
             className="absolute bottom-6 left-1/2 -translate-x-1/2 text-xs tracking-[0.15em] uppercase"
             style={{ color: "rgba(250,247,242,0.5)" }}
           >
-            {lightbox + 1} / {allImages.length}
+            {lightbox + 1} / {galleryImages.length}
           </div>
         </div>
       )}

@@ -77,21 +77,10 @@ body {
 
 /* Smooth day/night transition — targeted elements only */
 html.theme-transitioning body,
-html.theme-transitioning section,
 html.theme-transitioning nav,
-html.theme-transitioning footer,
-html.theme-transitioning .bg-day,
-html.theme-transitioning .bg-day-secondary,
-html.theme-transitioning .bg-day-card,
-html.theme-transitioning .booking-card,
-html.theme-transitioning .booking-input,
 html.theme-transitioning .nav-bg-scroll,
-html.theme-transitioning h1,
-html.theme-transitioning h2,
-html.theme-transitioning h3,
-html.theme-transitioning p,
-html.theme-transitioning span,
-html.theme-transitioning a {
+html.theme-transitioning .booking-card,
+html.theme-transitioning .booking-input {
   transition: background-color 1s cubic-bezier(0.4, 0, 0.2, 1),
               color 1s cubic-bezier(0.4, 0, 0.2, 1),
               border-color 1s cubic-bezier(0.4, 0, 0.2, 1),
@@ -121,16 +110,6 @@ html.night-mode body {
   background-color: #1A1208;
   color: #FAF7F2;
 }
-
-html.night-mode .bg-day { background-color: #1A1208 !important; }
-html.night-mode .bg-day-secondary { background-color: #2A1E0E !important; }
-html.night-mode .bg-day-card {
-  background-color: #2A1E0E !important;
-  border-color: rgba(200, 151, 58, 0.15) !important;
-}
-html.night-mode .text-day { color: #FAF7F2 !important; }
-html.night-mode .text-day-muted { color: rgba(250, 247, 242, 0.6) !important; }
-html.night-mode .border-day { border-color: rgba(200, 151, 58, 0.2) !important; }
 
 html.night-mode .nav-bg-scroll {
   background-color: #1A1208 !important;
@@ -274,16 +253,7 @@ html.night-mode .booking-card {
 }
 
 /* ============================
-   MASHRABIYA PATTERN (Events)
-   ============================ */
-.mashrabiya-bg {
-  background-color: #2D5016;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20'%3E%3Cpath d='M10 0L20 10L10 20L0 10Z' fill='none' stroke='%23C8973A' stroke-width='0.4' opacity='0.2'/%3E%3Ccircle cx='10' cy='10' r='1' fill='%23C8973A' opacity='0.15'/%3E%3C/svg%3E");
-  background-size: 20px 20px;
-}
-
-/* ============================
-   NOISE TEXTURE OVERLAY
+   NOISE TEXTURE OVERLAY (Contact)
    ============================ */
 .noise-overlay::before {
   content: "";
@@ -293,38 +263,6 @@ html.night-mode .booking-card {
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
   pointer-events: none;
   z-index: 1;
-}
-
-/* ============================
-   FILM GRAIN (Gallery)
-   ============================ */
-.film-grain::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  opacity: 0.04;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='grain'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23grain)'/%3E%3C/svg%3E");
-  pointer-events: none;
-  z-index: 1;
-}
-
-/* ============================
-   GALLERY HOVER EFFECT
-   ============================ */
-.gallery-item img {
-  transition: filter 0.5s ease, transform 0.5s ease;
-}
-.gallery-item:hover img {
-  filter: saturate(0.7);
-  transform: scale(1.03);
-}
-.gallery-item .gallery-overlay {
-  opacity: 0;
-  transition: opacity 0.5s ease;
-  background: rgba(200, 151, 58, 0.25);
-}
-.gallery-item:hover .gallery-overlay {
-  opacity: 1;
 }
 
 /* ============================

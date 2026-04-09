@@ -338,7 +338,7 @@ export default function Booking() {
                   color: "#1A1208",
                 }}
               >
-                {t("step1Select") || t("next")}
+                {t("step1Select")}
               </span>
             </div>
 

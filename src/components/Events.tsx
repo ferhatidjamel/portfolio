@@ -28,45 +28,7 @@ export default function Events() {
   const t = useTranslations("events");
   const locale = useLocale();
   const sectionRef = useRef<HTMLElement>(null);
-  const trackRef = useRef<HTMLDivElement>(null);
   const [selectedEvent, setSelectedEvent] = useState<PalmEvent | null>(null);
-
-  // Drag to scroll
-  useEffect(() => {
-    const track = trackRef.current;
-    if (!track) return;
-
-    let isDown = false;
-    let startX = 0;
-    let scrollLeft = 0;
-
-    const mouseDown = (e: MouseEvent) => {
-      isDown = true;
-      startX = e.pageX - track.offsetLeft;
-      scrollLeft = track.scrollLeft;
-      track.style.cursor = "grabbing";
-    };
-    const mouseLeave = () => { isDown = false; track.style.cursor = "grab"; };
-    const mouseUp = () => { isDown = false; track.style.cursor = "grab"; };
-    const mouseMove = (e: MouseEvent) => {
-      if (!isDown) return;
-      e.preventDefault();
-      const x = e.pageX - track.offsetLeft;
-      track.scrollLeft = scrollLeft - (x - startX) * 1.5;
-    };
-
-    track.addEventListener("mousedown", mouseDown);
-    track.addEventListener("mouseleave", mouseLeave);
-    track.addEventListener("mouseup", mouseUp);
-    track.addEventListener("mousemove", mouseMove);
-
-    return () => {
-      track.removeEventListener("mousedown", mouseDown);
-      track.removeEventListener("mouseleave", mouseLeave);
-      track.removeEventListener("mouseup", mouseUp);
-      track.removeEventListener("mousemove", mouseMove);
-    };
-  }, []);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -81,11 +43,10 @@ export default function Events() {
       gsap.from(".event-card", {
         y: 40,
         opacity: 0,
-        rotateX: 8,
         duration: 0.7,
         stagger: 0.1,
         ease: "cubic-bezier(0.16, 1, 0.3, 1)",
-        scrollTrigger: { trigger: ".events-track", start: "top 80%" },
+        scrollTrigger: { trigger: ".events-grid", start: "top 85%" },
       });
     }, sectionRef);
 
@@ -99,37 +60,24 @@ export default function Events() {
       <section
         ref={sectionRef}
         id="events"
-        className="mashrabiya-bg relative py-32 md:py-40 overflow-hidden"
+        className="relative py-24 md:py-32 overflow-hidden"
+        style={{ backgroundColor: "#FAF7F2" }}
       >
-        <div className="noise-overlay absolute inset-0 pointer-events-none" />
-
         <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-12">
           {/* Header */}
           <div className="events-header text-center mb-16">
-            <p className="eyebrow mb-4" style={{ color: "#E8B86D" }}>
-              {t("eyebrow")}
-            </p>
+            <p className="eyebrow mb-4">{t("eyebrow")}</p>
             <h2
-              className="font-[family-name:var(--font-heading)] mb-6"
-              style={{
-                fontSize: "clamp(40px, 6vw, 72px)",
-                fontWeight: 300,
-                fontStyle: "italic",
-                lineHeight: 1.1,
-                color: "#FAF7F2",
-              }}
+              className="font-[family-name:var(--font-heading)] italic font-light leading-[1.1]"
+              style={{ fontSize: "clamp(36px, 5vw, 64px)", color: "#1A1208" }}
             >
               {t("title")}
             </h2>
-            <div className="gold-line w-20 mx-auto" />
+            <div className="gold-line w-20 mx-auto mt-6" />
           </div>
 
-          {/* Horizontal scrolling cards */}
-          <div
-            ref={trackRef}
-            className="events-track flex gap-6 overflow-x-auto pb-4 cursor-grab select-none"
-            style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
-          >
+          {/* Responsive card grid */}
+          <div className="events-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
             {events.map((event) => {
               const title =
                 locale === "ar"
@@ -147,12 +95,13 @@ export default function Events() {
               const isLive = isWithin48Hours(event.date);
 
               return (
-                <div
+                <article
                   key={event.id}
-                  className="event-card flex-shrink-0 w-[340px] rounded-2xl overflow-hidden"
+                  className="event-card rounded-2xl overflow-hidden flex flex-col transition-shadow duration-500 hover:shadow-lg"
                   style={{
-                    perspective: "1000px",
-                    boxShadow: "0 8px 40px rgba(0,0,0,0.3)",
+                    backgroundColor: "#FFFFFF",
+                    border: "1px solid #F0E5D0",
+                    boxShadow: "0 1px 3px rgba(26,18,8,0.04)",
                   }}
                 >
                   {/* Image area */}
@@ -204,7 +153,7 @@ export default function Events() {
                   </div>
 
                   {/* Card body */}
-                  <div className="p-5" style={{ backgroundColor: "#FAF7F2" }}>
+                  <div className="p-6 flex-1 flex flex-col">
                     <h3
                       className="font-[family-name:var(--font-heading)] text-xl mb-2 line-clamp-1"
                       style={{ color: "#1A1208", fontWeight: 400 }}
@@ -212,7 +161,7 @@ export default function Events() {
                       {title}
                     </h3>
                     <p
-                      className="text-sm leading-relaxed mb-4 line-clamp-2"
+                      className="text-sm leading-relaxed mb-4 line-clamp-2 flex-1"
                       style={{ color: "#6B5C42" }}
                     >
                       {desc}
@@ -251,7 +200,7 @@ export default function Events() {
                       </button>
                     </div>
                   </div>
-                </div>
+                </article>
               );
             })}
           </div>

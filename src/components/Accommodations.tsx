@@ -79,8 +79,8 @@ export default function Accommodations() {
     <section
       ref={sectionRef}
       id="hebergement"
-      className="bg-day-secondary relative overflow-hidden mt-0"
-      style={{ backgroundColor: "#F0E5D0" }}
+      className="relative overflow-hidden"
+      style={{ backgroundColor: "#FAF7F2" }}
     >
       {/* Full pinned viewport — header + cards share the screen */}
       <div className="lg:h-screen lg:flex lg:flex-col">
