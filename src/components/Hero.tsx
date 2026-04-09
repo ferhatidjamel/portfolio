@@ -219,74 +219,74 @@ export default function Hero() {
         >
           {t("cta")}
         </a>
+      </div>
 
-        {/* Day / Night pill toggle */}
-        <div className="hero-theme-toggle mt-10 flex flex-col items-center gap-3">
-          {/* Hint — pulses once then fades after interaction */}
-          <div
-            className="hero-theme-hint flex items-center gap-2 transition-opacity duration-700"
+      {/* Day / Night pill toggle — pinned near hero bottom, above scroll indicator */}
+      <div className="hero-theme-toggle absolute bottom-28 md:bottom-32 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-3">
+        {/* Hint — pulses gently, fades after first interaction */}
+        <div
+          className="hero-theme-hint flex items-center gap-2 transition-opacity duration-700 whitespace-nowrap"
+          style={{
+            opacity: hasInteracted ? 0 : 1,
+            fontFamily: "var(--font-body)",
+            fontSize: "10px",
+            letterSpacing: "0.2em",
+            textTransform: "uppercase",
+            color: "rgba(232,184,109,0.9)",
+            textShadow: "0 1px 6px rgba(0,0,0,0.6)",
+            animation: hasInteracted ? "none" : "hintPulse 2.4s ease-in-out infinite",
+          }}
+        >
+          <span style={{ fontSize: "12px" }}>✦</span>
+          {t("themeHint")}
+        </div>
+
+        {/* Pill */}
+        <div
+          role="group"
+          aria-label="Toggle day/night view"
+          className="inline-flex items-center rounded-full backdrop-blur-md"
+          style={{
+            backgroundColor: "rgba(26,18,8,0.35)",
+            border: "1px solid rgba(250,247,242,0.25)",
+            padding: "4px",
+            boxShadow: "0 4px 24px rgba(0,0,0,0.3)",
+          }}
+        >
+          <button
+            onClick={() => setTheme(false)}
+            aria-pressed={!isNight}
+            className="flex items-center gap-2 rounded-full transition-all duration-500"
             style={{
-              opacity: hasInteracted ? 0 : 1,
-              fontFamily: "var(--font-body)",
-              fontSize: "10px",
-              letterSpacing: "0.2em",
+              backgroundColor: !isNight ? "#C8973A" : "transparent",
+              color: !isNight ? "#1A1208" : "rgba(250,247,242,0.75)",
+              padding: "9px 20px",
+              fontSize: "11px",
+              fontWeight: 500,
               textTransform: "uppercase",
-              color: "rgba(232,184,109,0.9)",
-              textShadow: "0 1px 6px rgba(0,0,0,0.6)",
-              animation: hasInteracted ? "none" : "hintPulse 2.4s ease-in-out infinite",
+              letterSpacing: "0.15em",
             }}
           >
-            <span style={{ fontSize: "12px" }}>✦</span>
-            {t("themeHint")}
-          </div>
-
-          {/* Pill */}
-          <div
-            role="group"
-            aria-label="Toggle day/night view"
-            className="inline-flex items-center rounded-full backdrop-blur-md"
+            <Sun size={14} strokeWidth={2} />
+            <span>{t("day")}</span>
+          </button>
+          <button
+            onClick={() => setTheme(true)}
+            aria-pressed={isNight}
+            className="flex items-center gap-2 rounded-full transition-all duration-500"
             style={{
-              backgroundColor: "rgba(26,18,8,0.35)",
-              border: "1px solid rgba(250,247,242,0.25)",
-              padding: "4px",
-              boxShadow: "0 4px 24px rgba(0,0,0,0.3)",
+              backgroundColor: isNight ? "#C8973A" : "transparent",
+              color: isNight ? "#1A1208" : "rgba(250,247,242,0.75)",
+              padding: "9px 20px",
+              fontSize: "11px",
+              fontWeight: 500,
+              textTransform: "uppercase",
+              letterSpacing: "0.15em",
             }}
           >
-            <button
-              onClick={() => setTheme(false)}
-              aria-pressed={!isNight}
-              className="flex items-center gap-2 rounded-full transition-all duration-500"
-              style={{
-                backgroundColor: !isNight ? "#C8973A" : "transparent",
-                color: !isNight ? "#1A1208" : "rgba(250,247,242,0.75)",
-                padding: "9px 20px",
-                fontSize: "11px",
-                fontWeight: 500,
-                textTransform: "uppercase",
-                letterSpacing: "0.15em",
-              }}
-            >
-              <Sun size={14} strokeWidth={2} />
-              <span>{t("day")}</span>
-            </button>
-            <button
-              onClick={() => setTheme(true)}
-              aria-pressed={isNight}
-              className="flex items-center gap-2 rounded-full transition-all duration-500"
-              style={{
-                backgroundColor: isNight ? "#C8973A" : "transparent",
-                color: isNight ? "#1A1208" : "rgba(250,247,242,0.75)",
-                padding: "9px 20px",
-                fontSize: "11px",
-                fontWeight: 500,
-                textTransform: "uppercase",
-                letterSpacing: "0.15em",
-              }}
-            >
-              <Moon size={14} strokeWidth={2} />
-              <span>{t("night")}</span>
-            </button>
-          </div>
+            <Moon size={14} strokeWidth={2} />
+            <span>{t("night")}</span>
+          </button>
         </div>
       </div>
 
